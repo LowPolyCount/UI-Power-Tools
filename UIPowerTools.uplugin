@@ -1,0 +1,52 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "0.1A",
+	"FriendlyName": "UI Power Tools",
+	"Description": "UI Power Tools",
+	"Category": "User Interface",
+	"CreatedBy": "Joel Gonzales",
+	"CreatedByURL": "https://www.lowpolycount.com/UIPT",
+	"DocsURL": "http://www.lowpolycount.com/UIPT",
+	"MarketplaceURL": "",
+	"SupportURL": "http://www.lowpolycount.com/UIPT",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Plugins": [
+		{
+			"Name": "CommonUI",
+			"Enabled": true
+		},
+		{
+			"Name": "EnhancedInput",
+			"Enabled": true
+		}
+	],
+	"Modules": [
+		{
+			"Name": "UIPowerTools",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "UIPowerToolsEd",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"TargetConfigurationDenyList": [
+				"Shipping",
+				"Development"
+			]
+		},
+		{
+			"Name": "UIPowerToolsTest",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"TargetConfigurationDenyList": [
+				"Shipping",
+				"Development"
+			]
+		}
+	]
+}

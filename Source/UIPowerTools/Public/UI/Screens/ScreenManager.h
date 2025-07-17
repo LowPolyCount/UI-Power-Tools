@@ -1,0 +1,122 @@
+// Copyright 2025 Joel Gonzales
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Subsystems/GameInstanceSubsystem.h"
+#include "Subsystems/LocalPlayerSubsystem.h"
+#include "Blueprint/UserWidget.h"
+#include "ScreenManager.generated.h"
+
+class UOverlay;
+class UScreen;
+class IScreenInterface;
+class UCommonActivatableWidget;
+class UInputScreenComponent;
+enum class EScreenInputMode : uint8;
+
+// this struct contains everything needed to handle changes when screens are added or closed
+USTRUCT(Blueprintable, BlueprintType)
+struct UIPOWERTOOLS_API FScreenStruct
+{
+	GENERATED_BODY()
+public:
+	FScreenStruct() {}
+	FScreenStruct(TScriptInterface<IScreenInterface> Screen, bool bHideScreensBelow = true);
+	bool operator==(const FScreenStruct& rhs) const { return Screen == rhs.Screen; }
+	void SetVisibility(bool bIsVisible);
+
+	// the screen being added
+	UPROPERTY(BlueprintReadWrite)
+	TScriptInterface<IScreenInterface> Screen;
+
+	// status of what all screens 
+	UPROPERTY(BlueprintReadWrite)
+	bool bHideScreensBelow = true;
+};
+
+/**
+ * A Manager for displaying screens
+ * @note: Screen Manager handles screen visibility. So if the user sets a screen's visibility, the Manager will override it when the next screen is added or removed. 
+ */
+UCLASS(BlueprintType)
+class UIPOWERTOOLS_API UScreenManager : public UObject
+{
+	GENERATED_BODY()
+public:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReadyDelegate);
+
+	UScreenManager();
+
+	void BeginPlay();
+	void EndPlay(const EEndPlayReason::Type Reason);
+	
+	// Get the screen manager
+	static UScreenManager* Get(UWorld* WorldContextObject);
+
+	// broadcasts when the subsystem is ready to accept screens
+	UPROPERTY(BlueprintAssignable)
+	FReadyDelegate OnReady;
+
+	// this only needs to be checked when first starting a game instance, such as with the Hud Actor
+	// this is because the subsystem can be created before the Viewport, so we need to wait on that before
+	// something can be added.
+	UFUNCTION(BlueprintCallable)
+	bool IsReady() const;
+
+	// add a screen to the manager to be displayed
+	// to remove a screen, call the screen's Close()
+	// @bHideScreensBelow = Are all existing displayed screens hidden when this screen is added?
+	UFUNCTION(BlueprintCallable)
+	void AddScreen(TScriptInterface<IScreenInterface> Screen, bool bHideScreensBelow = true);
+
+	// is the given screen instance on the stack?
+	UFUNCTION(BlueprintCallable)
+	bool IsScreenOnStack(TScriptInterface<IScreenInterface> Screen) const;
+
+	// is an instance of a screen of the given class on the stack?
+	UFUNCTION(BlueprintCallable)
+	bool IsScreenOfClassOnStack(TSubclassOf<UUserWidget> Class) const;
+
+	// number of screens being displayed
+	UFUNCTION(BlueprintCallable)
+	int32 NumScreens() const {return Screens.Num();}
+
+	// get the screen at the top of the stack
+	UFUNCTION(BlueprintCallable)
+	TScriptInterface<IScreenInterface> GetScreenOnTop() const;
+
+protected:
+	
+	UFUNCTION()
+	void HandleOnScreenClose(TScriptInterface<IScreenInterface> Screen);
+
+	UFUNCTION()
+	void HandleOnAddToViewport();
+	UFUNCTION()
+	void HandleOnReady();
+
+	void AddScreen_Internal(FScreenStruct& ScreenToAdd);
+	void AddScreenUsingPanel(FScreenStruct& ScreenToAdd);
+	void AddScreenUsingViewport(FScreenStruct& ScreenToAdd);
+	void RemoveScreenUsingPanel(TScriptInterface<IScreenInterface>& Screen);
+	void RemoveScreenUsingViewport(TScriptInterface<IScreenInterface>& Screen);
+	virtual APlayerController* GetPlayerController();
+	virtual void SetInputMode(APlayerController* PlayerController, const UInputScreenComponent* InputComponent);
+	void ActivateTopScreen();
+
+	EScreenInputMode CurrentInputMode;
+
+	UPROPERTY()
+	TArray<FScreenStruct> Screens;
+	int32 ZValue = INDEX_NONE;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> RootWidget;
+	UPROPERTY()
+	TObjectPtr<UOverlay> ParentPanel;
+
+	FTimerHandle TimerHandle;
+
+	bool bRootAddedToViewport = false;
+};
