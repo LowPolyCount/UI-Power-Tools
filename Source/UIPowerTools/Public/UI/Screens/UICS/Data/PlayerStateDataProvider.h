@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UI/Screens/UICS/Data/DataScreenComponentProvider.h"
-#include "PlayerDataProvider.generated.h"
+#include "PlayerStateDataProvider.generated.h"
 
-// will retrieve all players in the game
+// will retrieve all player states in the game
 UCLASS()
-class UIPOWERTOOLS_API UPlayerDataProvider : public UDataScreenComponentProvider
+class UIPOWERTOOLS_API UPlayerStateDataProvider : public UDataScreenComponentProvider
 {
 	GENERATED_BODY()
 

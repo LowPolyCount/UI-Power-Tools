@@ -1,11 +1,11 @@
 // Copyright 2025 Joel Gonzales
 
 
-#include "UI/Screens/UICS/Data/PlayerDataProvider.h"
+#include "UI/Screens/UICS/Data/PlayerStateDataProvider.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/GameFramework/PlayerState.h"
 
-void UPlayerDataProvider::RetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
+void UPlayerStateDataProvider::RetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
 {
 	const int32 NumPlayers = UGameplayStatics::GetNumPlayerStates(this);
 	
