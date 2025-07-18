@@ -29,110 +29,110 @@ public:
 	virtual FString GetDisplayNameVerbose() const override;
 
 	// clear existing data entries and retrieve new entries
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	const TArray<UObject*>& RetrieveEntries();
 
 	// set retrieve data on construct
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	void SetRetrieveOnConstruct(bool bInRetrieve) { bRetrieveOnConstruct = bInRetrieve; }
 
 	// get if we're retrieving data on construct
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	bool GetRetrieveOnConstruct() const { return bRetrieveOnConstruct; }
 
 	// get all retrieved entries
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	const TArray<UObject*>& GetEntries() const { return RetrievedEntries; }
 
 	// how many entries do we have?
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	int32 GetNumEntries() const { return RetrievedEntries.Num(); }
 
 	// do we have an entry at index?
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	bool HasEntryAt(int32 Index) const { return RetrievedEntries.IsValidIndex(Index); }
 
 	// get entry at given index
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	UObject* GetEntryAt(int32 Index) const;
 
 	// clear all retrieved entries
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	void EmptyEntries() { RetrievedEntries.Empty(); }
 
 	// Set the data retriever to use with a given instance
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	void SetDataRetriever(UDataScreenComponentProvider* InData) { DataProvider = InData; }
 
 	// Set the data retriever to use with a given classtype
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	void SetDataRetrieverFromClass(TSubclassOf<UDataScreenComponentProvider> InClass);
 	
 	// get data retriever we're using
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	UDataScreenComponentProvider* GetDataRetriever() const { return DataProvider; }
 
 	// Do we have a data retriever?
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	bool HasDataRetriever() const { return DataProvider != nullptr; }
 
 	// data filters
 	// add a data filter
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	void AddDataFilter(UDataFilter* InFilter) { Filters.Add(InFilter); }
 
 	// remove data filter at index
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	void RemoveDataFilter(int32 Index);
 
 	// get the filter at index
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	UDataFilter* GetFilterAt(int32 Index);
 
 	// do we have a filter at index?
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	bool HasFilterAt(int32 Index) { return Filters.IsValidIndex(Index); }
 
 	// get all filters
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	const TArray<UDataFilter*>& GetAllFilters() const { return Filters; }
 
 	// data transforms
 	// add a data transform
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	void AddDataTransform(UDataTransform* InTransform) { Transforms.Add(InTransform); }
 
 	// remove a transform
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	void RemoveDataTransform(int32 Index);
 
 	// get transform at index
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	UDataTransform* GetTransformAt(int32 Index);
 
 	// do we have a transform at index?
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	bool HasTransformAt(int32 Index) { return Transforms.IsValidIndex(Index); }
 
 	// get all transforms
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	const TArray<UDataTransform*>& GetAllTransforms() const { return Transforms; }
 
 protected:
 	// class that will retrieve our data
-	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Category = DataScreenComponent)
 	TObjectPtr<UDataScreenComponentProvider> DataProvider;
 
 	// filters to apply to retrieved data
-	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Category = DataScreenComponent)
 	TArray<UDataFilter*> Filters;
 
 	// transforms to apply to retrieved data
-	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Category = DataScreenComponent)
 	TArray<UDataTransform*> Transforms;
 
 	// retrieve entries when the screens construct runs?
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = DataScreenComponent)
 	bool bRetrieveOnConstruct = true;
 
 	UPROPERTY()

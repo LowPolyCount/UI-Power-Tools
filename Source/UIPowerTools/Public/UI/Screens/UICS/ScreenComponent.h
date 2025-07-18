@@ -25,6 +25,6 @@ public:
 #endif
 
 protected:
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, Category = ScreenComponent)
 	mutable FGuid Guid;
 };

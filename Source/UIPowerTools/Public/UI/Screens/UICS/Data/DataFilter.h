@@ -15,7 +15,7 @@ public:
 	virtual void Teardown() {}
 protected:
 	// Filter the given Entry. Return false if given entry is removed
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, Category = DataScreenComponent)
 	bool ApplyFilter(const UObject* Entry);
 
 	virtual bool ApplyFilter_Implementation(const UObject* Entry) { return true; }

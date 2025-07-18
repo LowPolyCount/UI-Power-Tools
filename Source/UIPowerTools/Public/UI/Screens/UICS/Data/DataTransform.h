@@ -12,9 +12,9 @@ class UIPOWERTOOLS_API UDataTransform : public UObject
 public:
 	UFUNCTION(BlueprintNativeEvent)
 	void TransformEntries(TArray<UObject*>& RetrievedEntries);
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, Category = DataScreenComponent)
 	void Setup();
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, Category = DataScreenComponent)
 	void Teardown();
 protected:
 	virtual void TransformEntries_Implementation(TArray<UObject*>& RetrievedEntries) {}

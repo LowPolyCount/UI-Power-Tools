@@ -40,7 +40,7 @@ public:
 	// close this screen.
 	// note: If you override this, do everything needed before calling Super::Close() as that will
 	//			cause the ScreenManager to remove this screen from the viewport. 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = Screen)
 	virtual void Close();
 
 	// called when the screen is closed. 

@@ -30,6 +30,6 @@ public:
 	void NativeDestruct();
 
 protected:
-	UPROPERTY(EditAnywhere, Instanced, Export, Meta = (ShowInnerProperties))
+	UPROPERTY(EditAnywhere, Instanced, Export, Category = ScreenComponent, Meta = (ShowInnerProperties))
 	TArray<TObjectPtr<UScreenComponent>> Components;
 };

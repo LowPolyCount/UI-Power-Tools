@@ -15,11 +15,11 @@ class UIPOWERTOOLS_API UActionScreenComponentProvider : public UObject
 	GENERATED_BODY()
 public:
 	// Do we have all the information required to execute the transaction?
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, Category = ActionScreenComponent)
 	bool CanExecuteAction(UActionScreenComponent* Component, UObject* Entry);
 
 	// execute the transaction
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, Category = ActionScreenComponent)
 	ETransactionResult ExecuteAction(UActionScreenComponent* Component, UObject* Entry);
 
 protected:

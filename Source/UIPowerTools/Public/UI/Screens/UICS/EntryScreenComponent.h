@@ -12,11 +12,11 @@ class UIPOWERTOOLS_API UEntryScreenComponent : public UScreenComponent
 	GENERATED_BODY()
 public:
 	// get the entry
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = EntryScreenComponent)
 	UObject* Get() const { return HeldEntry; }
 
 	// set the entry
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = EntryScreenComponent)
 	void Set(UObject* Entry) { HeldEntry = Entry; }
 
 protected:

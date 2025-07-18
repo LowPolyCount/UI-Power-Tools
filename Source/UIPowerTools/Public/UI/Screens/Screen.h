@@ -58,9 +58,9 @@ protected:
 	void HandleClose();
 
 	// experimental
-	//UPROPERTY(EditAnywhere, Meta=(EditCondition="CommonInput.CommonInputSettings.IsEnhancedInputSupportEnabled", EditConditionHides))
+	//UPROPERTY(EditAnywhere, Category = Screen, Meta=(EditCondition="CommonInput.CommonInputSettings.IsEnhancedInputSupportEnabled", EditConditionHides))
 	FUIPTInputBinding CancelAction;
 
-	UPROPERTY(EditAnywhere, Instanced, Export, Category="Screen", Meta = (DisplayPriority = 0, FullyExpand = true, ShowInnerProperties, ShowOnlyInnerProperties, DisplayName = "UI Component System"))
+	UPROPERTY(EditAnywhere, Instanced, Export, Category = Screen, Meta = (DisplayPriority = 0, FullyExpand = true, ShowInnerProperties, ShowOnlyInnerProperties, DisplayName = "UI Component System"))
 	TObjectPtr<UScreenComponentManager> ComponentManager = nullptr;
 };

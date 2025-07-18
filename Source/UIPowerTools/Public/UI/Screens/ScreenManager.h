@@ -27,11 +27,11 @@ public:
 	void SetVisibility(bool bIsVisible);
 
 	// the screen being added
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, Category = ScreenManager)
 	TScriptInterface<IScreenInterface> Screen;
 
 	// status of what all screens 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, Category = ScreenManager)
 	bool bHideScreensBelow = true;
 };
 
@@ -55,35 +55,35 @@ public:
 	static UScreenManager* Get(UWorld* WorldContextObject);
 
 	// broadcasts when the subsystem is ready to accept screens
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category = ScreenManager)
 	FReadyDelegate OnReady;
 
 	// this only needs to be checked when first starting a game instance, such as with the Hud Actor
 	// this is because the subsystem can be created before the Viewport, so we need to wait on that before
 	// something can be added.
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ScreenManager)
 	bool IsReady() const;
 
 	// add a screen to the manager to be displayed
 	// to remove a screen, call the screen's Close()
 	// @bHideScreensBelow = Are all existing displayed screens hidden when this screen is added?
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ScreenManager)
 	void AddScreen(TScriptInterface<IScreenInterface> Screen, bool bHideScreensBelow = true);
 
 	// is the given screen instance on the stack?
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ScreenManager)
 	bool IsScreenOnStack(TScriptInterface<IScreenInterface> Screen) const;
 
 	// is an instance of a screen of the given class on the stack?
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ScreenManager)
 	bool IsScreenOfClassOnStack(TSubclassOf<UUserWidget> Class) const;
 
 	// number of screens being displayed
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ScreenManager)
 	int32 NumScreens() const {return Screens.Num();}
 
 	// get the screen at the top of the stack
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ScreenManager)
 	TScriptInterface<IScreenInterface> GetScreenOnTop() const;
 
 protected:

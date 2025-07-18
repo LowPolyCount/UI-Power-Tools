@@ -33,7 +33,7 @@ protected:
 
 	// will create and add these screen to manager when BeginPlay happens.
 	// they must be a Screen class or implement IScreenInterface
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta=(MustImplement = "/Script/UIPOWERTOOLS.ScreenInterface"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = HudActor, Meta=(MustImplement = "/Script/UIPOWERTOOLS.ScreenInterface"))
 	TArray<TSubclassOf<UUserWidget>> ScreensToDisplayAtStart;
 
 	UPROPERTY()

@@ -24,12 +24,12 @@ public:
 	//End
 
 	// when screen is added to the screen manager, what number is used as the starting z-order when it gets added to the viewport?
-	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Meta=(ClampMin=0))
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = UIPowerToolsDeveloperSettings, Meta=(ClampMin=0))
 	int32 ScreenManagerZOrderStart = 100;
 
-	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Meta=(AllowedClasses="/Script/EnhancedInput.InputAction"))
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = UIPowerToolsDeveloperSettings, Meta=(AllowedClasses="/Script/EnhancedInput.InputAction"))
 	FSoftObjectPath DefaultCancelAction;
 
-	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Meta=(AllowedClasses="/Script/EnhancedInput.InputMappingContext"))
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = UIPowerToolsDeveloperSettings, Meta=(AllowedClasses="/Script/EnhancedInput.InputMappingContext"))
 	FSoftObjectPath DefaultInputMapping;
 };

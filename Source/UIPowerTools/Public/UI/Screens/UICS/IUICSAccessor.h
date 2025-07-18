@@ -22,11 +22,11 @@ class UIPOWERTOOLS_API IUICSAccessor
 {
 	GENERATED_BODY()
 public:
-	UFUNCTION(BlueprintCallable, Meta=(DisplayName = "GetScreenComponent", DeterminesOutputType="Type"))
+	UFUNCTION(BlueprintCallable, Category = ScreenComponent, Meta=(DisplayName = "GetScreenComponent", DeterminesOutputType="Type"))
 	virtual UScreenComponent* GetScreenComponent_BP(TSubclassOf<UScreenComponent> Type) const;
-	UFUNCTION(BlueprintCallable, Meta = (DisplayName = "GetAllScreenComponents", DeterminesOutputType = "Type"))
+	UFUNCTION(BlueprintCallable, Category = ScreenComponent, Meta = (DisplayName = "GetAllScreenComponents", DeterminesOutputType = "Type"))
 	virtual TArray<UScreenComponent*> GetAllScreenComponents_BP(TSubclassOf<UScreenComponent> Type) const;
-	UFUNCTION(BlueprintCallable, Meta = (DisplayName = "GetScreenComponentFromSelector", DeterminesOutputType = "Type"))
+	UFUNCTION(BlueprintCallable, Category = ScreenComponent, Meta = (DisplayName = "GetScreenComponentFromSelector", DeterminesOutputType = "Type"))
 	virtual UScreenComponent* GetScreenComponentFromSelector_BP(const FComponentSelector& Selector, TSubclassOf<UScreenComponent> Type) const;
 
 	template<class ComponentType>

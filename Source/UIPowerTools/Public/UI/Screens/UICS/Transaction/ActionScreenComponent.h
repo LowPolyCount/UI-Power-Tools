@@ -31,49 +31,49 @@ protected:
 
 public:
 	// result of IsValidTransaction
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category = ActionScreenComponent)
 	FValidTransactionResult OnIsValidResult;
 
 	// result of ExecuteTransaction
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category = ActionScreenComponent)
 	FTransactionResult OnExecuteResult;
 
 
 	// does the transaction have everything needed to be valid?
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	bool IsValidTransaction(UObject* Entry);
 
 	// execute the transaction, optionally calling IsValidTransaction()
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	ETransactionResult ExecuteAction(UObject* Entry, bool bCallIsValidTransactionFirst = true);
 
 	// slots
 	// set the data for a slot at the index
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	void SetSlot(UObject* Entry, int32 Index);
 
 	// remove the data for a slot at the index
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	void RemoveSlot(int32 Index);
 
 	// get the data for a slot at the index
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	UObject* GetSlot(int32 Index) const;
 
 	// does the slot at index have any data?
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	bool IsSlotValid(int32 Index) const;
 
 	// how many slots do we have?
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	int32 NumSlots() const;
 
 	// listen for action events from the given View
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	void ListenToViewAction(UViewScreenComponent* InView);
 
 	// set the transactor used
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	void SetTransactor(UActionScreenComponentProvider* InTransaction) { ActionProvider = InTransaction; }
 
 protected:
@@ -81,14 +81,14 @@ protected:
 	void HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget);
 
 	// set the transactor that will be used
-	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Meta=(Displayname="Action"))
+	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Category = ActionScreenComponent, Meta=(Displayname="Action"))
 	TObjectPtr<UActionScreenComponentProvider> ActionProvider = nullptr;
 
 	UPROPERTY()
 	TObjectPtr<UViewScreenComponent> ViewListeningTo;
 
 	// view screen component that we will list to events from
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = ActionScreenComponent)
 	FViewComponentSelector ViewToListenTo;
 
 	// slots are provided as a holding place for data. So you can put it in a slot, and then have the action provider retrieve it later. 

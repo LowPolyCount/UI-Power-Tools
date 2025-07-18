@@ -17,7 +17,7 @@ class UIPOWERTOOLS_API UEntryDataAsset : public UDataAsset
 public:
 	// Array of Objects to provide as Data, can be edited directly from a DataComponent in the editor
 	// @todo: Should this change to use TSoftObjPtr?
-	UPROPERTY(Instanced, EditAnywhere)
+	UPROPERTY(Instanced, EditAnywhere, Category = DataScreenComponent)
 	TArray<UObject*> Entries;
 };
 
@@ -32,6 +32,6 @@ public:
 
 protected:
 	// You can Provide an existing Data Asset, or edit the data entries you want directly in the editor
-	UPROPERTY(Instanced, EditAnywhere, Meta=(ShowInnerProperties))
+	UPROPERTY(Instanced, EditAnywhere, Category = DataScreenComponent, Meta=(ShowInnerProperties))
 	TObjectPtr<UEntryDataAsset> DataAssetToUse;
 };

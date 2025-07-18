@@ -24,7 +24,8 @@ public:
 	void SetComponent(const UScreenComponent* InComponent);
 
 public:
-	UPROPERTY(EditAnywhere)
+	// needs to be marked as EditAnywhere so that it can be saved by the customizer class
+	UPROPERTY(EditAnywhere, Category = ComponentSelector)
 	FGuid ComponentGuid = FGuid();
 };
 

@@ -28,7 +28,7 @@ public:
 	virtual bool IsValid() const { return false; }
 
 #if WITH_EDITORONLY_DATA
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = Selector)
 	const UClass* ClassFilter = nullptr;
 #endif
 };
@@ -46,9 +46,9 @@ public:
 	FWidgetSelector(const UClass* Filter);
 	UWidget* GetWidget(UWidget* WidgetOwner) const;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WidgetSelector)
 	FName WidgetName;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WidgetSelector)
 	TArray<FName> WidgetPath;
 };
 

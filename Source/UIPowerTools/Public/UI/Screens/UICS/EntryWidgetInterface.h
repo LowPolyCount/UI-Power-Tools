@@ -28,73 +28,73 @@ public:
 	virtual FViewEvent& GetOnHoverChange() = 0;
 
 	// set the widget's entry data
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	void SetEntryData(int32 InIndex, UObject* InEntry);
 
 	// get the current entry data
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	UObject* GetEntryData() const;
 
 	// reset the widget
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	void Reset();
 
 	// get the widget's index in the set
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	int32 GetIndex() const;
 
 	// are we focused?
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	bool IsFocused() const;
 
 	// set the focus
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	void SetFocus(bool bInFocused);
 
 	// are we hovered?
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	bool IsHovered() const;
 
 	// set if we are hovered
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	void SetHovered(bool bInHovered);
 
 	// are we selected?
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	bool IsSelected() const;
 
 	// set if we are selected
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	void SetSelected(bool bInSelected);
 
 	// Force an input action to happen
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	void ForceInputAction();
 
 protected:
 	// Widget has just had it's entry data set
 	// @index - The index this widget is in the entry set
 	// @entry - the entry data
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget)
 	void OnEntryDataSet(int32 InIndex, const UObject* InEntry);
 
 	// Widget is being reset
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget)
 	void OnReset();
 
 	// event notifying that the focus has changed
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget)
 	void OnFocusChanged(bool bFocus);
 
 	// event notifying that the selection of the widget has changed
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget)
 	void OnSelectionChanged(bool bInSelected);
 
 	// event notifying that input has been applied to this widget
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, Category = ViewWidget)
 	void OnInputAction();
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget)
 	void Populate(UObject* EntryData);
 
 	// these internal functions are broken out in case an implementing class needs to override them. 
@@ -125,13 +125,13 @@ protected:
 // this macro can help define boilerplate code required for implementing IEntryWidgetInterface
 #define VIEW_WIDGET_BOILERPLATE() \
 public:\
-UPROPERTY(BlueprintAssignable)\
+UPROPERTY(BlueprintAssignable, Category = ViewWidget)\
 FViewAction OnInputAction;\
-UPROPERTY(BlueprintAssignable)\
+UPROPERTY(BlueprintAssignable, Category = ViewWidget)\
 FViewEvent OnSelectionChanged;\
-UPROPERTY(BlueprintAssignable)\
+UPROPERTY(BlueprintAssignable, Category = ViewWidget)\
 FViewEvent OnFocusChanged;\
-UPROPERTY(BlueprintAssignable)\
+UPROPERTY(BlueprintAssignable, Category = ViewWidget)\
 FViewEvent OnHoverChange;\
 virtual FViewAction& GetOnAction() { return OnInputAction; }\
 virtual FViewEvent& GetOnSelectionChange() { return OnSelectionChanged; }\
