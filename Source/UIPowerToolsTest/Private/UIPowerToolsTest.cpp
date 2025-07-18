@@ -17,4 +17,4 @@ void FUIPowerToolsTestModule::ShutdownModule()
 
 #undef LOCTEXT_NAMESPACE
 	
-IMPLEMENT_MODULE(FUIPowerToolsTestModule, UICSTest)
+IMPLEMENT_MODULE(FUIPowerToolsTestModule, UIPowerToolsTest)
