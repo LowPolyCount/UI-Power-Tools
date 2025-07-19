@@ -2,9 +2,10 @@
 
 
 #include "UI/Screens/UICS/Transaction/ActionScreenComponent.h"
+#include "Templates/SubclassOf.h"
 #include "UI/Screens/UICS/Transaction/ActionScreenComponentProvider.h"
-#include "UI/Screens/UICS/EntryScreenComponent.h"
 #include "UI/Screens/UICS/ViewScreenComponent.h"
+#include "UI/Screens/UICS/EntryScreenComponent.h"
 #include "UIPowerTools.h"
 
 void UActionScreenComponent::Initialize()

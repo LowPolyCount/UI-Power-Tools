@@ -2,7 +2,6 @@
 
 
 #include "UI/Screens/ScreenInterface.h"
-#include "Blueprint/UserWidget.h"
 #include "CommonActivatableWidget.h"
 
 UUserWidget* IScreenInterface::AsUserWidget()
@@ -18,7 +17,7 @@ void IScreenInterface::Close()
 
 void IScreenInterface::AddScreenToViewport(int32 ZOrder)
 {
-	if (UUserWidget* AsUWidget = this->AsUserWidget())
+	if (UUserWidget* AsUWidget = AsUserWidget())
 	{
 		AsUWidget->AddToViewport(ZOrder);
 	}

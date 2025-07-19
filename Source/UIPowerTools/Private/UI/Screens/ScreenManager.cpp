@@ -176,8 +176,8 @@ void UScreenManager::HandleOnReady()
 
 void UScreenManager::HandleOnAddToViewport()
 {
-	if (GEngine)
-	{
+	//if (GEngine)
+	//{
 		/*if (UGameViewportSubsystem* Subsystem = UGameViewportSubsystem::Get())
 		{
 			if (!Subsystem->IsWidgetAdded(RootWidget))
@@ -202,7 +202,7 @@ void UScreenManager::HandleOnAddToViewport()
 
 			}
 		}*/
-	}
+	//}
 }
 
 /*void UScreenManagerSubsystem::Deinitialize()

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Blueprint/UserWidget.h"
 #include "ScreenInterface.generated.h"
 
 

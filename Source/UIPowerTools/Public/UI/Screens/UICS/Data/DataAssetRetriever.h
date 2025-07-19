@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/DataAsset.h"
 #include "UI/Screens/UICS/Data/DataScreenComponentProvider.h"
 #include "DataAssetRetriever.generated.h"
 

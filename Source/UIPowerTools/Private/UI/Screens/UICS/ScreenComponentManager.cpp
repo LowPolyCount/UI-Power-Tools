@@ -2,6 +2,7 @@
 
 
 #include "UI/Screens/UICS/ScreenComponentManager.h"
+#include "Templates/SubclassOf.h"
 #include "UI/Screens/UICS/ScreenComponent.h"
 #include "UI/Screens/Tools/ComponentSelector.h"
 
