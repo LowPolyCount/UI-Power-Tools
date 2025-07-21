@@ -37,7 +37,7 @@ public:
 
 /**
  * A Manager for displaying screens
- * @note: Screen Manager handles screen visibility. So if the user sets a screen's visibility, the Manager will override it when the next screen is added or removed. 
+ * @note: Screen Manager handles screen visibility. So if the user manually sets the screen's visibility, the Manager can override it when a screen is added or removed. 
  */
 UCLASS(BlueprintType)
 class UIPOWERTOOLS_API UScreenManager : public UObject
@@ -52,7 +52,8 @@ public:
 	void EndPlay(const EEndPlayReason::Type Reason);
 	
 	// Get the screen manager
-	static UScreenManager* Get(UWorld* WorldContextObject);
+	UFUNCTION(BlueprintPure, Category = ScreenManager, Meta=(DisplayName="ScreenManager", WorldContext = "WorldContextObject"))
+	static UScreenManager* Get(const UWorld* WorldContextObject);
 
 	// broadcasts when the subsystem is ready to accept screens
 	UPROPERTY(BlueprintAssignable, Category = ScreenManager)
