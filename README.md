@@ -30,11 +30,13 @@ The ScreenManager gives you a way to easily add a Screen to the viewport and the
 
 To setup the ScreenManager:
 - Create a New Blueprint Class and Choose HudActor as the parent class
-- Open the Blueprint you created. Under the "Screens to Display at Start" property, you can add any screens that you would like to be created and put on the ScreenManager when the HudActor is created.
+- Open the Blueprint you created. Under the "Screens to Display at Start" property, you can add any screens that you would like to be created and put on the ScreenManager when the HudActor's BeginPlay() is called.
 - Open any gamemodes you want to use the ScreenManager and you Set the HUD Class to use the Blueprint you created. You will likely want to create other Blueprints for your different gamemodes.
 
-In Blueprint, you can access the ScreenManager by calling the ScreenManager node which is globally available. 
+In Blueprint, you can access the ScreenManager by calling the ScreenManager node which is global. 
 In C++, you can call the static function UScreenManager::Get(UObject* WorldContextObject)
+
+You can remove a Screen by calling it's Close() function.
 
 # Learning
 Learning Documentation is in it's beginning stages, and something we're working on.
