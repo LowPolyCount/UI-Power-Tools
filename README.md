@@ -68,10 +68,10 @@ From LowPolyCount: "I'm tired of having to make a new UI Content Creation System
 That wasn't a question. 
 
 ### Sorry. So if there are other questions that get asked often, will they be added here?
-Yes, You can expect constant updates to this and the other documentation for UI Power Tools™. 
+Yes, You can expect big updates to this and the other documentation. 
 
 
-
+### Anything else?
 
 UI Power Tools is a Trademark of Joel Gonzales.
 
