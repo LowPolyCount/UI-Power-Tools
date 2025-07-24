@@ -28,6 +28,22 @@ void UViewScreenComponent::NativePreConstruct(bool bIsDesignTime)
 	if (PanelSelector.IsValid())
 	{
 		Panel = Cast<UPanelWidget>(PanelSelector.GetWidget(Cast<UWidget>(GetScreen())));
+
+		// show preview of widgets in design view
+		if (bIsDesignTime)
+		{
+			if (Panel)
+			{
+				Panel->ClearChildren();
+				for (int32 i = 0; i < DesignEntriesToShow; ++i)
+				{
+					if (UUserWidget* EntryWidget = DuplicateObject<UUserWidget>(EntryWidgetPrototype, this))
+					{
+						Panel->AddChild(EntryWidget);
+					}
+				}
+			}
+		}
 	}
 }
 

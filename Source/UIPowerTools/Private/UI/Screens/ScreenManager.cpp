@@ -120,12 +120,12 @@ void UScreenManager::EndPlay(const EEndPlayReason::Type Reason)
 	}
 }
 
-UScreenManager* UScreenManager::Get(UWorld* WorldContextObject)
+UScreenManager* UScreenManager::Get(const UWorld* WorldContextObject)
 {
 	UScreenManager* RetVal = nullptr;
-	if(APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	if(const APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
 	{
-		if (AHUDActor* HudActor = Cast<AHUDActor>(PC->GetHUD()))
+		if (const AHUDActor* HudActor = Cast<AHUDActor>(PC->GetHUD()))
 		{
 			RetVal = HudActor->GetScreenManager();
 		}
