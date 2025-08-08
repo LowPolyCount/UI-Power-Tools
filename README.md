@@ -8,8 +8,8 @@ It's goals are:
 
 ### What does it provide?
 Currently Implemented is:
-- User Interface Component System (UICS)
-- ScreenManager 
+- [User Interface Component System (UICS)](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UICS)
+- [Screen Manager](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Screen-Manager)
 
 See "The Future" for planned features
 
@@ -42,20 +42,19 @@ In C++, you can call the static function UScreenManager::Get(UObject* WorldConte
 You can remove a Screen by calling it's Close() function.
 
 # Learning
-Learning Documentation is in it's beginning stages, and something we're working on.
+### Wiki
+[The Wiki](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki) has information on how to use UI Power Tools. This is in it's beginning stages, we're continually working on it.
 
-## Example Project
+### Example Project
 The [UI Power Tools Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has examples of how to use UICS to build screens and use the Screen Manager. 
-
-## Wiki
-[The Wiki](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki) will have more in depth information.
 
 # The Future
 The following features are planned for development:
-- More UICS Components
+- additional UICS Components
 - ScreenManager support for multiple layers
 - Composable Widgets
-- Other support features like better logging
+- Support features like better logging
+- Verse Support
 
 Upcoming tools are:
 - A ScreenViewer which will show you Screens on the ScreenManager along with Debug information
