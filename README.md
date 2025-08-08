@@ -13,6 +13,9 @@ Currently Implemented is:
 
 See "The Future" for planned features
 
+##Status
+UI Power Tools is currently in BETA
+
 # Installation
 Download the source and place in your engine or project plugins folder. Example: YourProject/Plugins/UIPowerTools
 
@@ -42,7 +45,7 @@ You can remove a Screen by calling it's Close() function.
 Learning Documentation is in it's beginning stages, and something we're working on.
 
 ## Example Project
-The [UI Power Tools™ Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has examples of how to use UICS to build screens and use the Screen Manager. 
+The [UI Power Tools Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has examples of how to use UICS to build screens and use the Screen Manager. 
 
 ## Wiki
 [The Wiki](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki) will have more in depth information.
