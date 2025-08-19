@@ -2,11 +2,12 @@
 
 #pragma once
 
+#include "UI/Screens/UICS/ScreenComponentWorldContext.h"
 #include "DataFilter.generated.h"
 
 // take an array of data and will filter it with given criteria
 UCLASS(Blueprintable, BlueprintType, EditInlineNew, Abstract)
-class UIPOWERTOOLS_API UDataFilter : public UObject
+class UIPOWERTOOLS_API UDataFilter : public UScreenComponentWorldContext
 {
 	GENERATED_BODY()
 public:

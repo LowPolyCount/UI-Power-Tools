@@ -2,11 +2,12 @@
 
 #pragma once
 
+#include "UI/Screens/UICS/ScreenComponentWorldContext.h"
 #include "DataTransform.generated.h"
 
 // takes an array of data and can transform it by rearranging, condensing, etc.
 UCLASS(Blueprintable, BlueprintType, EditInlineNew, Abstract)
-class UIPOWERTOOLS_API UDataTransform : public UObject
+class UIPOWERTOOLS_API UDataTransform : public UScreenComponentWorldContext
 {
 	GENERATED_BODY()
 public:

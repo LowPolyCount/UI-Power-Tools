@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "UI/Screens/UICS/ScreenComponentWorldContext.h"
 #include "ActionScreenComponentProvider.generated.h"
 
 enum class ETransactionResult : uint8;
 
 // Transactions make changes to our data and can query if we're in the correct state to start the transaction
 UCLASS(Blueprintable, BlueprintType, EditInlineNew, Abstract)
-class UIPOWERTOOLS_API UActionScreenComponentProvider : public UObject
+class UIPOWERTOOLS_API UActionScreenComponentProvider : public UScreenComponentWorldContext
 {
 	GENERATED_BODY()
 public:

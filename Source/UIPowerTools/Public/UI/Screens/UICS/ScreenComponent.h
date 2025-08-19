@@ -4,11 +4,12 @@
 
 #include "Misc/Guid.h"
 #include "UI/Screens/UICS/IUICSAccessor.h"
+#include "UI/Screens/UICS/ScreenComponentWorldContext.h"
 #include "ScreenComponent.generated.h"
 
 // the base class for User Interface Component System (UICS) Components
 UCLASS(Abstract, BlueprintType, Blueprintable, EditInlineNew)
-class UIPOWERTOOLS_API UScreenComponent : public UObject, public IUICSAccessor
+class UIPOWERTOOLS_API UScreenComponent : public UScreenComponentWorldContext, public IUICSAccessor
 {
 	GENERATED_BODY()
 public:

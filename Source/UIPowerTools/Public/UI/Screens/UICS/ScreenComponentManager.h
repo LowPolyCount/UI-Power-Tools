@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UI/Screens/UICS/ScreenComponentWorldContext.h"
 #include "ScreenComponentManager.generated.h"
 
 class UScreenComponent;
@@ -11,7 +12,7 @@ struct FGuid;
 
 // manages UICS Components on a screen
 UCLASS(CollapseCategories, Meta=(DisplayName = "UI Component System"))
-class UIPOWERTOOLS_API UScreenComponentManager : public UObject
+class UIPOWERTOOLS_API UScreenComponentManager : public UScreenComponentWorldContext
 {
 	GENERATED_BODY()
 public:
