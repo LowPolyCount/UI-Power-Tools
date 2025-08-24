@@ -46,7 +46,15 @@ bool IEntryWidgetInterface::IsHovered_Implementation() const
 
 void IEntryWidgetInterface::SetHovered_Implementation(bool bInHovered)
 {
-	bHovered = bInHovered;
+	if (bHovered != bInHovered)
+	{
+		bHovered = bInHovered;
+		FViewEvent& HoverDelegate = GetOnHoverChange();
+		if (HoverDelegate.IsBound())
+		{
+			HoverDelegate.Broadcast(Cast<UObject>(this), bHovered);
+		}
+	}
 }
 
 void IEntryWidgetInterface::ForceInputAction_Implementation()
@@ -56,7 +64,6 @@ void IEntryWidgetInterface::ForceInputAction_Implementation()
 	{
 		ActionDelegate.Broadcast(Cast<UObject>(this));
 	}
-
 }
 
 void IEntryWidgetInterface::OnInputAction_Implementation()
