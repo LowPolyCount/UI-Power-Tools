@@ -31,6 +31,10 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
 	FViewEventComp OnFocusChange;
 
+	// a widget has gained or lost focus
+	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
+	FViewEventComp OnHoverChange;
+
 	// UUserWidget
 	virtual void Initialize() override;
 	virtual void NativePreConstruct(bool bIsDesignTime) override;
@@ -122,15 +126,21 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)
 	void HandleOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained);
 
+	// the focus has changed
+	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)
+	void HandleOnHoverChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained);
+
 	// delegate functions
 	UFUNCTION()
 	virtual void HandleOnDataRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries);
 	UFUNCTION()
 	void HandleWidgetOnAction(TScriptInterface<IEntryWidgetInterface> Widget);
 	UFUNCTION()
+	void HandleWidgetOnSelectionChange(TScriptInterface<IEntryWidgetInterface> Widget, bool bGained);
+	UFUNCTION()
 	void HandleWidgetOnFocusChange(TScriptInterface<IEntryWidgetInterface> Widget, bool bGained);
 	UFUNCTION()
-	void HandleWidgetOnSelectionChange(TScriptInterface<IEntryWidgetInterface> Widget, bool bGained);
+	void HandleWidgetOnHoverChange(TScriptInterface<IEntryWidgetInterface> Widget, bool bGained);
 
 	TScriptInterface<IEntryWidgetInterface> GetAndSetupEntryWidget();
 

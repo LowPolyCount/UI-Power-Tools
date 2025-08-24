@@ -18,6 +18,7 @@ void UViewScreenComponent::Initialize()
 	OnSelectionChange.AddDynamic(this, &UViewScreenComponent::HandleOnSelectedChange);
 	OnAction.AddDynamic(this, &UViewScreenComponent::HandleOnAction);
 	OnFocusChange.AddDynamic(this, &UViewScreenComponent::HandleOnFocusChange);
+	OnHoverChange.AddDynamic(this, &UViewScreenComponent::HandleOnHoverChange);
 
 	SetLinkedDataComponent(GetScreenComponentFromSelector<UDataScreenComponent>(DataToListenTo));
 }
@@ -258,8 +259,9 @@ void UViewScreenComponent::ListenToWidgetDelegates(TScriptInterface<IEntryWidget
 	if (Widget)
 	{
 		Widget->GetOnAction().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnAction);
-		Widget->GetOnFocusChange().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnFocusChange);
 		Widget->GetOnSelectionChange().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnSelectionChange);
+		Widget->GetOnFocusChange().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnFocusChange);
+		Widget->GetOnHoverChange().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnHoverChange);
 	}
 }
 
@@ -268,8 +270,9 @@ void UViewScreenComponent::RemoveWidgetDelegates(TScriptInterface<IEntryWidgetIn
 	if (Widget)
 	{
 		Widget->GetOnAction().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnAction);
-		Widget->GetOnFocusChange().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnFocusChange);
 		Widget->GetOnSelectionChange().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnSelectionChange);
+		Widget->GetOnFocusChange().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnFocusChange);
+		Widget->GetOnHoverChange().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnHoverChange);
 	}
 }
 
@@ -280,6 +283,11 @@ void UViewScreenComponent::HandleWidgetOnAction(TScriptInterface<IEntryWidgetInt
 void UViewScreenComponent::HandleWidgetOnFocusChange(TScriptInterface<IEntryWidgetInterface> Widget, bool bGained)
 {
 	OnFocusChange.Broadcast(this, Widget, bGained);
+}
+
+void UViewScreenComponent::HandleWidgetOnHoverChange(TScriptInterface<IEntryWidgetInterface> Widget, bool bGained)
+{
+	OnHoverChange.Broadcast(this, Widget, bGained);
 }
 
 void UViewScreenComponent::HandleWidgetOnSelectionChange(TScriptInterface<IEntryWidgetInterface> Widget, bool bGained)
