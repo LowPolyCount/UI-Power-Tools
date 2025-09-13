@@ -19,48 +19,49 @@ class UIPOWERTOOLS_API UTooltip : public UCommonActivatableWidget, public IUICSA
 {
 	GENERATED_BODY()
 protected:
+	UTooltip();
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 
 public:
 	// get all view selectors
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = Tooltip)
 	const TArray<FViewComponentSelector>& GetAllViewSelectors() const {return ViewsToListenTo;}
 
 	// populate the tooltip with the given data
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = Tooltip)
 	void Populate(UObject* Data);
 
 	// reset the tooltip
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = Tooltip)
 	void Reset();
 
 protected:
 
 	// Populate the widget. The given EntryData can also be retrieved from ObservedEntryData
-	UFUNCTION(BlueprintImplementableEvent, Meta=(DisplayName="Populate"))
+	UFUNCTION(BlueprintImplementableEvent, Category = Tooltip, Meta=(DisplayName="Populate"))
 	void BP_Populate(UObject* EntryData);
 
 	// Reset the tooltip
-	UFUNCTION(BlueprintImplementableEvent, Meta = (DisplayName = "Reset"))
+	UFUNCTION(BlueprintImplementableEvent, Category = Tooltip, Meta = (DisplayName = "Reset"))
 	void BP_Reset();
 
 	// list out BP Events that can happen to an entry widget that is being observed  
 	
 	// handle the case where the observed entry has an input action happen
-	UFUNCTION(BlueprintImplementableEvent, Meta=(DisplayName="HandleOnAction"))
+	UFUNCTION(BlueprintImplementableEvent, Category = Tooltip, Meta=(DisplayName="HandleOnAction"))
 	void BP_HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget);
 
 	// handle the case where the observed entry has it's selection property changed
-	UFUNCTION(BlueprintImplementableEvent, Meta=(DisplayName="HandleOnSelectionChange"))
+	UFUNCTION(BlueprintImplementableEvent, Category = Tooltip, Meta=(DisplayName="HandleOnSelectionChange"))
 	void BP_HandleOnSelectionChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained);
 
 	// handle the case where the observed entry has it's focus property changed
-	UFUNCTION(BlueprintImplementableEvent, Meta=(DisplayName="HandleOnFocusChange"))
+	UFUNCTION(BlueprintImplementableEvent, Category = Tooltip, Meta=(DisplayName="HandleOnFocusChange"))
 	void BP_HandleOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained);
 
 	// handle the case where the observed entry has it's hover property changed
-	UFUNCTION(BlueprintImplementableEvent, Meta=(DisplayName="HandleOnHoverChange"))
+	UFUNCTION(BlueprintImplementableEvent, Category = Tooltip, Meta=(DisplayName="HandleOnHoverChange"))
 	void BP_HandleOnHoverChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained);
 
 	UFUNCTION()
@@ -79,34 +80,35 @@ protected:
 	virtual void SetObservedEntryData(UObject* InData);
 
 	// the view screen components that we will listen to events from
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = Tooltip)
 	TArray<FViewComponentSelector> ViewsToListenTo;
 
 	// show tooltip when gaining hover
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)
 	bool bShowOnFocusGain = true;
 
 	// hide tooltip when losing hover
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)
 	bool bHideOnFocusLoss = true;
 
 	// show tooltip when gaining hover
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)
 	bool bShowOnHoverGain = true;
 
 	// hide tooltip when losing hover
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)
 	bool bHideOnHoverLoss = true;
 
 
 	// visibility rule to use when showing tooltip
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)
 	ESlateVisibility ShowRule = ESlateVisibility::SelfHitTestInvisible;
 
 	// visibility rule to use when hiding tooltip
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)
 	ESlateVisibility HideRule = ESlateVisibility::Hidden;
 
-	UPROPERTY(BlueprintReadWrite)
+	// data from the entry we're currently observing
+	UPROPERTY(BlueprintReadWrite, Category = Tooltip)
 	TObjectPtr<UObject> ObservedEntryData;
 };
