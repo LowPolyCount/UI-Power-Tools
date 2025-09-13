@@ -4,6 +4,12 @@
 #include "UI/Screens/UICS/Widgets/Tooltip.h"
 #include "UI/Screens/UICS/ViewScreenComponent.h"
 
+UTooltip::UTooltip()
+	:Super()
+{
+	// we want tooltips to be hidden by default
+	SetVisibility(HideRule);
+}
 
 void UTooltip::NativeConstruct()
 {
