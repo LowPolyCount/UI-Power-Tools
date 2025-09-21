@@ -160,6 +160,12 @@ void UViewScreenComponent::ManuallySetData(const TArray<UObject*>& Entries)
 
 void UViewScreenComponent::HandleOnDataRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries)
 {
+	PopulateWidgets(Entries);
+
+}
+
+void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
+{
 	// do we need to remove widgets to meet the new number of entries?
 	const int32 WidgetDifference = ActiveViewWidgets.Num() - Entries.Num();
 	if (WidgetDifference > 0)
@@ -179,7 +185,7 @@ void UViewScreenComponent::HandleOnDataRetrieval(UDataScreenComponent* Component
 
 	for (int32 i = 0; i < Entries.Num(); ++i)
 	{
-		if(ActiveViewWidgets.IsValidIndex(i))
+		if (ActiveViewWidgets.IsValidIndex(i))
 		{
 			ActiveViewWidgets[i]->Execute_Reset(ActiveViewWidgets[i].GetObject());
 			ActiveViewWidgets[i]->Execute_SetEntryData(ActiveViewWidgets[i].GetObject(), i, Entries[i]);
@@ -193,6 +199,11 @@ void UViewScreenComponent::HandleOnDataRetrieval(UDataScreenComponent* Component
 		{
 			UE_LOG(LogUICS, Warning, TEXT(" There are %i Entries but only %i ActiveViewWidgets. There is no widget for Entry %i"), Entries.Num(), ActiveViewWidgets.Num(), i);
 		}
+	}
+
+	if (OnWidgetsPopulated.IsBound())
+	{
+		OnWidgetsPopulated.Broadcast(this);
 	}
 }
 

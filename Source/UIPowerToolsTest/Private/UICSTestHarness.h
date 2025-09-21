@@ -93,6 +93,8 @@ public:
 	void HandleTestOnSelectedChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained);
 	UFUNCTION()
 	void HandleTestOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained);
+	UFUNCTION()
+	void HandleTestOnWidgetsPopulated(UViewScreenComponent* Component);
 
 	int32 CountOnAction = 0;
 	int32 CountOnSelected = 0;
@@ -102,6 +104,7 @@ public:
 	int32 CountOnFocusLost = 0;
 	int32 CountOnFocusChanged = 0;
 	int32 CountOnRetrieval = 0;
+	int32 CountOnWidgetsPopulated = 0;
 };
 
 UCLASS(Hidden)

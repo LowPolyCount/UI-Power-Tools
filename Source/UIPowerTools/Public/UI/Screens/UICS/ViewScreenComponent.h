@@ -10,9 +10,12 @@
 class UPanelWidget;
 class UDataScreenComponent;
 
+// a generic event coming from this component
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FViewComp, UViewScreenComponent*, Component);
+// an event involving a widget
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FViewActionComp, UViewScreenComponent*, Component, const TScriptInterface<IEntryWidgetInterface>&, Widget);
+// an event involving a widget where the widget gains or loses something
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FViewEventComp, UViewScreenComponent*, Component, const TScriptInterface<IEntryWidgetInterface>&, Widget, bool, bGained);
-
 
 
 // responsible for managing, caching widgets to display entries
@@ -34,6 +37,10 @@ public:
 	// a widget has gained or lost focus
 	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
 	FViewEventComp OnHoverChange;
+
+	// Widgets have been created and populated
+	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
+	FViewComp OnWidgetsPopulated;
 
 	// UUserWidget
 	virtual void Initialize() override;
@@ -133,6 +140,7 @@ protected:
 	// delegate functions
 	UFUNCTION()
 	virtual void HandleOnDataRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries);
+
 	UFUNCTION()
 	void HandleWidgetOnAction(TScriptInterface<IEntryWidgetInterface> Widget);
 	UFUNCTION()
@@ -149,6 +157,8 @@ protected:
 	void RemoveEntryWidget(TScriptInterface<IEntryWidgetInterface> Widget);
 	void ListenToWidgetDelegates(TScriptInterface<IEntryWidgetInterface> Widget);
 	void RemoveWidgetDelegates(TScriptInterface<IEntryWidgetInterface> Widget);
+
+	virtual void PopulateWidgets(const TArray<UObject*>& Entries);
 
 	// data screen component we expect to receive data from
 	UPROPERTY(EditAnywhere, Category = ViewScreenComponent)

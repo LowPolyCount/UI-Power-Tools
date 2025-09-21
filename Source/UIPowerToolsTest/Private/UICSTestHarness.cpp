@@ -39,6 +39,8 @@ void UViewHarness::Initialize()
 	OnAction.AddDynamic(this, &UViewHarness::HandleTestOnAction);
 	OnSelectionChange.AddDynamic(this, &UViewHarness::HandleTestOnSelectedChange);
 	OnFocusChange.AddDynamic(this, &UViewHarness::HandleTestOnFocusChange);
+	OnWidgetsPopulated.AddDynamic(this, &UViewHarness::HandleTestOnWidgetsPopulated);
+
 }
 
 int32 UViewHarness::GetNumCachedWidgets() const
@@ -77,6 +79,11 @@ void UViewHarness::HandleTestOnFocusChange(UViewScreenComponent* Component, cons
 {
 	CountOnFocusChanged++;
 	(bGained) ? CountOnFocusGained++ : CountOnFocusLost++;
+}
+
+void UViewHarness::HandleTestOnWidgetsPopulated(UViewScreenComponent* Component)
+{
+	CountOnWidgetsPopulated++;
 }
 
 void UTransactionHarness::Initialize()

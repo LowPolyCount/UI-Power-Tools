@@ -53,6 +53,7 @@ bool FViewCreationTest::RunTest(const FString& Parameters)
 		TestNotNull("Widget0", Widget0.GetObject());
 		TestNotNull("Widget1", Widget1.GetObject());
 		TestNotNull("Widget2", Widget2.GetObject());
+		TestEqual("CountOnWidgetsPopulated", View->CountOnWidgetsPopulated, 1);
 
 		// test that focus events work
 		Widget0->Execute_SetFocus(Widget0.GetObject(), true);
