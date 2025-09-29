@@ -41,12 +41,15 @@ In C++, you can call the static function UScreenManager::Get(UObject* WorldConte
 
 You can remove a Screen by calling it's Close() function.
 
-# Learning
+# Help & Learning
 ### Wiki
 [The Wiki](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki) has information on how to use UI Power Tools. This is in it's beginning stages, we're continually working on it.
 
 ### Example Project
 The [UI Power Tools Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has examples of how to use UICS to build screens and use the Screen Manager. 
+
+### Discord
+You can ask questions and help others on [The UIPT Discord Server](https://discord.gg/nBnvbf8TnU)
 
 # The Future
 The following features are planned for development:
