@@ -83,7 +83,8 @@ UObject* UDataScreenComponent::GetEntryAt(int32 Index) const
 	}
 	else
 	{
-		UE_LOG(LogUICS, Warning, TEXT("%s Invalid Index %i"), __FUNCTIONW__, Index);
+		//@todo: Find way of macroing function without breaking plugin packaging
+		UE_LOG(LogUICS, Warning, TEXT("GetEntryAt Invalid Index %i"), Index);
 	}
 
 	return RetVal;
@@ -97,7 +98,8 @@ void UDataScreenComponent::RemoveDataFilter(int32 Index)
 	}
 	else
 	{
-		UE_LOG(LogUICS, Warning, TEXT("%s Invalid Index %i"), __FUNCTIONW__, Index);
+		//@todo: Find way of macroing function without breaking plugin packaging 
+		UE_LOG(LogUICS, Warning, TEXT("RemoveDataFilter Invalid Index %i"), Index);
 	}
 }
 
@@ -109,7 +111,8 @@ void UDataScreenComponent::RemoveDataTransform(int32 Index)
 	}
 	else
 	{
-		UE_LOG(LogUICS, Warning, TEXT("%s Invalid Index %i"), __FUNCTIONW__, Index);
+		//@todo: Find way of macroing function without breaking plugin packaging
+		UE_LOG(LogUICS, Warning, TEXT("RemoveDataTransform Invalid Index %i"), Index);
 	}
 }
 
@@ -122,7 +125,8 @@ UDataFilter* UDataScreenComponent::GetFilterAt(int32 Index)
 	}
 	else
 	{
-		UE_LOG(LogUICS, Warning, TEXT("%s Invalid Index %i"), __FUNCTIONW__, Index);
+		//@todo: Find way of macroing function without breaking plugin packaging
+		UE_LOG(LogUICS, Warning, TEXT("GetFilterAt Invalid Index %i"), Index);
 	}
 
 	return RetVal;
@@ -137,7 +141,8 @@ UDataTransform* UDataScreenComponent::GetTransformAt(int32 Index)
 	}
 	else
 	{
-		UE_LOG(LogUICS, Warning, TEXT("%s Invalid Index %i"), __FUNCTIONW__, Index);
+		//@todo: Find way of macroing function without breaking plugin packaging
+		UE_LOG(LogUICS, Warning, TEXT("GetTransformAt Invalid Index %i"), Index);
 	}
 
 	return RetVal;

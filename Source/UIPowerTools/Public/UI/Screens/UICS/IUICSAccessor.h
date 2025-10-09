@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Templates/SubclassOf.h"
 #include "UI/Screens/Tools/ComponentSelector.h"
 #include "IUICSAccessor.generated.h"
 

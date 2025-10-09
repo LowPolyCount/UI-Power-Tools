@@ -95,18 +95,18 @@ void UScreenManager::BeginPlay()
 				}
 			}
 		}
-		/*if (UGameViewportSubsystem* Subsystem = UGameViewportSubsystem::Get(GetWorld()))
+		if (UGameViewportSubsystem* Subsystem = UGameViewportSubsystem::Get(GetWorld()))
 		{
 			UE_LOG(LogTemp, Warning, TEXT(""));
-		}*/
+		}
 
-		/*if (!IsReady())
+		if (!IsReady())
 		{
 			check(GetWorld());
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UScreenManagerSubsystem::HandleOnAddToViewport, 0.01, true);// true);/*FTimerDelegate::CreateWeakLambda(this, [this, Screen, bHideScreensBelow]()
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UScreenManagerSubsystem::HandleOnAddToViewport, 0.01, true);// true); //FTimerDelegate::CreateWeakLambda(this, [this, Screen, bHideScreensBelow]()
 			//FORCEINLINE void SetTimer(FTimerHandle& InOutHandle, FTimerDynamicDelegate const& InDynDelegate, float InRate, bool InbLoop, float InFirstDelay = -1.f)
-		}*/
-	//}
+		}
+	//}*/
 }
 
 void UScreenManager::EndPlay(const EEndPlayReason::Type Reason)
