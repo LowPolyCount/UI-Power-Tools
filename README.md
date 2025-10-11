@@ -16,6 +16,8 @@ See "The Future" for planned features
 ## Status
 UI Power Tools is currently in BETA
 
+[The Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has a few screens and more on the way.
+
 # Installation
 Download the source and place in your engine or project plugins folder. Example: YourProject/Plugins/UIPowerTools
 
