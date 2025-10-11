@@ -13,6 +13,7 @@
 #include "UI/Screens/UICS/EntryScreenComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/Screens/UICS/EntryWidgetInterface.h"
+// @todo: including AutomationEditorCommon means that tests only build with edtior. Maybe FbxAutomationCommon can help?
 #include "Tests/AutomationEditorCommon.h"
 #include "Components/HorizontalBox.h"
 #include "UICSTestHarness.generated.h"
