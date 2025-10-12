@@ -21,14 +21,14 @@ UScreen::UScreen(const FObjectInitializer& Initializer)
 {
 	ComponentManager = Initializer.CreateDefaultSubobject<UScreenComponentManager>(this, TEXT("ScreenComponentManager"));
 
-	if (const UUIPowerToolsDeveloperSettings* DefaultSettings = GetDefault<UUIPowerToolsDeveloperSettings>())
+	/*if (const UUIPowerToolsDeveloperSettings* DefaultSettings = GetDefault<UUIPowerToolsDeveloperSettings>())
 	{
 		if (UInputAction* DefaultCancelAction = Cast<UInputAction>(DefaultSettings->DefaultCancelAction.TryLoad()))
 		{
 			CancelAction.InputAction = DefaultCancelAction;
 			CancelAction.bDisplayedInActionBar = false;
 		}
-	}
+	}*/
 
 }
 
@@ -138,13 +138,13 @@ void UScreen::NativeConstruct()
 		ComponentManager->NativeConstruct();
 	}
 
-	if (UCommonInputSettings::IsEnhancedInputSupportEnabled())
+	/*if (UCommonInputSettings::IsEnhancedInputSupportEnabled())
 	{
 		FBindUIActionArgs BindArgs(CancelAction.InputAction, FSimpleDelegate::CreateUObject(this, &UScreen::HandleClose));
 		BindArgs.bDisplayInActionBar = CancelAction.bDisplayedInActionBar;
 
 		RegisterUIActionBinding(BindArgs);
-	}
+	}*/
 
 	if (UCommonInputSettings::IsEnhancedInputSupportEnabled() && InputMapping)
 	{
@@ -158,10 +158,10 @@ void UScreen::NativeConstruct()
 	}
 }
 
-void UScreen::HandleClose()
+/*void UScreen::HandleClose()
 {
 	Close();
-}
+}*/
 
 void UScreen::NativeDestruct()
 {
