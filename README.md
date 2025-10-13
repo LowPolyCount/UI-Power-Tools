@@ -82,10 +82,10 @@ Upcoming tools are:
 # FAQ
 
 ### Who made this?
-This was created by Joel "LowPolyCount" Gonzales.  
+This was created by [Joel Gonzales aka "LowPolyCount"](https://www.lowpolycount.com)
 
 ### Why was this made?
-From LowPolyCount: "I'm tired of having to make a new UI Content Creation System whenever I change jobs. The laziest way to fix this is making an open source version that can be used at multiple jobs.  I'm also terrible at making money."
+I'm tired of having to make a new UI Content Creation System whenever I change jobs. The laziest way to fix this is making an open source version that can be used at any job.  I'm also terrible at making money.
 
 ### Well that's cool. 
 That wasn't a question. 
