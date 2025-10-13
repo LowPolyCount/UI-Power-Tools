@@ -11,14 +11,20 @@ class UIPOWERTOOLS_API UDataTransform : public UScreenComponentWorldContext
 {
 	GENERATED_BODY()
 public:
-	UFUNCTION(BlueprintNativeEvent)
-	void TransformEntries(TArray<UObject*>& RetrievedEntries);
+
+	virtual void TransformEntries(TArray<UObject*>& InRetrievedEntries);
+
 	UFUNCTION(BlueprintNativeEvent, Category = DataScreenComponent)
 	void Setup();
 	UFUNCTION(BlueprintNativeEvent, Category = DataScreenComponent)
 	void Teardown();
 protected:
-	virtual void TransformEntries_Implementation(TArray<UObject*>& RetrievedEntries) {}
+	UFUNCTION(BlueprintImplementableEvent, Meta=(DisplayName="Transform Entries"))
+	void BP_TransformEntries();
+
 	virtual void Setup_Implementation() {}
 	virtual void Teardown_Implementation() {}
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<UObject*> RetrievedEntries;
 };

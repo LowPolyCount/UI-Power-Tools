@@ -21,8 +21,8 @@ struct FUIPTInputBinding
 public:
 	UPROPERTY(EditAnywhere, Category = InputScreenComponent, Meta=(EditCondition="CommonInput.CommonInputSettings.IsEnhancedInputSupportEnabled"))
 	TObjectPtr<UInputAction> InputAction;
-	UPROPERTY(BlueprintReadWrite, Category = InputScreenComponent)
-	bool bDisplayedInActionBar = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = InputScreenComponent)
+	bool bDisplayedInActionBar = true;
 };
 
 UENUM(BlueprintType)

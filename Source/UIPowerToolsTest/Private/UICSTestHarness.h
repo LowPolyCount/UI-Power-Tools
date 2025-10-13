@@ -53,7 +53,7 @@ class UDataTransformReverseHarness : public UDataTransform
 {
 	GENERATED_BODY()
 protected:
-	virtual void TransformEntries_Implementation(TArray<UObject*>& RetrievedEntries) override;
+	virtual void TransformEntries(TArray<UObject*>& InRetrievedEntries) override;
 };
 
 UCLASS(Hidden)

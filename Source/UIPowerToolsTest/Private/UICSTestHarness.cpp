@@ -26,9 +26,8 @@ void UDataHarness::HandleOnRetrieval(UDataScreenComponent* Component, const TArr
 	CountOnRetrieval++;
 }
 
-void UDataTransformReverseHarness::TransformEntries_Implementation(TArray<UObject*>& RetrievedEntries)
+void UDataTransformReverseHarness::TransformEntries(TArray<UObject*>& InRetrievedEntries)
 {
-	RetrievedEntries;
 	Algo::Reverse(RetrievedEntries);
 }
 

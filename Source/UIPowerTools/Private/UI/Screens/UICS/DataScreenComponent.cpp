@@ -46,6 +46,7 @@ const TArray<UObject*>& UDataScreenComponent::RetrieveEntries()
 	RetrievedEntries.Empty();
 	if (DataProvider)
 	{
+		//@todo: Move this to setup so that we have access to the data screen component earlier. 
 		DataProvider->Setup();
 		DataProvider->RetrieveEntries(this, RetrievedEntries);
 		DataProvider->Teardown();
@@ -54,6 +55,8 @@ const TArray<UObject*>& UDataScreenComponent::RetrieveEntries()
 	{
 		UE_LOG(LogUICS, Warning, TEXT("No DataRetriever set for %s"), *GetName());
 	}
+
+	//@todo: Move filter and transform into functions so they can be overloaded 
 
 	for (UDataFilter* Filter : Filters)
 	{
