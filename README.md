@@ -7,7 +7,6 @@ It's goals are:
 - Tools and workflows for projects that are creating large amounts of UI
 
 ### What does it provide?
-Currently Implemented is:
 - [User Interface Component System (UICS)](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UICS): COMPLETE
     - [Data](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Data-Screen-Component), [View](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/View-Screen-Component), [Action](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Action-Screen-Component), [Entry](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Entry-Screen-Component) Components: COMPLETE
 - [Screen Manager](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Screen-Manager): Partial Implementation
