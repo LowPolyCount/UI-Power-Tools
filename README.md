@@ -7,11 +7,12 @@ It's goals are:
 - Tools and workflows for projects that are creating large amounts of UI
 
 ### What does it provide?
-Currently Implemented is:
-- [User Interface Component System (UICS)](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UICS)
-- [Screen Manager](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Screen-Manager)
+- [User Interface Component System (UICS)](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UICS): COMPLETE
+    - [Data](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Data-Screen-Component), [View](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/View-Screen-Component), [Action](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Action-Screen-Component), [Entry](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Entry-Screen-Component) Components: COMPLETE
+- [Screen Manager](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Screen-Manager): Partial Implementation
+- Composable Widgets: Not Started
 
-See "The Future" for planned features
+See "The Future" for more information on upcoming features
 
 ## Status
 UI Power Tools is currently in BETA
@@ -20,6 +21,19 @@ UI Power Tools is currently in BETA
 
 # Installation
 Download the source and place in your engine or project plugins folder. Example: YourProject/Plugins/UIPowerTools
+
+In your Project's Build.cs file add "UIPowerTools" to PublicDependencyModuleNames and then add the following:
+
+        if (Target.bBuildEditor)
+        {
+            PublicDependencyModuleNames.Add("UIPowerToolsEd");
+
+			// test requires editor due to tests using AutomationEditorCommon
+			if (Target.WithAutomationTests)
+			{
+				PublicDependencyModuleNames.Add("UIPowerToolsTest");
+			}
+		}
 
 # Setup
 ### UICS 
@@ -56,7 +70,7 @@ You can ask questions and help others on [The UIPT Discord Server](https://disco
 # The Future
 The following features are planned for development:
 - additional UICS Components
-- ScreenManager support for multiple layers
+- ScreenManager support for multiple layers and animations
 - Composable Widgets
 - Support features like better logging
 - Verse Support
@@ -68,10 +82,10 @@ Upcoming tools are:
 # FAQ
 
 ### Who made this?
-This was created by Joel "LowPolyCount" Gonzales.  
+This was created by [Joel Gonzales aka "LowPolyCount"](https://www.lowpolycount.com)
 
 ### Why was this made?
-From LowPolyCount: "I'm tired of having to make a new UI Content Creation System whenever I change jobs. The laziest way to fix this is making an open source version that can be used at multiple jobs.  I'm also terrible at making money."
+I'm tired of having to make a new UI Content Creation System whenever I change jobs. The laziest way to fix this is making an open source version that can be used at any job.  I'm also terrible at making money.
 
 ### Well that's cool. 
 That wasn't a question. 
