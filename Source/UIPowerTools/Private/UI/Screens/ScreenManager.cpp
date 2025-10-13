@@ -120,7 +120,7 @@ void UScreenManager::EndPlay(const EEndPlayReason::Type Reason)
 	}
 }
 
-UScreenManager* UScreenManager::Get(const UWorld* WorldContextObject)
+UScreenManager* UScreenManager::Get(const UObject* WorldContextObject)
 {
 	UScreenManager* RetVal = nullptr;
 	if(const APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0))

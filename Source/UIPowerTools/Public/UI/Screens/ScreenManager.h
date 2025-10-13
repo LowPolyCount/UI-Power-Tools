@@ -52,8 +52,8 @@ public:
 	void EndPlay(const EEndPlayReason::Type Reason);
 	
 	// Get the screen manager
-	UFUNCTION(BlueprintPure, Category = ScreenManager, Meta=(DisplayName="ScreenManager", WorldContext = "WorldContextObject"))
-	static UScreenManager* Get(const UWorld* WorldContextObject);
+	UFUNCTION(BlueprintPure, Category = ScreenManager, Meta=(DisplayName="Get ScreenManager", WorldContext = "WorldContextObject"))
+	static UScreenManager* Get(const UObject* WorldContextObject);
 
 	// broadcasts when the subsystem is ready to accept screens
 	UPROPERTY(BlueprintAssignable, Category = ScreenManager)

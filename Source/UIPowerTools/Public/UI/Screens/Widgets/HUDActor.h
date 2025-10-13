@@ -24,7 +24,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type Reason) override;
 
-	// use UScreenManagerSubsystem::Get() to retrieve the ScreenManager in Blueprint
+	// use UScreenManager::Get() to retrieve the ScreenManager in Blueprint
 	UScreenManager* GetScreenManager() const { return ScreenManager; }
 
 protected:
