@@ -85,17 +85,14 @@ void UViewHarness::HandleTestOnWidgetsPopulated(UViewScreenComponent* Component)
 	CountOnWidgetsPopulated++;
 }
 
-void UTransactionHarness::Initialize()
+void UActionHarness::Initialize()
 {
 	Super::Initialize();
-	OnIsValidResult.AddDynamic(this, &UTransactionHarness::HandleOnIsValid);
-	OnExecuteResult.AddDynamic(this, &UTransactionHarness::HandleOnComplete);
-	//AddTransaction();
-	//AddTransaction(TEST_FAIL, FTransactionInfo(OnFail, OnFail));
-	//AddTransaction(TEST_SUCCESS, FTransactionInfo(OnSuccess, OnSuccess));
+	OnIsValidResult.AddDynamic(this, &UActionHarness::HandleOnIsValid);
+	OnExecuteResult.AddDynamic(this, &UActionHarness::HandleOnComplete);
 }
 
-void UTransactionHarness::HandleOnIsValid(UActionScreenComponent* Component, bool bIsValid)
+void UActionHarness::HandleOnIsValid(UActionScreenComponent* Component, bool bIsValid)
 {
 	if (bIsValid)
 	{
@@ -103,7 +100,7 @@ void UTransactionHarness::HandleOnIsValid(UActionScreenComponent* Component, boo
 	}
 	
 }
-void UTransactionHarness::HandleOnComplete(UActionScreenComponent* Component, ETransactionResult Result)
+void UActionHarness::HandleOnComplete(UActionScreenComponent* Component, ETransactionResult Result)
 {
 	if(Result == ETransactionResult::Success)
 	{ 

@@ -13,7 +13,7 @@ bool FExecuteActionTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
 	TestNotNull("Screen", Screen);
-	UTransactionHarness* ActionComponent = UICSTest::CreateComponent<UTransactionHarness>(Screen);
+	UActionHarness* ActionComponent = UICSTest::CreateComponent<UActionHarness>(Screen);
 	TestNotNull("Transaction", ActionComponent);
 
 	UTransactionTestHarness* Transaction = NewObject<UTransactionTestHarness>(ActionComponent);
@@ -47,7 +47,7 @@ bool FSlotTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
 	TestNotNull("Screen", Screen);
-	UTransactionHarness* Action = UICSTest::CreateComponent<UTransactionHarness>(Screen);
+	UActionHarness* Action = UICSTest::CreateComponent<UActionHarness>(Screen);
 	TestNotNull("Transaction", Action);
 
 	// Test Set Get Slot
@@ -69,7 +69,7 @@ bool FListeningToViewAction::RunTest(const FString& Parameters)
 	TestNotNull("View", View);
 	UDataHarness* Data = UICSTest::CreateComponent<UDataHarness>(Screen);
 	TestNotNull("Data", Data);
-	UTransactionHarness* ActionComponent = UICSTest::CreateComponent<UTransactionHarness>(Screen);
+	UActionHarness* ActionComponent = UICSTest::CreateComponent<UActionHarness>(Screen);
 	TestNotNull("Transaction", ActionComponent);
 	UTransactionTestHarness* Transaction = NewObject<UTransactionTestHarness>(ActionComponent);
 	TestNotNull("Transaction", Transaction);

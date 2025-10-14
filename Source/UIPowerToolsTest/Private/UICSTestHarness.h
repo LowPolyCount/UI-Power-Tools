@@ -123,7 +123,7 @@ public:
 };
 
 UCLASS(Hidden)
-class UTransactionHarness : public UActionScreenComponent
+class UActionHarness : public UActionScreenComponent
 {
 	GENERATED_BODY()
 public:
