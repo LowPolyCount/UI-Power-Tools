@@ -15,9 +15,9 @@ It's goals are:
 See "The Future" for more information on upcoming features
 
 ## Status
-UI Power Tools is currently in BETA
+UI Power Tools v1 is currently in BETA.  You should expect some API Changes between v1 Beta and Release.
 
-[The Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has a few screens and more on the way.
+[The UIPT Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has UI screens implemented showing how UIPT works.
 
 # Installation
 [Get a release version](https://codeberg.org/LowPolyCount/UI-Power-Tools/releases) and place in your engine or project plugins folder. Example: YourProject/Plugins/UIPowerTools
@@ -69,15 +69,14 @@ You can ask questions and help others on [The UIPT Discord Server](https://disco
 
 # The Future
 The following features are planned for development:
-- additional UICS Components
-- ScreenManager support for multiple layers and animations
+- Additional UICS Components
 - Composable Widgets
-- Support features like better logging
+- ScreenManager support for multiple layers and animations
+- Better logging and debugging tools
+- Screen Viewer Tool showing which screens are on the ScreenManager
+- Screen and Widget Templates
+- Focus Display Tool
 - Verse Support
-
-Upcoming tools are:
-- A ScreenViewer which will show you Screens on the ScreenManager along with Debug information
-- A FocusViewer which can visually show where focus is or was in the widget hierarachy
 
 # FAQ
 
@@ -85,16 +84,13 @@ Upcoming tools are:
 This was created by [Joel Gonzales aka "LowPolyCount"](https://www.lowpolycount.com)
 
 ### Why was this made?
-I'm tired of having to make a new UI Content Creation System whenever I change jobs. The laziest way to fix this is making an open source version that can be used at any job.  I'm also terrible at making money.
+I'm tired of having to make a new UI Content Creation System whenever I change jobs. The laziest way to fix this is by making an open source version that can be used at any job.  I'm also terrible at making money.
 
 ### Well that's cool. 
 That wasn't a question. 
 
-### Sorry. So if there are other questions that get asked often, will they be added here?
-Yes, You can expect big updates to this and the other documentation. 
-
-
-### Anything else?
+### Sorry!
+It's Ok. 
 
 UI Power Tools is a Trademark of Joel Gonzales.
 
