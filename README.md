@@ -20,9 +20,9 @@ UI Power Tools is currently in BETA
 [The Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has a few screens and more on the way.
 
 # Installation
-Download the source and place in your engine or project plugins folder. Example: YourProject/Plugins/UIPowerTools
+[Get a release version](https://codeberg.org/LowPolyCount/UI-Power-Tools/releases) and place in your engine or project plugins folder. Example: YourProject/Plugins/UIPowerTools
 
-In your Project's Build.cs file add "UIPowerTools" to PublicDependencyModuleNames and then add the following:
+In your Project's Build.cs file, add "UIPowerTools" to PublicDependencyModuleNames and then add the following:
 
         if (Target.bBuildEditor)
         {
