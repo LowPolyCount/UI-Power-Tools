@@ -10,19 +10,20 @@ It's goals are:
 - [User Interface Component System (UICS)](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UICS): COMPLETE
     - [Data](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Data-Screen-Component), [View](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/View-Screen-Component), [Action](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Action-Screen-Component), [Entry](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Entry-Screen-Component) Components: COMPLETE
 - [Screen Manager](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Screen-Manager): Partial Implementation
+- Screen Templates: Only in Example Project for now
 - Composable Widgets: Not Started
 
 See "The Future" for more information on upcoming features
 
 ## Status
-UI Power Tools is currently in BETA
+UI Power Tools v1 is currently in BETA.  You should expect some API Changes between v1 Beta and Release.
 
-[The Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has a few screens and more on the way.
+[The UIPT Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has UI screens implemented showing how UIPT works.
 
 # Installation
-Download the source and place in your engine or project plugins folder. Example: YourProject/Plugins/UIPowerTools
+[Get a release version](https://codeberg.org/LowPolyCount/UI-Power-Tools/releases) and place in your engine or project plugins folder. Example: YourProject/Plugins/UIPowerTools
 
-In your Project's Build.cs file add "UIPowerTools" to PublicDependencyModuleNames and then add the following:
+In your Project's Build.cs file, add "UIPowerTools" to PublicDependencyModuleNames and then add the following:
 
         if (Target.bBuildEditor)
         {
@@ -65,36 +66,35 @@ You can remove a Screen by calling it's Close() function.
 The [UI Power Tools Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has examples of how to use UICS to build screens and use the Screen Manager. 
 
 ### Discord
-You can ask questions and help others on [The UIPT Discord Server](https://discord.gg/nBnvbf8TnU)
+You can ask questions on [The UIPT Discord Server](https://discord.gg/nBnvbf8TnU)
 
 # The Future
 The following features are planned for development:
-- additional UICS Components
-- ScreenManager support for multiple layers and animations
+- Additional UICS Components
 - Composable Widgets
-- Support features like better logging
+- ScreenManager support for multiple layers and animations
+- Better logging and debugging tools
+- Screen Viewer Tool showing which screens are on the ScreenManager
+- Screen and Widget Templates
+- Focus Display Tool
 - Verse Support
 
-Upcoming tools are:
-- A ScreenViewer which will show you Screens on the ScreenManager along with Debug information
-- A FocusViewer which can visually show where focus is or was in the widget hierarachy
-
 # FAQ
+
+### Can I use MVVM with UICS?
+Yes!  UICS doesn't specify how you set the visual elements of your widgets so you can use MVVM, or just plain blueprint to do that. 
 
 ### Who made this?
 This was created by [Joel Gonzales aka "LowPolyCount"](https://www.lowpolycount.com)
 
 ### Why was this made?
-I'm tired of having to make a new UI Content Creation System whenever I change jobs. The laziest way to fix this is making an open source version that can be used at any job.  I'm also terrible at making money.
+I'm tired of having to make a new UI Content Creation System whenever I change jobs. The laziest way to fix this is by making an open source version that can be used at any job.  I'm also terrible at making money.
 
 ### Well that's cool. 
 That wasn't a question. 
 
-### Sorry. So if there are other questions that get asked often, will they be added here?
-Yes, You can expect big updates to this and the other documentation. 
-
-
-### Anything else?
+### Sorry!
+It's Ok. 
 
 UI Power Tools is a Trademark of Joel Gonzales.
 
