@@ -10,6 +10,7 @@ It's goals are:
 - [User Interface Component System (UICS)](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UICS): COMPLETE
     - [Data](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Data-Screen-Component), [View](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/View-Screen-Component), [Action](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Action-Screen-Component), [Entry](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Entry-Screen-Component) Components: COMPLETE
 - [Screen Manager](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Screen-Manager): Partial Implementation
+- Screen Templates: Only in Example Project for now
 - Composable Widgets: Not Started
 
 See "The Future" for more information on upcoming features
@@ -65,7 +66,7 @@ You can remove a Screen by calling it's Close() function.
 The [UI Power Tools Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has examples of how to use UICS to build screens and use the Screen Manager. 
 
 ### Discord
-You can ask questions and help others on [The UIPT Discord Server](https://discord.gg/nBnvbf8TnU)
+You can ask questions on [The UIPT Discord Server](https://discord.gg/nBnvbf8TnU)
 
 # The Future
 The following features are planned for development:
@@ -79,6 +80,9 @@ The following features are planned for development:
 - Verse Support
 
 # FAQ
+
+### Can I use MVVM with UICS?
+Yes!  UICS doesn't specify how you set the visual elements of your widgets so you can use MVVM, or just plain blueprint to do that. 
 
 ### Who made this?
 This was created by [Joel Gonzales aka "LowPolyCount"](https://www.lowpolycount.com)
