@@ -7,18 +7,24 @@ It's goals are:
 - Tools and workflows for projects that are creating large amounts of UI
 
 ### What does it provide?
-- [User Interface Component System (UICS)](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UICS): COMPLETE
-    - [Data](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Data-Screen-Component), [View](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/View-Screen-Component), [Action](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Action-Screen-Component), [Entry](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Entry-Screen-Component) Components: COMPLETE
-- [Screen Manager](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Screen-Manager): Partial Implementation
-- Screen Templates: Only in Example Project for now
-- Composable Widgets: Not Started
+## User Interface Component System
+UICS is similar to [Entity Component Systems](https://en.wikipedia.org/wiki/Entity_component_system) used in games, but for UI.  It's made for when you are building a large amount of screens and need to share functionality across them.
+
+Provided in the plugin with UICS are the [Data](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Data-Screen-Component), [View](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/View-Screen-Component), [Action](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Action-Screen-Component), and [Entry](https://codeberg.org/) Screen Components
+
+## Screen Manager
+The [Screen Manager](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Screen-Manager) is globally accessible and used to display screens.  It allows you to stack screens on top of each other and optionally hide screens below themn when they go on the manager. 
+
+The Screen Manager is Partially Implemented. Usable, but lacks features like transitions and layers.
 
 See "The Future" for more information on upcoming features
 
-## Status
-UI Power Tools v1 is currently in BETA.  You should expect some API Changes between v1 Beta and Release.
+## Example Project
 
-[The UIPT Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has UI screens implemented showing how UIPT works.
+[The UIPT Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has several UI screens implemented showing how UIPT works.
+
+# Status
+UI Power Tools v1 is currently in BETA.  There may be minor API Changes between v1 Beta and Release.
 
 # Installation
 [Get a release version](https://codeberg.org/LowPolyCount/UI-Power-Tools/releases) and place in your engine or project plugins folder. Example: YourProject/Plugins/UIPowerTools
@@ -43,7 +49,7 @@ The plugin gives you a class named "Screen" which works as the base for any UI y
 - Open the Widget, Click on Graph View and In the Details panel you'll see "UI Component System" under the Screen category. 
 - From there, you can start adding components to your screen. 
 
-If you don't want to use the given Screen class, you can make use of the functionality by having your own widget class implement IScreenInterface
+If you don't want to use the given Screen class, you can make use of the functionality by having your own widget class implement IScreenInterface.
 
 ### ScreenManager
 The ScreenManager gives you a way to easily add a Screen to the viewport and the order in which they are drawn. 
@@ -79,16 +85,19 @@ The following features are planned for development:
 - Focus Display Tool
 - Verse Support
 
+#License 
+UIPT is distributed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
 # FAQ
 
 ### Can I use MVVM with UICS?
-Yes!  UICS doesn't specify how you set the visual elements of your widgets so you can use MVVM, or just plain blueprint to do that. 
+Yes!  UICS doesn't specify how you set the visual elements of your widgets so you can use MVVM, blueprint, or some other method. 
 
 ### Who made this?
-This was created by [Joel Gonzales aka "LowPolyCount"](https://www.lowpolycount.com)
+This was created by [Joel Gonzales | "LowPolyCount"](https://www.lowpolycount.com)
 
 ### Why was this made?
-I'm tired of having to make a new UI Content Creation System whenever I change jobs. The laziest way to fix this is by making an open source version that can be used at any job.  I'm also terrible at making money.
+I'm tired of having to rewrite the same things whenever I change jobs. The laziest way to fix it is by making an open source version that can be used at any job.  I'm also terrible at making money.
 
 ### Well that's cool. 
 That wasn't a question. 
