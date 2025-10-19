@@ -7,7 +7,7 @@ It's goals are:
 - Tools and workflows for projects that are creating large amounts of UI
 
 ### What does it provide?
-## User Interface Component System
+## User Interface Component System (UICS)
 UICS is similar to [Entity Component Systems](https://en.wikipedia.org/wiki/Entity_component_system) used in games, but for UI.  It's made for when you are building a large amount of screens and need to share functionality across them.
 
 Provided in the plugin with UICS are the [Data](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Data-Screen-Component), [View](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/View-Screen-Component), [Action](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Action-Screen-Component), and [Entry](https://codeberg.org/) Screen Components
@@ -17,7 +17,7 @@ The [Screen Manager](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Scree
 
 The Screen Manager is Partially Implemented. Usable, but lacks features like transitions and layers.
 
-See "The Future" for more information on upcoming features
+"The Future" has information information on upcoming features
 
 ## Example Project
 
