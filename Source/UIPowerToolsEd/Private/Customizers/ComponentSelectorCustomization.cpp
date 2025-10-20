@@ -131,7 +131,7 @@ void FComponentSelectorCustomization::CustomizeChildren(TSharedRef<IPropertyHand
 TArray<TSharedRef<FComponentNode>> FComponentSelectorCustomization::GetComponentsOnScreen()
 {
 	TArray<TSharedRef<FComponentNode>> RetVal;
-	if (UScreen* Screen = GetScreen())
+	if (TScriptInterface<IUICSScreenAccessor> Screen = GetScreenAccessor())
 	{
 		TSubclassOf<UScreenComponent> TClassFilter(ClassFilter);
 		TArray<UScreenComponent*> AllComponents = Screen->GetAllScreenComponents_BP(TClassFilter);
@@ -172,7 +172,8 @@ void FComponentSelectorCustomization::LoadScreenComponent()
 		SelectedGuid = FGuid(AsString);
 	}
 
-	if (UScreen* Screen = GetScreen())
+	
+	if (TScriptInterface<IUICSScreenAccessor> Screen = GetScreenAccessor())
 	{
 		LoadedComponent = Screen->GetScreenComponentFromGUID(SelectedGuid);
 	}

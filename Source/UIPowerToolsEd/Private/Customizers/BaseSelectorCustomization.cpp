@@ -5,14 +5,15 @@
 #include "PropertyHandle.h"
 #include "UI/Screens/Screen.h"
 
+
 void FBaseSelectorCustomization::CustomizeHeader(TSharedRef<IPropertyHandle> PropertyHandle, FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& CustomizationUtils)
 {
 	PropertyToCustomize = PropertyHandle;
 }
 
-UScreen* FBaseSelectorCustomization::GetScreen() const
+TScriptInterface<IUICSScreenAccessor> FBaseSelectorCustomization::GetScreenAccessor() const
 {
-	UScreen* RetVal = nullptr;
+	TScriptInterface<IUICSScreenAccessor> RetVal = nullptr;
 	if (PropertyToCustomize.IsValid())
 	{
 		TArray<UObject*> Outers;
@@ -21,23 +22,24 @@ UScreen* FBaseSelectorCustomization::GetScreen() const
 		if (Outers.IsValidIndex(0) && IsValid(Outers[0]))
 		{
 			// selector is a property on the screen
-			if (Outers[0]->IsA<UScreen>())
+			if (Outers[0]->Implements<UUICSScreenAccessor>())
 			{
-				RetVal = Cast<UScreen>(Outers[0]);
+				RetVal = TScriptInterface<IUICSScreenAccessor>(Outers[0]);
 			}
 			else // the selector is in blueprints, or is a child of another widget connected to the screen
 			{
-				RetVal = Outers[0]->GetTypedOuter<UScreen>();
+				UObjectBaseUtility* Outer = Outers[0]->GetImplementingOuterObject(UUICSScreenAccessor::StaticClass());
+				RetVal = TScriptInterface<IUICSScreenAccessor>(Cast<UObject>(Outer));
 			}
 		}
 		else
 		{
-			//UE_LOG(, Warning, "FBaseSelectorCustomization: No screen was found for %s", PropertyToCustomize->GetName());
+			//UE_LOG(Warning, LogTemp, TEXT("FBaseSelectorCustomization: No screen was found for %s"), PropertyToCustomize->GetName());
 		}
 	}
 	else
 	{
-		//UE_LOG(, Warning, "PropertyToCustomize is null");
+		//UE_LOG(LogTemp, Warning, TEXT("PropertyToCustomize is null"));
 	}
 
 	return RetVal;

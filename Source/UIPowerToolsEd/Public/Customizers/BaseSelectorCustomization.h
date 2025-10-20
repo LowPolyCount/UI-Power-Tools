@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "IPropertyTypeCustomization.h"
+#include "UI/Screens/UICS/IUICSAccessor.h"
 
 class UScreen;
 
@@ -20,7 +21,7 @@ protected:
 	void SetClassFilter(UClass* InClass);
 	const TSubclassOf<UObject>& GetClassFilter() const;
 
-	UScreen* GetScreen() const;
+	TScriptInterface<IUICSScreenAccessor> GetScreenAccessor() const;
 	
 	virtual bool FilterEntry(const UObject* Entry) const;
 

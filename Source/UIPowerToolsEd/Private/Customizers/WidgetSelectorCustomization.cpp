@@ -147,16 +147,20 @@ TArray<TSharedRef<FWidgetNode>> FWidgetSelectorCustomization::GetWidgetsAttached
 	const UWidgetTree* Tree = nullptr;
 
 
-	if (UScreen* Screen = GetScreen())
+	if (TScriptInterface<IUICSScreenAccessor> Screen = GetScreenAccessor())
 	{
 		// for cases where the selector is a uproperty of the class
-		if (UWidgetBlueprintGeneratedClass* BPClass = Cast<UWidgetBlueprintGeneratedClass>(Screen->GetClass()))
+		if (UWidgetBlueprintGeneratedClass* BPClass = Cast<UWidgetBlueprintGeneratedClass>(Screen.GetObject()->GetClass()))
 		{
 			Tree = BPClass->GetWidgetTreeArchetype();
 		}
-		else // cases where the selector is a variable in blueprint
+		else if(UUserWidget* AsUserWidget = Cast<UUserWidget>(Screen.GetObject()))// cases where the selector is a variable in blueprint
 		{
-			Tree = Screen->WidgetTree;
+			Tree = AsUserWidget->WidgetTree;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("FWidgetSelectorCustomization::GetWidgetsAttachedToScreen: Could not get widget screen of %s"), *Screen.GetObject()->GetClass()->GetFName().ToString());
 		}
 	}
 

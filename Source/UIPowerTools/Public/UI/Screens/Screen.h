@@ -16,45 +16,35 @@ struct FUIInputConfig;
 // a screen is the base unit of our UI System, it can have widgets, controls, etc attached to it as part of a hierarchy to display visual elements
 // it has an array of UICS Components that can be used to add functionality
 UCLASS(BlueprintType, Blueprintable, Abstract, meta = (PrioritizeCategories = "Screen"))
-class UIPOWERTOOLS_API UScreen : public UCommonActivatableWidget, public IUICSAccessor, public IScreenInterface
+class UIPOWERTOOLS_API UScreen : public UCommonActivatableWidget, public IUICSScreenAccessor, public IScreenInterface
 {
 	GENERATED_BODY()
 public:
 	UScreen(const FObjectInitializer& Initializer);
+	
+	// called when the screen closes
+	UPROPERTY(BlueprintAssignable)
+	FScreenDelegate OnScreenClose;
 
-	friend class UCommonActivatableWidget;
+	// IScreenInterface begin
+	virtual FScreenDelegate& GetOnScreenClose() { return OnScreenClose;};
+	// IScreenInterface end
 
 	// UUserWidget begin
 	virtual bool Initialize() override;
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
-	virtual void BeginDestroy() override;
 	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
-	// UUserWidgetend
-
-	// IScreenInterface begin
-	virtual FScreenDelegate& GetOnScreenClose() { return OnScreenClose;};
-	
-	// called when the screen closes
-	UPROPERTY(BlueprintAssignable)
-	FScreenDelegate OnScreenClose;
-	// IScreenInterface end
-
-	// IUICSAccessor begin
-	virtual UScreenComponent* GetScreenComponent_BP(TSubclassOf<UScreenComponent> Type) const override;
-	virtual TArray<UScreenComponent*> GetAllScreenComponents_BP(TSubclassOf<UScreenComponent> Type) const override;
-	virtual UScreenComponent* GetScreenComponentFromSelector_BP(const FComponentSelector& Selector, TSubclassOf<UScreenComponent> Type) const override;
-	// IUICSAccessor end
-
-#if WITH_EDITOR
-	UScreenComponent* GetScreenComponentFromGUID(const FGuid& Selector) const;
-#endif
+	// UUserWidget end
 
 protected:
+	// IUICSAccessor begin
+	virtual UScreenComponentManager* GetComponentManager() const { return ComponentManager; }
+	// IUICSAccessor end
 
-
+	// the manager of our screen components
 	UPROPERTY(EditAnywhere, Instanced, Export, Category = Screen, Meta = (DisplayPriority = 0, FullyExpand = true, ShowInnerProperties, ShowOnlyInnerProperties, DisplayName = "UI Component System"))
 	TObjectPtr<UScreenComponentManager> ComponentManager = nullptr;
 };

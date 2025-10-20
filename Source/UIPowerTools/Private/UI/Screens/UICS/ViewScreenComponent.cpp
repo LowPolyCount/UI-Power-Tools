@@ -28,7 +28,7 @@ void UViewScreenComponent::NativePreConstruct(bool bIsDesignTime)
 	Super::NativePreConstruct(bIsDesignTime);
 	if (PanelSelector.IsValid())
 	{
-		Panel = Cast<UPanelWidget>(PanelSelector.GetWidget(Cast<UWidget>(GetScreen())));
+		Panel = Cast<UPanelWidget>(PanelSelector.GetWidget(Cast<UWidget>(GetScreenAccessor().GetObject())));
 
 		// show preview of widgets in design view
 		if (bIsDesignTime)

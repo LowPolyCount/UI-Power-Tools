@@ -10,6 +10,8 @@
 
 class UScreen;
 class UScreenComponent;
+class IUICSScreenAccessor;
+class UScreenComponentManager;
 struct FUICSSelector;
 
 UINTERFACE(MinimalAPI, NotBlueprintable)
@@ -38,7 +40,40 @@ public:
 	ComponentType* GetScreenComponentFromSelector(const FComponentSelector& Selector) const;
 
 protected:
-	virtual UScreen* GetScreen() const;
+	virtual TScriptInterface<IUICSScreenAccessor> GetScreenAccessor() const;
+};
+
+UINTERFACE(MinimalAPI, NotBlueprintable)
+class UUICSScreenAccessor : public UUICSAccessor
+{
+	GENERATED_BODY()
+};
+
+// Signifies the terminal node when looking up a component. 
+class UIPOWERTOOLS_API IUICSScreenAccessor : public IUICSAccessor
+{
+	GENERATED_BODY()
+public:
+	virtual UScreenComponent* GetScreenComponent_BP(TSubclassOf<UScreenComponent> Type) const override;
+	virtual TArray<UScreenComponent*> GetAllScreenComponents_BP(TSubclassOf<UScreenComponent> Type) const override;
+	virtual UScreenComponent* GetScreenComponentFromSelector_BP(const FComponentSelector& Selector, TSubclassOf<UScreenComponent> Type) const override;
+
+	// these functions correspond to and should be called with the implementor's UUserWidget Functions
+	// Initialize will need to return bool since UserWidget is the most likely implementor of this
+	// the bool does not mean anything
+	virtual bool Initialize();
+	virtual void NativePreConstruct(bool bIsDesignTime);
+	virtual void NativeConstruct();
+	virtual void NativeDestruct();
+
+	virtual UWidget* GetDesiredFocusTargetFromViewComponents() const;
+
+#if WITH_EDITOR
+	UScreenComponent* GetScreenComponentFromGUID(const FGuid& Selector) const;
+#endif
+
+protected:
+	virtual UScreenComponentManager* GetComponentManager() const = 0;
 };
 
 
