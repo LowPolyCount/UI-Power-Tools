@@ -19,12 +19,12 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category = DataScreenComponent)
 	void Teardown();
 protected:
-	UFUNCTION(BlueprintImplementableEvent, Meta=(DisplayName="Transform Entries"))
+	UFUNCTION(BlueprintImplementableEvent, Category = DataScreenComponent, Meta=(DisplayName="Transform Entries"))
 	void BP_TransformEntries();
 
 	virtual void Setup_Implementation() {}
 	virtual void Teardown_Implementation() {}
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, Category = DataScreenComponent)
 	TArray<UObject*> RetrievedEntries;
 };

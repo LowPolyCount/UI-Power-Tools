@@ -69,7 +69,7 @@ bool UScreen::Initialize()
 void UScreen::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	IUICSScreenAccessor::NativePreConstruct(IsDesignTime());
+	IUICSScreenAccessor::WidgetNativePreConstruct(IsDesignTime());
 
 	// input testing, not ready for production
 	/*if (!IsDesignTime())

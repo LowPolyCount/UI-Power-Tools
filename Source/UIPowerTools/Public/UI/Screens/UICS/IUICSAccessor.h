@@ -62,7 +62,7 @@ public:
 	// Initialize will need to return bool since UserWidget is the most likely implementor of this
 	// the bool does not mean anything
 	virtual bool Initialize();
-	virtual void NativePreConstruct(bool bIsDesignTime);
+	virtual void WidgetNativePreConstruct(bool bIsDesignTime);
 	virtual void NativeConstruct();
 	virtual void NativeDestruct();
 

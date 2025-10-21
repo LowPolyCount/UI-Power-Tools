@@ -17,7 +17,9 @@ public:
 	// run before Retrieve Entries to handle any setup needed
 	virtual void Setup();
 
-	// retrieve entries and add them in the given TArray. Assume RetrievedEntries is not empty
+	// retrieve entries and add them in the given TArray. 
+	// @param Component the component we belong to
+	// @param RetrievedEntries The Data Entries to be returned.  Assume the array is not empty
 	virtual void RetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries);
 
 	// run after RetrieveEntries to handle any teardown needed

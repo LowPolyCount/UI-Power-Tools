@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "UI/Screens/UICS/Data/DataScreenComponentProvider.h"
+#include "Templates/SubclassOf.h"
 #include "GetAllActorsOfClassDataProvider.generated.h"
+
+class AActor;
 
 /**
  * Will retrieve all actors of a given type
@@ -18,6 +21,6 @@ public:
 
 protected:
 	// the class that we will be retrieving all actors of
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category=DataProvider)
 	TSubclassOf<AActor>	ActorClass;
 };
