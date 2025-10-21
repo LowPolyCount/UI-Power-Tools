@@ -44,12 +44,14 @@ In your Project's Build.cs file, add "UIPowerTools" to PublicDependencyModuleNam
 
 # Setup
 ### UICS 
-The plugin gives you a class named "Screen" which works as the base for any UI you create. It derives from UCommonActivatableWidget
-- Create a new Widget Blueprint and choose "Screen" as the Parent Class.
-- Open the Widget, Click on Graph View and In the Details panel you'll see "UI Component System" under the Screen category. 
-- From there, you can start adding components to your screen. 
+There are two ways:
+1) Use the provided UScreen Class
+	- Create a new Widget Blueprint and choose "Screen" as the Parent Class.
+	- Open the Widget, Click on Graph View and In the Details panel you'll see "UI Component System" under the Screen category. 
+	- From there, you can start adding components to your screen. 
 
-If you don't want to use the given Screen class, you can make use of the functionality by having your own widget class implement IScreenInterface.
+2) Add UICS to a UUserWidget of your choice
+	- The Widget will need to inherit the IUICSScreenAccessor interface as well as override a couple functions. See [ULeaderboardScreen](https://codeberg.org/LowPolyCount/UIPowerTools_Example/src/branch/main/Source/UIPowerTools_Example/UI/LeaderboardScreen.h) in the example project as an example of this.
 
 ### ScreenManager
 The ScreenManager gives you a way to easily add a Screen to the viewport and the order in which they are drawn. 
