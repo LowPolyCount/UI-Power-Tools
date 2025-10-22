@@ -1,6 +1,6 @@
 # UI-Power-Tools™
 
-UI Power Tools™ is a plugin for Unreal that helps you create User Interfaces. 
+UI Power Tools is a plugin for Unreal that helps you create User Interfaces. 
 
 It's goals are:
 - A better out of the box experience for UI development in Unreal Engine
@@ -99,7 +99,7 @@ Yes!  UICS doesn't specify how you set the visual elements of your widgets so yo
 This was created by [Joel Gonzales | "LowPolyCount"](https://www.lowpolycount.com)
 
 ### Why was this made?
-I'm tired of having to rewrite the same things whenever I change jobs. The laziest way to fix it is by making an open source version that can be used at any job.  I'm also terrible at making money.
+I'm tired of having to rewrite the same things whenever I change jobs. The laziest way to fix it is by making an open source version that can be used at any job.  If others find use with this, then all the better. 
 
 ### Well that's cool. 
 That wasn't a question. 
