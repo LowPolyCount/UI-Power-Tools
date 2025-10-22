@@ -54,7 +54,7 @@ There are two ways:
 	- The Widget will need to inherit the IUICSScreenAccessor interface as well as override a couple functions. See [ULeaderboardScreen](https://codeberg.org/LowPolyCount/UIPowerTools_Example/src/branch/main/Source/UIPowerTools_Example/UI/LeaderboardScreen.h) in the example project as an example of this.
 
 ### ScreenManager
-The ScreenManager gives you a way to easily add a Screen to the viewport and the order in which they are drawn. 
+The ScreenManager will let you add a Screen to the viewport and will display screens in the order they are added with the ability to hide screens. The current status of the Screenmanager is that it is usable, but bare as far as features go. 
 
 To setup the ScreenManager:
 - Create a New Blueprint Class and Choose HudActor as the parent class
