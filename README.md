@@ -17,11 +17,11 @@ The [Screen Manager](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Scree
 
 The Screen Manager is Partially Implemented. Usable, but lacks features like transitions and layers.
 
-"The Future" has information information on upcoming features
-
 ## Example Project
 
 [The UIPT Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has several UI screens implemented showing how UIPT works.
+
+"The Future" has information on upcoming features
 
 # Status
 UI Power Tools v1 is currently in BETA.  There may be minor API Changes between v1 Beta and Release.
@@ -35,7 +35,6 @@ In your Project's Build.cs file, add "UIPowerTools" to PublicDependencyModuleNam
         {
             PublicDependencyModuleNames.Add("UIPowerToolsEd");
 
-			// test requires editor due to tests using AutomationEditorCommon
 			if (Target.WithAutomationTests)
 			{
 				PublicDependencyModuleNames.Add("UIPowerToolsTest");
@@ -44,14 +43,14 @@ In your Project's Build.cs file, add "UIPowerTools" to PublicDependencyModuleNam
 
 # Setup
 ### UICS 
-There are two ways:
+You can utilize UICS in two ways:
 1) Use the provided UScreen Class
 	- Create a new Widget Blueprint and choose "Screen" as the Parent Class.
 	- Open the Widget, Click on Graph View and In the Details panel you'll see "UI Component System" under the Screen category. 
 	- From there, you can start adding components to your screen. 
 
 2) Add UICS to a UUserWidget of your choice
-	- The Widget will need to inherit the IUICSScreenAccessor interface as well as override a couple functions. See [ULeaderboardScreen](https://codeberg.org/LowPolyCount/UIPowerTools_Example/src/branch/main/Source/UIPowerTools_Example/UI/LeaderboardScreen.h) in the example project as an example of this.
+	- The Widget will need to inherit the IUICSScreenAccessor interface as well as override some functions. See [ULeaderboardScreen](https://codeberg.org/LowPolyCount/UIPowerTools_Example/src/branch/main/Source/UIPowerTools_Example/UI/LeaderboardScreen.h) in the example project as an example of this.
 
 ### ScreenManager
 The ScreenManager will let you add a Screen to the viewport and will display screens in the order they are added with the ability to hide screens. The current status of the Screenmanager is that it is usable, but bare as far as features go. 
