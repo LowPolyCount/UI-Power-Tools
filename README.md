@@ -43,8 +43,8 @@ In your Project's Build.cs file, add "UIPowerTools" to PublicDependencyModuleNam
 
 # Setup
 ### UICS 
-You can utilize UICS in two ways:
-1) Use the provided UScreen Class
+You can utilize it in two ways:
+1) Use the provided UScreen Class which has UICS already setup:
 	- Create a new Widget Blueprint and choose "Screen" as the Parent Class.
 	- Open the Widget, Click on Graph View and In the Details panel you'll see "UI Component System" under the Screen category. 
 	- From there, you can start adding components to your screen. 
