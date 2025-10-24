@@ -1,6 +1,6 @@
 # UI-Power-Tools™
 
-UI Power Tools™ is a plugin for Unreal that helps you create User Interfaces. 
+UI Power Tools is a plugin for Unreal that helps you create User Interfaces. 
 
 It's goals are:
 - A better out of the box experience for UI development in Unreal Engine
@@ -17,11 +17,11 @@ The [Screen Manager](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Scree
 
 The Screen Manager is Partially Implemented. Usable, but lacks features like transitions and layers.
 
-"The Future" has information information on upcoming features
-
 ## Example Project
 
 [The UIPT Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has several UI screens implemented showing how UIPT works.
+
+"The Future" has information on upcoming features
 
 # Status
 UI Power Tools v1 is currently in BETA.  There may be minor API Changes between v1 Beta and Release.
@@ -35,7 +35,6 @@ In your Project's Build.cs file, add "UIPowerTools" to PublicDependencyModuleNam
         {
             PublicDependencyModuleNames.Add("UIPowerToolsEd");
 
-			// test requires editor due to tests using AutomationEditorCommon
 			if (Target.WithAutomationTests)
 			{
 				PublicDependencyModuleNames.Add("UIPowerToolsTest");
@@ -44,15 +43,17 @@ In your Project's Build.cs file, add "UIPowerTools" to PublicDependencyModuleNam
 
 # Setup
 ### UICS 
-The plugin gives you a class named "Screen" which works as the base for any UI you create. It derives from UCommonActivatableWidget
-- Create a new Widget Blueprint and choose "Screen" as the Parent Class.
-- Open the Widget, Click on Graph View and In the Details panel you'll see "UI Component System" under the Screen category. 
-- From there, you can start adding components to your screen. 
+You can utilize it in two ways:
+1) Use the provided UScreen Class which has UICS already setup:
+	- Create a new Widget Blueprint and choose "Screen" as the Parent Class.
+	- Open the Widget, Click on Graph View and In the Details panel you'll see "UI Component System" under the Screen category. 
+	- From there, you can start adding components to your screen. 
 
-If you don't want to use the given Screen class, you can make use of the functionality by having your own widget class implement IScreenInterface.
+2) Add UICS to a UUserWidget of your choice
+	- The Widget will need to inherit the IUICSScreenAccessor interface as well as override some functions. See [ULeaderboardScreen](https://codeberg.org/LowPolyCount/UIPowerTools_Example/src/branch/main/Source/UIPowerTools_Example/UI/LeaderboardScreen.h) in the example project as an example of this.
 
 ### ScreenManager
-The ScreenManager gives you a way to easily add a Screen to the viewport and the order in which they are drawn. 
+The ScreenManager will let you add a Screen to the viewport and will display screens in the order they are added with the ability to hide screens. The current status of the Screenmanager is that it is usable, but bare as far as features go. 
 
 To setup the ScreenManager:
 - Create a New Blueprint Class and Choose HudActor as the parent class
@@ -97,7 +98,7 @@ Yes!  UICS doesn't specify how you set the visual elements of your widgets so yo
 This was created by [Joel Gonzales | "LowPolyCount"](https://www.lowpolycount.com)
 
 ### Why was this made?
-I'm tired of having to rewrite the same things whenever I change jobs. The laziest way to fix it is by making an open source version that can be used at any job.  I'm also terrible at making money.
+I'm tired of having to rewrite the same things whenever I change jobs. The laziest way to fix it is by making an open source version that can be used at any job.  If others find use with this, then all the better. 
 
 ### Well that's cool. 
 That wasn't a question. 
