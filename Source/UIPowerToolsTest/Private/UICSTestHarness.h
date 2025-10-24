@@ -142,7 +142,7 @@ protected:
 namespace UICSTest
 {
 	template <typename ComponentType>
-	static ComponentType* CreateComponent(UScreen* Owner)
+	static ComponentType* CreateComponent(UObject* Owner)
 	{
 		ComponentType* RetVal = NewObject<ComponentType>(Owner);
 		if (RetVal)

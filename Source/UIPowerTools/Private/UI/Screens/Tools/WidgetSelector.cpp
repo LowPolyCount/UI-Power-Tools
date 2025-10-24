@@ -25,15 +25,20 @@ FWidgetSelector::FWidgetSelector(const UClass* Filter)
 UWidget* FWidgetSelector::GetWidget(UWidget* WidgetOwner) const
 {
 	UWidget* RetVal = nullptr;
-	UScreen* AsScreen = Cast<UScreen>(WidgetOwner);
-	if (!AsScreen)
+	TScriptInterface<IUICSScreenAccessor> AsScreen(WidgetOwner);
+	if (!AsScreen && WidgetOwner)
 	{
-		AsScreen = WidgetOwner->GetTypedOuter<UScreen>();
+		UObjectBaseUtility* Outer = WidgetOwner->GetImplementingOuterObject(UUICSScreenAccessor::StaticClass());
+		AsScreen = TScriptInterface<IUICSScreenAccessor>(Cast<UObject>(Outer));
+		if (!AsScreen)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Could not get owning Screen during GetWidget() functions will not work"));
+		}
 	}
 
-	if (AsScreen)
+	if (UUserWidget* AsUWidget = Cast<UUserWidget>(AsScreen.GetObject()))
 	{
-		if (const UWidgetTree* Tree = AsScreen->WidgetTree)
+		if (const UWidgetTree* Tree = AsUWidget->WidgetTree)
 		{
 			for (const FName& Name : WidgetPath)
 			{

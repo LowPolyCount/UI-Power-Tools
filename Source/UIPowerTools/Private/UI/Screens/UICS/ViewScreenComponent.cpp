@@ -187,13 +187,15 @@ void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 	{
 		if (ActiveViewWidgets.IsValidIndex(i))
 		{
-			ActiveViewWidgets[i]->Execute_Reset(ActiveViewWidgets[i].GetObject());
-			ActiveViewWidgets[i]->Execute_SetEntryData(ActiveViewWidgets[i].GetObject(), i, Entries[i]);
-
 			if (Panel)
 			{
 				Panel->AddChild(Cast<UWidget>(ActiveViewWidgets[i].GetObject()));
 			}
+
+			ActiveViewWidgets[i]->Execute_Reset(ActiveViewWidgets[i].GetObject());
+			ActiveViewWidgets[i]->Execute_SetEntryData(ActiveViewWidgets[i].GetObject(), i, Entries[i]);
+
+
 		}
 		else
 		{

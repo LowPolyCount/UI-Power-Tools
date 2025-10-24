@@ -7,11 +7,17 @@
 UWorld* UScreenComponentWorldContext::GetWorld() const
 {
 	UWorld* RetVal = nullptr;
-	if (const UScreen* OwningScreen = GetTypedOuter<UScreen>())
+	if (const UObjectBaseUtility* Outer = GetImplementingOuterObject(UUICSScreenAccessor::StaticClass()))
 	{
-		RetVal = OwningScreen->GetWorld();
+		if (const UObject* AsObject = Cast<UObject>(Outer))
+		{
+			RetVal = AsObject->GetWorld();
+		}
 	}
-	// @todo: we should always be attached to a screen. log if that doesn't happen
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Could not get owning Screen from %s - GetComponent() functions will not work"), *GetFName().ToString());
+	}
 
 	return RetVal;
 }
