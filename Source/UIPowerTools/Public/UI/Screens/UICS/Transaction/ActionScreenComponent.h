@@ -78,7 +78,7 @@ public:
 
 protected:
 	UFUNCTION()
-	void HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget);
+	void HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
 
 	// set the transactor that will be used
 	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Category = ActionScreenComponent, Meta=(Displayname="Action"))

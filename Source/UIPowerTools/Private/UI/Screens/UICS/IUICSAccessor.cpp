@@ -140,11 +140,11 @@ UWidget* IUICSScreenAccessor::GetDesiredFocusTargetFromViewComponents() const
 	{
 		if (ViewComponent->IsDesiredFocusTarget())
 		{
-			if (TScriptInterface<IEntryWidgetInterface> AsViewWidget = ViewComponent->GetViewWidgetAt(0))
+			if (TScriptInterface<IViewWidgetInterface> AsViewWidget = ViewComponent->GetViewWidgetAt(0))
 			{
 				//@todo: Iterate through widgets and pick the first one that is Focusable
-				/*const TArray<TScriptInterface<IEntryWidgetInterface>>& ViewWidgets = ViewComponent->GetAllViewWidgets();
-				for (TScriptInterface<IEntryWidgetInterface> ViewWidget : ViewWidgets)
+				/*const TArray<TScriptInterface<IViewWidgetInterface>>& ViewWidgets = ViewComponent->GetAllViewWidgets();
+				for (TScriptInterface<IViewWidgetInterface> ViewWidget : ViewWidgets)
 				{
 					ViewWidget->Execute_IsFocusable(ViewWidget.GetObject());
 				}

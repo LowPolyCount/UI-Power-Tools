@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/Screens/UICS/Data/DataScreenComponentProvider.h"
+#include "UI/Screens/UICS/Data/UIDataProvider.h"
 #include "Templates/SubclassOf.h"
 #include "GetAllActorsOfClassDataProvider.generated.h"
 
@@ -13,7 +13,7 @@ class AActor;
  * Will retrieve all actors of a given type
  */
  UCLASS(Meta=(DisplayName="Get All Actors Of Class"))
-class UIPOWERTOOLS_API UGetAllActorsOfClassDataProvider : public UDataScreenComponentProvider
+class UIPOWERTOOLS_API UGetAllActorsOfClassDataProvider : public UUIDataProvider
 {
 	GENERATED_BODY()
 public:

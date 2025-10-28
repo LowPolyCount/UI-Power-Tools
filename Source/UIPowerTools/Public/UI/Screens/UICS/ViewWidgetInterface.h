@@ -3,21 +3,21 @@
 #pragma once
 
 #include "UObject/Interface.h"
-#include "EntryWidgetInterface.generated.h"
+#include "ViewWidgetInterface.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FViewAction, TScriptInterface<IEntryWidgetInterface>, Widget);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FViewEvent, TScriptInterface<IEntryWidgetInterface>, Widget, bool, bGained);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FViewAction, TScriptInterface<IViewWidgetInterface>, Widget);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FViewEvent, TScriptInterface<IViewWidgetInterface>, Widget, bool, bGained);
 
 
 UINTERFACE(BlueprintType)
-class UEntryWidgetInterface : public UInterface
+class UViewWidgetInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
 // allows a widget to be used with a view component
-class UIPOWERTOOLS_API IEntryWidgetInterface
+class UIPOWERTOOLS_API IViewWidgetInterface
 {
 	GENERATED_BODY()
 public:
@@ -122,7 +122,7 @@ protected:
 	bool bHovered = false;				// is the widget hovered?
 };
 
-// this macro can help define boilerplate code required for implementing IEntryWidgetInterface
+// this macro can help define boilerplate code for a class derived from UserWidget that is required for implementing IViewWidgetInterface
 #define VIEW_WIDGET_BOILERPLATE() \
 public:\
 UPROPERTY(BlueprintAssignable, Category = ViewWidget)\
@@ -140,11 +140,56 @@ virtual FViewEvent& GetOnHoverChange() { return OnHoverChange; }\
 virtual FReply NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent) override\
 {\
 	const FReply RetVal = Super::NativeOnFocusReceived(InGeometry, InFocusEvent);\
-	IEntryWidgetInterface::Execute_SetFocus(this, true);\
+	IViewWidgetInterface::Execute_SetFocus(this, true);\
 	return RetVal;\
 }\
 virtual void NativeOnFocusLost(const FFocusEvent& InFocusEvent) override\
 {\
 	Super::NativeOnFocusLost(InFocusEvent);\
-	IEntryWidgetInterface::Execute_SetFocus(this, false);\
+	IViewWidgetInterface::Execute_SetFocus(this, false);\
+}
+
+// this macro defines boilerplace code for a class derived from CommonButtonBase that is required for implementing IViewWidgetInterface
+#define VIEW_COMMONBUTTON_BOILERPLATE() \
+VIEW_WIDGET_BOILERPLATE()\
+virtual void NativeOnSelected(bool bBroadcast) override\
+{\
+	Super::NativeOnSelected(bBroadcast);\
+	Execute_SetSelected(this, true);\
+}\
+virtual void NativeOnDeselected(bool bBroadcast) override\
+{\
+	Super::NativeOnDeselected(bBroadcast);\
+	Execute_SetSelected(this, false);\
+}\
+virtual void HandleFocusReceived() override\
+{\
+	Super::HandleFocusReceived();\
+	Execute_SetFocus(this, true);\
+}\
+virtual void HandleFocusLost() override\
+{\
+	Super::HandleFocusLost();\
+	Execute_SetFocus(this, false);\
+}\
+\
+virtual void NativeOnHovered() override\
+{\
+	Super::NativeOnHovered();\
+	Execute_SetHovered(this, true);\
+}\
+virtual void NativeOnUnhovered() override\
+{\
+	Super::NativeOnUnhovered();\
+	Execute_SetHovered(this, false);\
+}\
+virtual void NativeOnActionComplete() override\
+{\
+	Super::NativeOnActionComplete();\
+	Execute_OnInputAction(this);\
+}\
+virtual void NativeOnClicked() override\
+{\
+	Super::NativeOnClicked();\
+	Execute_OnInputAction(this);\
 }

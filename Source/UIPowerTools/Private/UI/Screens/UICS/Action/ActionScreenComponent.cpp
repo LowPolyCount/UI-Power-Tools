@@ -95,7 +95,7 @@ void UActionScreenComponent::ListenToViewAction(UViewScreenComponent* InView)
 	}
 }
 
-void UActionScreenComponent::HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget)
+void UActionScreenComponent::HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
 {
 	ExecuteAction(Widget->Execute_GetEntryData(Widget.GetObject()), true);
 }

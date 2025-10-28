@@ -10,6 +10,40 @@
 #include "Components/PanelWidget.h"
 #include "Blueprint/UserWidget.h"
 
+#if WITH_EDITOR
+void UViewScreenComponent::PostEditChangeChainProperty(struct FPropertyChangedChainEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeChainProperty(PropertyChangedEvent);
+
+	const FProperty* MemberProperty = nullptr;
+	if (PropertyChangedEvent.PropertyChain.GetActiveMemberNode())
+	{
+		MemberProperty = PropertyChangedEvent.PropertyChain.GetActiveMemberNode()->GetValue();
+	}
+
+	if (MemberProperty
+		&& MemberProperty->GetFName() == GET_MEMBER_NAME_CHECKED(UViewScreenComponent, ViewWidgetPrototype))
+	{
+		if (ViewWidgetPrototype)
+		{
+			if (!ViewWidgetPrototype->Implements<UViewWidgetInterface>())
+			{
+				// does not implement. :( 
+				UE_LOG(LogTemp, Error, TEXT("ViewWidgetPrototype Must implement IViewWidgetInterface to work. Use ViewCommonButtonBase, ViewUserWidget, etc."));
+				ViewWidgetPrototype = nullptr;
+			}
+		}
+	}
+	/*const FName PropertyName = PropertyChangedEvent.GetPropertyName();
+
+	static FName DesiredEntryWidgetPropertyName(GET_MEMBER_NAME_CHECKED(UViewScreenComponent, ViewWidgetPrototype));
+	if (PropertyName == DesiredEntryWidgetPropertyName)
+	{
+
+	}*/
+}
+#endif
+
 void UViewScreenComponent::Initialize()
 {
 	Super::Initialize();
@@ -38,7 +72,7 @@ void UViewScreenComponent::NativePreConstruct(bool bIsDesignTime)
 				Panel->ClearChildren();
 				for (int32 i = 0; i < DesignEntriesToShow; ++i)
 				{
-					if (UUserWidget* EntryWidget = DuplicateObject<UUserWidget>(EntryWidgetPrototype, this))
+					if (UUserWidget* EntryWidget = DuplicateObject<UUserWidget>(ViewWidgetPrototype, this))
 					{
 						Panel->AddChild(EntryWidget);
 					}
@@ -52,7 +86,7 @@ void UViewScreenComponent::NativeDestruct()
 {
 	for(int32 i= ActiveViewWidgets.Num()-1; i >= 0; --i)
 	{
-		RemoveEntryWidget(ActiveViewWidgets[i]);
+		RemoveViewWidget(ActiveViewWidgets[i]);
 	}
 
 	check(ActiveViewWidgets.Num() == 0);
@@ -80,7 +114,7 @@ void UViewScreenComponent::SetLinkedDataComponent(UDataScreenComponent* InDataCo
 
 void UViewScreenComponent::SetWidgetPrototype(UUserWidget* InWidgetPrototype)
 {
-	EntryWidgetPrototype = InWidgetPrototype;
+	ViewWidgetPrototype = InWidgetPrototype;
 	// flush system
 	if (ActiveViewWidgets.Num() > 0)
 	{
@@ -102,9 +136,9 @@ void UViewScreenComponent::SetWidgetPrototypeByClass(UClass* WidgetPrototypeClas
 	}
 }
 
-TScriptInterface<IEntryWidgetInterface> UViewScreenComponent::GetViewWidgetAt(int32 Index) const
+TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetViewWidgetAt(int32 Index) const
 { 
-	TScriptInterface<IEntryWidgetInterface> RetVal;
+	TScriptInterface<IViewWidgetInterface> RetVal;
 
 	if(ActiveViewWidgets.IsValidIndex(Index))
 	{
@@ -123,11 +157,11 @@ bool UViewScreenComponent::IsSelectedWidget() const
 	return static_cast<bool>(GetFirstSelectedWidget());
 }
 
-TScriptInterface<IEntryWidgetInterface> UViewScreenComponent::GetFirstSelectedWidget() const
+TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetFirstSelectedWidget() const
 {
-	TScriptInterface<IEntryWidgetInterface> RetVal;
+	TScriptInterface<IViewWidgetInterface> RetVal;
 	//@todo: Hold on to selected widgets so iteration is not required
-	for (TScriptInterface<IEntryWidgetInterface> Widget : ActiveViewWidgets)
+	for (TScriptInterface<IViewWidgetInterface> Widget : ActiveViewWidgets)
 	{
 		if (Widget->Execute_IsSelected(Widget.GetObject()))
 		{
@@ -139,11 +173,11 @@ TScriptInterface<IEntryWidgetInterface> UViewScreenComponent::GetFirstSelectedWi
 	return RetVal;
 }
 
-TArray<TScriptInterface<IEntryWidgetInterface>> UViewScreenComponent::GetAllSelectedWidgets() const
+TArray<TScriptInterface<IViewWidgetInterface>> UViewScreenComponent::GetAllSelectedWidgets() const
 {
-	TArray<TScriptInterface<IEntryWidgetInterface>> RetVal;
+	TArray<TScriptInterface<IViewWidgetInterface>> RetVal;
 	//@todo: Hold on to selected widgets so iteration is not required
-	for (TScriptInterface<IEntryWidgetInterface> Widget : ActiveViewWidgets)
+	for (TScriptInterface<IViewWidgetInterface> Widget : ActiveViewWidgets)
 	{
 		if (Widget->Execute_IsSelected(Widget.GetObject()))
 		{
@@ -172,7 +206,7 @@ void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 	{
 		for (int32 j = WidgetDifference, i = ActiveViewWidgets.Num() - 1; j > 0; --j, --i)
 		{
-			RemoveEntryWidget(ActiveViewWidgets[i]);
+			RemoveViewWidget(ActiveViewWidgets[i]);
 		}
 	}
 	else if (WidgetDifference < 0)
@@ -209,17 +243,17 @@ void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 	}
 }
 
-TScriptInterface<IEntryWidgetInterface> UViewScreenComponent::GetAndSetupEntryWidget()
+TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetAndSetupEntryWidget()
 {
-	TScriptInterface<IEntryWidgetInterface> RetVal;
+	TScriptInterface<IViewWidgetInterface> RetVal;
 	if (CachedWidgets.Num() > 0 && bCacheWidgets)
 	{
 		RetVal = CachedWidgets[CachedWidgets.Num() - 1];
 		CachedWidgets.RemoveAt(CachedWidgets.Num() - 1);
 	}
-	else if(EntryWidgetPrototype)
+	else if(ViewWidgetPrototype)
 	{
-		RetVal = DuplicateObject<UUserWidget>(EntryWidgetPrototype, this);
+		RetVal = DuplicateObject<UUserWidget>(ViewWidgetPrototype, this);
 	}
 	else
 	{
@@ -230,15 +264,13 @@ TScriptInterface<IEntryWidgetInterface> UViewScreenComponent::GetAndSetupEntryWi
 	{
 		ActiveViewWidgets.Emplace(RetVal);
 		ListenToWidgetDelegates(RetVal);
+		AddToPanel(RetVal);
 	}
-
-	AddToPanel(RetVal);
-
 
 	return RetVal;
 }
 
-void UViewScreenComponent::AddToPanel(TScriptInterface<IEntryWidgetInterface>& Widget)
+void UViewScreenComponent::AddToPanel(TScriptInterface<IViewWidgetInterface>& Widget)
 {
 	if (Panel)
 	{
@@ -246,28 +278,30 @@ void UViewScreenComponent::AddToPanel(TScriptInterface<IEntryWidgetInterface>& W
 	}
 }
 
-void UViewScreenComponent::RemoveEntryWidget(TScriptInterface<IEntryWidgetInterface> Widget)
+void UViewScreenComponent::RemoveViewWidget(TScriptInterface<IViewWidgetInterface> Widget)
 {
 	if (Widget)
 	{
-		UUserWidget* AsUserWidget = Cast<UUserWidget>(Widget.GetObject());
-		// @todo: Currently, we don't hold on to any swidgets for widgets that are no longer used.  
-
-		Widget->Execute_Reset(Widget.GetObject());
-
-		RemoveWidgetDelegates(Widget);
-		if (bCacheWidgets)
+		if (UUserWidget* AsUserWidget = Cast<UUserWidget>(Widget.GetObject()))
 		{
-			CachedWidgets.Add(Widget);
+			Widget->Execute_Reset(Widget.GetObject());
+
+			RemoveWidgetDelegates(Widget);
+
+			// @todo: Add option to hold onto swidgets
+			if (bCacheWidgets)
+			{
+				CachedWidgets.Add(Widget);
+			}
+
+			ActiveViewWidgets.Remove(Widget);
+
+			AsUserWidget->RemoveFromParent();
 		}
-
-		ActiveViewWidgets.Remove(Widget);
-
-		AsUserWidget->RemoveFromParent();
 	}
 }
 
-void UViewScreenComponent::ListenToWidgetDelegates(TScriptInterface<IEntryWidgetInterface> Widget)
+void UViewScreenComponent::ListenToWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget)
 {
 	if (Widget)
 	{
@@ -278,7 +312,7 @@ void UViewScreenComponent::ListenToWidgetDelegates(TScriptInterface<IEntryWidget
 	}
 }
 
-void UViewScreenComponent::RemoveWidgetDelegates(TScriptInterface<IEntryWidgetInterface> Widget)
+void UViewScreenComponent::RemoveWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget)
 {
 	if (Widget)
 	{
@@ -289,25 +323,25 @@ void UViewScreenComponent::RemoveWidgetDelegates(TScriptInterface<IEntryWidgetIn
 	}
 }
 
-void UViewScreenComponent::HandleWidgetOnAction(TScriptInterface<IEntryWidgetInterface> Widget)
+void UViewScreenComponent::HandleWidgetOnAction(TScriptInterface<IViewWidgetInterface> Widget)
 {
 	OnAction.Broadcast(this, Widget);
 }
-void UViewScreenComponent::HandleWidgetOnFocusChange(TScriptInterface<IEntryWidgetInterface> Widget, bool bGained)
+void UViewScreenComponent::HandleWidgetOnFocusChange(TScriptInterface<IViewWidgetInterface> Widget, bool bGained)
 {
 	OnFocusChange.Broadcast(this, Widget, bGained);
 }
 
-void UViewScreenComponent::HandleWidgetOnHoverChange(TScriptInterface<IEntryWidgetInterface> Widget, bool bGained)
+void UViewScreenComponent::HandleWidgetOnHoverChange(TScriptInterface<IViewWidgetInterface> Widget, bool bGained)
 {
 	OnHoverChange.Broadcast(this, Widget, bGained);
 }
 
-void UViewScreenComponent::HandleWidgetOnSelectionChange(TScriptInterface<IEntryWidgetInterface> Widget, bool bGained)
+void UViewScreenComponent::HandleWidgetOnSelectionChange(TScriptInterface<IViewWidgetInterface> Widget, bool bGained)
 {
 	if (bSingleSelection && bGained)
 	{
-		for (TScriptInterface<IEntryWidgetInterface> ActiveWidget : ActiveViewWidgets)
+		for (TScriptInterface<IViewWidgetInterface> ActiveWidget : ActiveViewWidgets)
 		{
 			if (ActiveWidget != Widget && ActiveWidget->Execute_IsSelected(ActiveWidget.GetObject()))
 			{

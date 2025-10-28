@@ -47,9 +47,9 @@ bool FViewCreationTest::RunTest(const FString& Parameters)
 		UPanelWidget* Panel = UICSTest::SetupViewTest(View, Data);
 		TestEqual("View->CountOnRetrieval", View->CountOnRetrieval, 1);
 
-		TScriptInterface<IEntryWidgetInterface> Widget0 = View->GetViewWidgetAt(0);
-		TScriptInterface<IEntryWidgetInterface> Widget1 = View->GetViewWidgetAt(1);
-		TScriptInterface<IEntryWidgetInterface> Widget2 = View->GetViewWidgetAt(2);
+		TScriptInterface<IViewWidgetInterface> Widget0 = View->GetViewWidgetAt(0);
+		TScriptInterface<IViewWidgetInterface> Widget1 = View->GetViewWidgetAt(1);
+		TScriptInterface<IViewWidgetInterface> Widget2 = View->GetViewWidgetAt(2);
 		TestNotNull("Widget0", Widget0.GetObject());
 		TestNotNull("Widget1", Widget1.GetObject());
 		TestNotNull("Widget2", Widget2.GetObject());
