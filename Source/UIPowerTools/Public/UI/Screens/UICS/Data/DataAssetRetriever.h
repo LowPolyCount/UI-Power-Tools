@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "UI/Screens/UICS/Data/DataScreenComponentProvider.h"
+#include "UI/Screens/UICS/Data/UIDataProvider.h"
 #include "DataAssetRetriever.generated.h"
 
 class UDataScreenComponent;
@@ -24,7 +24,7 @@ public:
 
 // Allows you to select an existing UEntryDataAsset as your source of Data
 UCLASS(EditInlineNew)
-class UIPOWERTOOLS_API UDataAssetRetriever : public UDataScreenComponentProvider
+class UIPOWERTOOLS_API UDataAssetRetriever : public UUIDataProvider
 {
 	GENERATED_BODY()
 public:

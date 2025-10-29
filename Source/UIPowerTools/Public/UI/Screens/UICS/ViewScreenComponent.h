@@ -3,7 +3,7 @@
 #pragma once
 
 #include "UI/Screens/UICS/ScreenComponent.h"
-#include "UI/Screens/UICS/EntryWidgetInterface.h"
+#include "UI/Screens/UICS/ViewWidgetInterface.h"
 #include "UI/Screens/Tools/WidgetSelector.h"
 #include "ViewScreenComponent.generated.h"
 
@@ -13,16 +13,21 @@ class UDataScreenComponent;
 // a generic event coming from this component
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FViewComp, UViewScreenComponent*, Component);
 // an event involving a widget
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FViewActionComp, UViewScreenComponent*, Component, const TScriptInterface<IEntryWidgetInterface>&, Widget);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FViewActionComp, UViewScreenComponent*, Component, const TScriptInterface<IViewWidgetInterface>&, Widget);
 // an event involving a widget where the widget gains or loses something
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FViewEventComp, UViewScreenComponent*, Component, const TScriptInterface<IEntryWidgetInterface>&, Widget, bool, bGained);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FViewEventComp, UViewScreenComponent*, Component, const TScriptInterface<IViewWidgetInterface>&, Widget, bool, bGained);
 
 
-// responsible for managing, caching widgets to display entries
-UCLASS(BlueprintType, Blueprintable)
+// responsible for managing, caching widgets, sending data to display entries and acting as a central point for Widget actions like Focus Gain/Loss
+UCLASS(BlueprintType, Blueprintable, meta = (EntryInterface = "/Script/UIPowerTools.ViewWidgetInterface"))
 class UIPOWERTOOLS_API UViewScreenComponent : public UScreenComponent
 {
 	GENERATED_BODY()
+
+#if WITH_EDITOR
+	virtual void PostEditChangeChainProperty(struct FPropertyChangedChainEvent& PropertyChangedEvent) override;
+#endif
+
 public:
 	// an input action has occured on a widget
 	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
@@ -76,16 +81,16 @@ public:
 
 	// get the widget prototype used 
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
-	UUserWidget* GetWidgetPrototype() const {return EntryWidgetPrototype;}
+	UUserWidget* GetWidgetPrototype() const {return ViewWidgetPrototype;}
 
 	// widgets
 	// get all view widgets being used
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
-	const TArray<TScriptInterface<IEntryWidgetInterface>>& GetAllViewWidgets() const { return ActiveViewWidgets; }
+	const TArray<TScriptInterface<IViewWidgetInterface>>& GetAllViewWidgets() const { return ActiveViewWidgets; }
 
 	// get the view widget at index
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
-	TScriptInterface<IEntryWidgetInterface> GetViewWidgetAt(int32 Index) const;
+	TScriptInterface<IViewWidgetInterface> GetViewWidgetAt(int32 Index) const;
 
 	// do we have at least one selected widget?
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
@@ -101,11 +106,11 @@ public:
 
 	// get the first selected widget
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
-	TScriptInterface<IEntryWidgetInterface> GetFirstSelectedWidget() const;
+	TScriptInterface<IViewWidgetInterface> GetFirstSelectedWidget() const;
 
 	// get all selected widgets
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
-	TArray<TScriptInterface<IEntryWidgetInterface>> GetAllSelectedWidgets() const;
+	TArray<TScriptInterface<IViewWidgetInterface>> GetAllSelectedWidgets() const;
 
 	// options
 	// set if only one widget can be selected at a time
@@ -123,40 +128,40 @@ public:
 protected:
 	// a widget has executed an input action (such as being clicked)
 	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)
-	void HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget);
+	void HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
 
 	// the selected widget has changed
 	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)
-	void HandleOnSelectedChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained);
+	void HandleOnSelectedChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained);
 
 	// the focus has changed
 	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)
-	void HandleOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained);
+	void HandleOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained);
 
 	// the focus has changed
 	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)
-	void HandleOnHoverChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained);
+	void HandleOnHoverChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained);
 
 	// delegate functions
 	UFUNCTION()
 	virtual void HandleOnDataRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries);
 
 	UFUNCTION()
-	void HandleWidgetOnAction(TScriptInterface<IEntryWidgetInterface> Widget);
+	void HandleWidgetOnAction(TScriptInterface<IViewWidgetInterface> Widget);
 	UFUNCTION()
-	void HandleWidgetOnSelectionChange(TScriptInterface<IEntryWidgetInterface> Widget, bool bGained);
+	void HandleWidgetOnSelectionChange(TScriptInterface<IViewWidgetInterface> Widget, bool bGained);
 	UFUNCTION()
-	void HandleWidgetOnFocusChange(TScriptInterface<IEntryWidgetInterface> Widget, bool bGained);
+	void HandleWidgetOnFocusChange(TScriptInterface<IViewWidgetInterface> Widget, bool bGained);
 	UFUNCTION()
-	void HandleWidgetOnHoverChange(TScriptInterface<IEntryWidgetInterface> Widget, bool bGained);
+	void HandleWidgetOnHoverChange(TScriptInterface<IViewWidgetInterface> Widget, bool bGained);
 
-	TScriptInterface<IEntryWidgetInterface> GetAndSetupEntryWidget();
+	TScriptInterface<IViewWidgetInterface> GetAndSetupEntryWidget();
 
-	void AddToPanel(TScriptInterface<IEntryWidgetInterface>& Widget);
+	void AddToPanel(TScriptInterface<IViewWidgetInterface>& Widget);
 
-	void RemoveEntryWidget(TScriptInterface<IEntryWidgetInterface> Widget);
-	void ListenToWidgetDelegates(TScriptInterface<IEntryWidgetInterface> Widget);
-	void RemoveWidgetDelegates(TScriptInterface<IEntryWidgetInterface> Widget);
+	void RemoveViewWidget(TScriptInterface<IViewWidgetInterface> Widget);
+	void ListenToWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget);
+	void RemoveWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget);
 
 	virtual void PopulateWidgets(const TArray<UObject*>& Entries);
 
@@ -180,24 +185,29 @@ protected:
 	UPROPERTY(EditAnywhere, Category = ViewScreenComponent)
 	bool bCacheWidgets = true;
 
+	// when caching a widget, do we cache the Slate Widget?
+	/*UPROPERTY(EditAnywhere, Category = ViewScreenComponent, Meta = (EditCondition = "bCacheWidgets"))
+	bool bCacheSlateWidgets = true;
+	*/
 
 	// can only one widget can be selected at a time?
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent)
 	bool bSingleSelection = false;
 	
-	// define the class used to display data.  This is done using the prototype pattern, so clones of this instance are made which lets you set
-	// specific values in the editor for this class.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent, Meta=(MustImplement="/Script/UICS.EntryWidgetInterface"))
-	TObjectPtr<UUserWidget> EntryWidgetPrototype = nullptr;
+	// define an instance of a class used to display data.  This is done using the prototype pattern, so clones of this instance are made 
+	// which lets you set specific values in the editor per instance of this component.
+	// @note the class must implement  IViewWidgetInterface, but we don't have a way to enforce that in the dropdown.  
+	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent, Meta=(EntryInterface = "/Script/UIPowerTools.ViewWidgetInterface"))
+	TObjectPtr<UUserWidget> ViewWidgetPrototype = nullptr;
 
 	UPROPERTY()
 	TObjectPtr<UPanelWidget> Panel;
 	UPROPERTY()
 	TObjectPtr<UDataScreenComponent> LinkedDataComponent;
 	UPROPERTY()
-	TArray<TScriptInterface<IEntryWidgetInterface>> CachedWidgets;
+	TArray<TScriptInterface<IViewWidgetInterface>> CachedWidgets;
 	UPROPERTY()
-	TArray<TScriptInterface<IEntryWidgetInterface>> ActiveViewWidgets;
+	TArray<TScriptInterface<IViewWidgetInterface>> ActiveViewWidgets;
 
 
 

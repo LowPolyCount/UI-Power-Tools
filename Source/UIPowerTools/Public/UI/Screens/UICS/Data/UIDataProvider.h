@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UI/Screens/UICS/ScreenComponentWorldContext.h"
-#include "DataScreenComponentProvider.generated.h"
+#include "UIDataProvider.generated.h"
 
 class UDataScreenComponent;
 
 // Used by the DataScreenComponent to retrieve data and put it in the given TArray
 UCLASS(Blueprintable, BlueprintType, Abstract, EditInlineNew)
-class UIPOWERTOOLS_API UDataScreenComponentProvider : public UScreenComponentWorldContext
+class UIPOWERTOOLS_API UUIDataProvider : public UScreenComponentWorldContext
 {
 	GENERATED_BODY()
 public:

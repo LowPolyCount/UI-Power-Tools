@@ -2,7 +2,7 @@
 
 
 #include "UI/Screens/UICS/DataScreenComponent.h"
-#include "UI/Screens/UICS/Data/DataScreenComponentProvider.h"
+#include "UI/Screens/UICS/Data/UIDataProvider.h"
 #include "UI/Screens/UICS/Data/DataTransform.h"
 #include "UI/Screens/UICS/Data/DataFilter.h"
 #include "UIPowerTools.h"
@@ -33,11 +33,11 @@ FString UDataScreenComponent::GetDisplayNameVerbose() const
 }
 
 
-void UDataScreenComponent::SetDataRetrieverFromClass(TSubclassOf<UDataScreenComponentProvider> InClass)
+void UDataScreenComponent::SetDataRetrieverFromClass(TSubclassOf<UUIDataProvider> InClass)
 {
 	if (InClass)
 	{
-		DataProvider = NewObject<UDataScreenComponentProvider>(this, InClass);
+		DataProvider = NewObject<UUIDataProvider>(this, InClass);
 	}
 }
 

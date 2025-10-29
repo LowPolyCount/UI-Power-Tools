@@ -63,18 +63,18 @@ void UViewHarness::HandleOnDataRetrieval(UDataScreenComponent* Component, const 
 	CountOnRetrieval++;
 }
 
-void UViewHarness::HandleTestOnAction(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget)
+void UViewHarness::HandleTestOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
 {
 	CountOnAction++;
 }
 
-void UViewHarness::HandleTestOnSelectedChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained)
+void UViewHarness::HandleTestOnSelectedChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained)
 {
 	CountOnSelected++;
 	(bGained) ? CountOnSelectionGained++ : CountOnSelectionLost++;
 }
 
-void UViewHarness::HandleTestOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained)
+void UViewHarness::HandleTestOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained)
 {
 	CountOnFocusChanged++;
 	(bGained) ? CountOnFocusGained++ : CountOnFocusLost++;

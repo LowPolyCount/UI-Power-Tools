@@ -14,7 +14,7 @@ UDataHarness* CreateDataHarness(UScreenHarness* Screen)
 	UDataHarness* RetVal = UICSTest::CreateComponent<UDataHarness>(Screen);
 	if (RetVal)
 	{
-		RetVal->SetDataRetrieverFromClass(TSubclassOf<UDataScreenComponentProvider>(UDataRetrieverHarness::StaticClass()));
+		RetVal->SetDataRetrieverFromClass(TSubclassOf<UUIDataProvider>(UDataRetrieverHarness::StaticClass()));
 	}
 	return RetVal;
 }

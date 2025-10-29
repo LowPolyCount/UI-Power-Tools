@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/Screens/UICS/Data/DataScreenComponentProvider.h"
+#include "UI/Screens/UICS/Data/UIDataProvider.h"
 #include "PlayerStateDataProvider.generated.h"
 
 // will retrieve all player states in the game
 UCLASS()
-class UIPOWERTOOLS_API UPlayerStateDataProvider : public UDataScreenComponentProvider
+class UIPOWERTOOLS_API UPlayerStateDataProvider : public UUIDataProvider
 {
 	GENERATED_BODY()
 

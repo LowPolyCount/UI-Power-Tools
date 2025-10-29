@@ -59,17 +59,17 @@ void UTooltip::StopListeningToView(const FViewComponentSelector& ViewSelector)
 	}
 }
 
-void UTooltip::HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget)
+void UTooltip::HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
 {
 	BP_HandleOnAction(Component, Widget);
 }
 
-void UTooltip::HandleOnSelectionChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained)
+void UTooltip::HandleOnSelectionChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained)
 {
 	BP_HandleOnSelectionChange(Component, Widget, bGained);
 }
 
-void UTooltip::HandleOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained)
+void UTooltip::HandleOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained)
 {
 	if (bGained && bShowOnFocusGain)
 	{
@@ -83,7 +83,7 @@ void UTooltip::HandleOnFocusChange(UViewScreenComponent* Component, const TScrip
 	BP_HandleOnFocusChange(Component, Widget, bGained);
 }
 
-void UTooltip::HandleOnHoverChange(UViewScreenComponent* Component, const TScriptInterface<IEntryWidgetInterface>& Widget, bool bGained)
+void UTooltip::HandleOnHoverChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained)
 {
 	if (bGained && bShowOnHoverGain)
 	{
@@ -112,7 +112,7 @@ void UTooltip::Reset()
 	BP_Reset();
 }
 
-void UTooltip::ShowOrHideTooltip(const TScriptInterface<IEntryWidgetInterface>& Widget, const bool bGained)
+void UTooltip::ShowOrHideTooltip(const TScriptInterface<IViewWidgetInterface>& Widget, const bool bGained)
 {
 	SetVisibility((bGained) ? ShowRule : HideRule);
 	if (bGained)

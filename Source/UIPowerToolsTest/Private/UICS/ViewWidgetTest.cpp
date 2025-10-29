@@ -19,7 +19,7 @@ bool FViewWidgetTest::RunTest(const FString& Parameters)
 	TestNotNull("View", View);
 	TestNotNull("Data", Data);
 
-	TScriptInterface<IEntryWidgetInterface> AsViewWidgetInterface(View->GetViewWidgetAt(0));
+	TScriptInterface<IViewWidgetInterface> AsViewWidgetInterface(View->GetViewWidgetAt(0));
 	TestNotNull("AsViewInterface", AsViewWidgetInterface.GetObject());
 
 	// focus test

@@ -1,9 +1,9 @@
 // Copyright (c) Joel Gonzales
 
 
-#include "UI/Screens/UICS/EntryWidgetInterface.h"
+#include "UI/Screens/UICS/ViewWidgetInterface.h"
 
-void IEntryWidgetInterface::SetEntryData_Implementation(int32 InIndex, UObject* InEntry)
+void IViewWidgetInterface::SetEntryData_Implementation(int32 InIndex, UObject* InEntry)
 {
 	UObject* ThisAsUObject = Cast<UObject>(this);
 	Index = InIndex;
@@ -12,12 +12,12 @@ void IEntryWidgetInterface::SetEntryData_Implementation(int32 InIndex, UObject* 
 	Execute_Populate(ThisAsUObject, InEntry);
 }
 
-UObject* IEntryWidgetInterface::GetEntryData_Implementation() const
+UObject* IViewWidgetInterface::GetEntryData_Implementation() const
 { 
 	return GetEntry_Internal();
 }
 
-void IEntryWidgetInterface::Reset_Implementation()
+void IViewWidgetInterface::Reset_Implementation()
 {
 	Execute_OnReset(Cast<UObject>(this));
 
@@ -29,22 +29,22 @@ void IEntryWidgetInterface::Reset_Implementation()
 }
 
 
-bool IEntryWidgetInterface::IsFocused_Implementation() const
+bool IViewWidgetInterface::IsFocused_Implementation() const
 { 
 	return bFocused; 
 }
 
-bool IEntryWidgetInterface::IsSelected_Implementation() const
+bool IViewWidgetInterface::IsSelected_Implementation() const
 { 
 	return bSelected; 
 }
 
-bool IEntryWidgetInterface::IsHovered_Implementation() const
+bool IViewWidgetInterface::IsHovered_Implementation() const
 {
 	return bHovered;
 }
 
-void IEntryWidgetInterface::SetHovered_Implementation(bool bInHovered)
+void IViewWidgetInterface::SetHovered_Implementation(bool bInHovered)
 {
 	if (bHovered != bInHovered)
 	{
@@ -57,7 +57,7 @@ void IEntryWidgetInterface::SetHovered_Implementation(bool bInHovered)
 	}
 }
 
-void IEntryWidgetInterface::ForceInputAction_Implementation()
+void IViewWidgetInterface::ForceInputAction_Implementation()
 {
 	FViewAction& ActionDelegate = GetOnAction();
 	if (ActionDelegate.IsBound())
@@ -66,7 +66,7 @@ void IEntryWidgetInterface::ForceInputAction_Implementation()
 	}
 }
 
-void IEntryWidgetInterface::OnInputAction_Implementation()
+void IViewWidgetInterface::OnInputAction_Implementation()
 {
 	FViewAction& ActionDelegate = GetOnAction();
 	if (ActionDelegate.IsBound())
@@ -75,7 +75,7 @@ void IEntryWidgetInterface::OnInputAction_Implementation()
 	}
 }
 
-void IEntryWidgetInterface::SetFocus_Implementation(bool bInFocused)
+void IViewWidgetInterface::SetFocus_Implementation(bool bInFocused)
 { 
 	if (bInFocused != bFocused)
 	{
@@ -88,7 +88,7 @@ void IEntryWidgetInterface::SetFocus_Implementation(bool bInFocused)
 	}
 }
 
-void IEntryWidgetInterface::SetSelected_Implementation(bool bInSelected)
+void IViewWidgetInterface::SetSelected_Implementation(bool bInSelected)
 { 
 	if (bSelected != bInSelected)
 	{

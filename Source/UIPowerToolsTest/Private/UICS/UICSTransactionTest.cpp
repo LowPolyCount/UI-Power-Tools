@@ -79,7 +79,7 @@ bool FListeningToViewAction::RunTest(const FString& Parameters)
 	UPanelWidget* Panel = UICSTest::SetupViewTest(View, Data);
 
 	ActionComponent->ListenToViewAction(View);
-	TScriptInterface<IEntryWidgetInterface> ViewWidget = View->GetViewWidgetAt(0);
+	TScriptInterface<IViewWidgetInterface> ViewWidget = View->GetViewWidgetAt(0);
 	TestNotNull("ViewWidget", ViewWidget.GetObject());
 	ViewWidget->Execute_ForceInputAction(ViewWidget.GetObject());
 	TestEqual("Transactions Complete", ActionComponent->OnCompleteSuccess, 1);

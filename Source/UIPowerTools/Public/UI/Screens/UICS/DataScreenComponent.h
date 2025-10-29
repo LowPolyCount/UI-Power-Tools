@@ -7,7 +7,7 @@
 #include "UI/Screens/UICS/ScreenComponent.h"
 #include "DataScreenComponent.generated.h"
 
-class UDataScreenComponentProvider;
+class UUIDataProvider;
 class UDataTransform;
 class UDataFilter;
 
@@ -63,15 +63,15 @@ public:
 
 	// Set the data retriever to use with a given instance
 	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
-	void SetDataRetriever(UDataScreenComponentProvider* InData) { DataProvider = InData; }
+	void SetDataRetriever(UUIDataProvider* InData) { DataProvider = InData; }
 
 	// Set the data retriever to use with a given classtype
 	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
-	void SetDataRetrieverFromClass(TSubclassOf<UDataScreenComponentProvider> InClass);
+	void SetDataRetrieverFromClass(TSubclassOf<UUIDataProvider> InClass);
 	
 	// get data retriever we're using
 	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
-	UDataScreenComponentProvider* GetDataRetriever() const { return DataProvider; }
+	UUIDataProvider* GetDataRetriever() const { return DataProvider; }
 
 	// Do we have a data retriever?
 	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
@@ -122,7 +122,7 @@ public:
 protected:
 	// class that will retrieve our data
 	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Category = DataScreenComponent)
-	TObjectPtr<UDataScreenComponentProvider> DataProvider;
+	TObjectPtr<UUIDataProvider> DataProvider;
 
 	// filters to apply to retrieved data
 	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Category = DataScreenComponent)
