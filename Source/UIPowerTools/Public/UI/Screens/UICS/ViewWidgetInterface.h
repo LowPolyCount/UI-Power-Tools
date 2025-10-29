@@ -151,7 +151,6 @@ virtual void NativeOnFocusLost(const FFocusEvent& InFocusEvent) override\
 
 // this macro defines boilerplace code for a class derived from CommonButtonBase that is required for implementing IViewWidgetInterface
 #define VIEW_COMMONBUTTON_BOILERPLATE() \
-VIEW_WIDGET_BOILERPLATE()\
 virtual void NativeOnSelected(bool bBroadcast) override\
 {\
 	Super::NativeOnSelected(bBroadcast);\
@@ -193,3 +192,7 @@ virtual void NativeOnClicked() override\
 	Super::NativeOnClicked();\
 	Execute_OnInputAction(this);\
 }
+
+#define VIEW_BUTTON_AND_WIDGET_BOILERPLATE()\
+VIEW_COMMONBUTTON_BOILERPLATE()\
+VIEW_WIDGET_BOILERPLATE()
