@@ -44,7 +44,7 @@ UWidget* UScreen::NativeGetDesiredFocusTarget() const
 {
 	// if we haven't overridden this in BP, then get the focus from the view component
 	return (GetClass()->IsFunctionImplementedInScript(FName(L"BP_GetDesiredFocusTarget")))
-		? NativeGetDesiredFocusTarget()
+		? Super::NativeGetDesiredFocusTarget()
 		: IUICSScreenAccessor::GetDesiredFocusTargetFromViewComponents();
 }
 
