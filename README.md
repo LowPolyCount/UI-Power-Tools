@@ -3,8 +3,9 @@
 UI Power Tools is a plugin for Unreal that helps you create User Interfaces. 
 
 It's goals are:
-- A better out of the box experience for UI development in Unreal Engine
 - Tools and workflows for projects that are creating large amounts of UI
+And in the future:
+- A better out of the box experience for UI development in Unreal Engine
 
 ### What does it provide?
 ## User Interface Component System (UICS)
@@ -21,10 +22,7 @@ The Screen Manager is Partially Implemented. Usable, but lacks features like tra
 
 [The UIPT Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has several UI screens implemented showing how UIPT works.
 
-"The Future" has information on upcoming features
-
-# Status
-UI Power Tools v1 is currently in BETA.  There may be minor API Changes between v1 Beta and Release.
+The Roadmap section has information on upcoming features
 
 # Installation
 [Get a release version](https://codeberg.org/LowPolyCount/UI-Power-Tools/releases) and place in your engine or project plugins folder. Example: YourProject/Plugins/UIPowerTools
@@ -75,16 +73,27 @@ The [UI Power Tools Example Project](https://codeberg.org/LowPolyCount/UIPowerTo
 ### Discord
 You can ask questions on [The UIPT Discord Server](https://discord.gg/nBnvbf8TnU)
 
-# The Future
-The following features are planned for development:
-- Additional UICS Components
-- Composable Widgets
-- ScreenManager support for multiple layers and animations
-- Better logging and debugging tools
+# Status
+
+UI Power Tools v1 is currently in BETA.  There may be minor API Changes between v1 Beta and Release. v1 has been focused on implementing UICS, a bare bones screen manager, and providing examples & documentation of how to use everything. 
+
+# Roadmap
+
+v1 will get the following before leaving beta:
+* Complete quality of life enhancements to UICS
+* Completed Documentation on UICS and the provided screen components
+
+v2 will feature:
+- Completed Screen Manager with Layer, Animation support
+- Better logging and debugging
 - Screen Viewer Tool showing which screens are on the ScreenManager
+
+After that?
 - Screen and Widget Templates
 - Focus Display Tool
 - Verse Support
+- Additional UICS Components
+- Composable Widgets?
 
 #License 
 UIPT is distributed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
@@ -92,7 +101,7 @@ UIPT is distributed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2
 # FAQ
 
 ### Can I use MVVM with UICS?
-Yes!  UICS doesn't specify how you set the visual elements of your widgets so you can use MVVM, blueprint, or some other method. 
+Yes.  UICS doesn't specify how you set the visual elements of your widgets so you can use MVVM, blueprint, or some other method. 
 
 ### Who made this?
 This was created by [Joel Gonzales | "LowPolyCount"](https://www.lowpolycount.com)
