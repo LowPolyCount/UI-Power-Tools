@@ -5,21 +5,36 @@
 #include "UI/Screens/UICS/ScreenComponent.h"
 #include "EntryScreenComponent.generated.h"
 
-// contains data representing an entry that can be accessed by other components
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FEntryDelegate, UEntryScreenComponent*, Component, UObject*, OldEntry, UObject*, NewEntry);
+
+// contains an entry (one piece of data) that can be held and accessed by other components
 UCLASS(BlueprintType)
 class UIPOWERTOOLS_API UEntryScreenComponent : public UScreenComponent
 {
 	GENERATED_BODY()
 public:
+
+	FEntryDelegate OnEntryChange;
 	// get the entry
 	UFUNCTION(BlueprintCallable, Category = EntryScreenComponent)
-	UObject* Get() const { return HeldEntry; }
+	UObject* GetEntry() const { return HeldEntry; }
 
 	// set the entry
 	UFUNCTION(BlueprintCallable, Category = EntryScreenComponent)
-	void Set(UObject* Entry) { HeldEntry = Entry; }
+	void SetEntry(UObject* Entry);
+
+	UFUNCTION(BlueprintCallable, Category = EntryScreenComponent)
+	bool GetBroadcastOnAnyEntryChange() const {return bBroadcastOnAnyEntryChange;}
+
+	UFUNCTION(BlueprintCallable, Category = EntryScreenComponent)
+	void SetBroadcastOnAnyEntryChange(bool bBroadcastSetting ) { bBroadcastOnAnyEntryChange = bBroadcastSetting;}
 
 protected:
+	// by default, will only broadcast on SetEntry when NewEntry != OldEntry. 
+	// Turning this on will broadcast whenever SetEntry() is called
+	UPROPERTY(EditAnywhere, Category = EntryScreenComponent)
+	bool bBroadcastOnAnyEntryChange=false;
+
 	UPROPERTY()
 	TObjectPtr<UObject> HeldEntry;
 };

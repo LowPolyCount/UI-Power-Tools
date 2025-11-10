@@ -132,11 +132,23 @@ public:
 	int32 IsValidSuccess = 0;
 	int32 OnCompleteSuccess = 0;
 
-protected:
 	UFUNCTION()
 	void HandleOnIsValid(UActionScreenComponent* Component, bool bIsValid);
 	UFUNCTION()
 	void HandleOnComplete(UActionScreenComponent* Component, ETransactionResult Result);
+};
+
+UCLASS(Hidden)
+class UEntryHarness : public UEntryScreenComponent
+{
+	GENERATED_BODY()
+public:
+	virtual void Initialize() override;
+
+	int32 OnBroadcasts = 0;
+
+	UFUNCTION()
+	void HandleOnEntryChange(UEntryScreenComponent* Component, UObject* OldData, UObject* NewData);
 };
 
 namespace UICSTest
