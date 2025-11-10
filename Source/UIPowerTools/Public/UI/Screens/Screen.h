@@ -5,7 +5,6 @@
 #include "CommonActivatableWidget.h"
 #include "UI/Screens/UICS/IUICSAccessor.h"
 #include "UI/Screens/ScreenInterface.h"
-#include "UI/Screens/UICS/InputScreenComponent.h"
 #include "Screen.generated.h"
 
 class UScreenComponentManager;
@@ -35,7 +34,6 @@ public:
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
-	virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 	virtual UWidget* NativeGetDesiredFocusTarget() const override;
 	// UUserWidget end
 

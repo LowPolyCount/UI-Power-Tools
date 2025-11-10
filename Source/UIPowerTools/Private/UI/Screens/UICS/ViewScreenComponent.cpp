@@ -34,13 +34,6 @@ void UViewScreenComponent::PostEditChangeChainProperty(struct FPropertyChangedCh
 			}
 		}
 	}
-	/*const FName PropertyName = PropertyChangedEvent.GetPropertyName();
-
-	static FName DesiredEntryWidgetPropertyName(GET_MEMBER_NAME_CHECKED(UViewScreenComponent, ViewWidgetPrototype));
-	if (PropertyName == DesiredEntryWidgetPropertyName)
-	{
-
-	}*/
 }
 #endif
 

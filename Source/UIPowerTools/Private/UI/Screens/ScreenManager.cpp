@@ -13,7 +13,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "UI/Tools/UIPowerToolsDeveloperSettings.h"
 #include "UI/Screens/ScreenInterface.h"
-#include "UI/Screens/UICS/InputScreenComponent.h"
 #include "CommonActivatableWidget.h"
 #include "Blueprint/WidgetTree.h"
 #include "Blueprint/GameViewportSubsystem.h"
@@ -51,7 +50,7 @@ void FScreenStruct::SetVisibility(bool bIsVisible)
 UScreenManager::UScreenManager()
 	:Super()
 	// Set here so that we don't have to expose InputScreenComponent.h in this class's header
-	, CurrentInputMode(EScreenInputMode::None)
+//	, CurrentInputMode(EScreenInputMode::None)
 {
 
 }
@@ -407,7 +406,7 @@ void UScreenManager::ActivateTopScreen()
 
 }
 
-void UScreenManager::SetInputMode(APlayerController* PlayerController, const UInputScreenComponent* InputComponent)
+/*void UScreenManager::SetInputMode(APlayerController* PlayerController, const UInputScreenComponent* InputComponent)
 {
 	if (InputComponent)
 	{
@@ -435,7 +434,7 @@ void UScreenManager::SetInputMode(APlayerController* PlayerController, const UIn
 			CurrentInputMode = NextMode;
 		}
 	}
-}
+}*/
 
 APlayerController* UScreenManager::GetPlayerController()
 {
