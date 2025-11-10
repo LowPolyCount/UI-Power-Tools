@@ -107,3 +107,14 @@ void UActionHarness::HandleOnComplete(UActionScreenComponent* Component, ETransa
 		OnCompleteSuccess++;
 	}
 }
+
+void UEntryHarness::Initialize()
+{
+	Super::Initialize();
+	OnEntryChange.AddDynamic(this, &UEntryHarness::HandleOnEntryChange);
+}
+
+void UEntryHarness::HandleOnEntryChange(UEntryScreenComponent* Component, UObject* OldData, UObject* NewData)
+{
+	OnBroadcasts++;
+}

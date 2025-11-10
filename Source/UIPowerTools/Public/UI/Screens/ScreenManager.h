@@ -12,7 +12,6 @@ class UOverlay;
 class UScreen;
 class IScreenInterface;
 class UCommonActivatableWidget;
-class UInputScreenComponent;
 enum class EScreenInputMode : uint8;
 
 // this struct contains everything needed to handle changes when screens are added or closed
@@ -103,10 +102,10 @@ protected:
 	void RemoveScreenUsingPanel(TScriptInterface<IScreenInterface>& Screen);
 	void RemoveScreenUsingViewport(TScriptInterface<IScreenInterface>& Screen);
 	virtual APlayerController* GetPlayerController();
-	virtual void SetInputMode(APlayerController* PlayerController, const UInputScreenComponent* InputComponent);
+	//virtual void SetInputMode(APlayerController* PlayerController, const UInputScreenComponent* InputComponent);
 	void ActivateTopScreen();
 
-	EScreenInputMode CurrentInputMode;
+	//EScreenInputMode CurrentInputMode;
 
 	UPROPERTY()
 	TArray<FScreenStruct> Screens;
