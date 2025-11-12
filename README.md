@@ -1,11 +1,7 @@
-# UI-Power-Tools™
+# UI-Power-Tools
+## Make Better UI™
 
-UI Power Tools is a plugin for Unreal that helps you create User Interfaces. 
-
-It's goals are:
-- Tools and workflows for projects that are creating large amounts of UI
-And in the future:
-- A better out of the box experience for UI development in Unreal Engine
+UI Power Tools is a plugin for Unreal Engine to help you make User Interfaces
 
 ### What does it provide?
 ## User Interface Component System (UICS)
@@ -28,7 +24,7 @@ The Roadmap section has information on upcoming features
 [Get a release version](https://codeberg.org/LowPolyCount/UI-Power-Tools/releases) and place in your engine or project plugins folder. Example: YourProject/Plugins/UIPowerTools
 
 In your Project's Build.cs file, add "UIPowerTools" to PublicDependencyModuleNames and then add the following:
-
+...
         if (Target.bBuildEditor)
         {
             PublicDependencyModuleNames.Add("UIPowerToolsEd");
@@ -38,7 +34,7 @@ In your Project's Build.cs file, add "UIPowerTools" to PublicDependencyModuleNam
 				PublicDependencyModuleNames.Add("UIPowerToolsTest");
 			}
 		}
-
+...
 # Setup
 ### UICS 
 You can utilize it in two ways:
