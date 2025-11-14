@@ -106,6 +106,7 @@ v3 and Beyond:
 UIPT is distributed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 While not required, We ask that you attribute by including the follow line in the credits of your product:
+
 Using UI Power Tools™ by Joel Gonzales
 
 # FAQ
