@@ -22,7 +22,8 @@ The Roadmap section has information on upcoming features
 [Get a release version](https://codeberg.org/LowPolyCount/UI-Power-Tools/releases) and place in your engine or project plugins folder. Example: YourProject/Plugins/UIPowerTools
 
 In your Project's Build.cs file, add "UIPowerTools" to PublicDependencyModuleNames and then add the following after that:
-...
+
+
         if (Target.bBuildEditor)
         {
             PublicDependencyModuleNames.Add("UIPowerToolsEd");
@@ -32,7 +33,7 @@ In your Project's Build.cs file, add "UIPowerTools" to PublicDependencyModuleNam
 				PublicDependencyModuleNames.Add("UIPowerToolsTest");
 			}
 		}
-...
+
 ## UICS Setup
 Setup can be done in two ways:
 1) Use the provided UScreen Class which is setup to use UICS
