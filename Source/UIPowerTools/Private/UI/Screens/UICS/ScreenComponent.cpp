@@ -2,6 +2,15 @@
 
 
 #include "UI/Screens/UICS/ScreenComponent.h"
+#include "UObject/UObjectGlobals.h"
+
+UScreenComponent::UScreenComponent(const FObjectInitializer& Initializer)
+	:Super(Initializer)
+{
+	//ComponentName = GetFName();
+	//RemoveClassPrefix();
+	//MakeUniqueObjectName(this, Initializer.GetClass(), NAME_None, EUniqueObjectNameOptions::None);
+}
 
 const FGuid& UScreenComponent::GetGuid() const
 {

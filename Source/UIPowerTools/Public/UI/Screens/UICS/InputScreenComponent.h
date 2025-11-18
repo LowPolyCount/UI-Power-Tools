@@ -40,12 +40,12 @@ enum class EScreenInputMode : uint8
 /**
  * controls options on how a screen handles Input
  */
-UCLASS()
+UCLASS(Experimental)
 class UIPOWERTOOLS_API UInputScreenComponent : public UScreenComponent
 {
 	GENERATED_BODY()
 public:
-	UInputScreenComponent();
+	//UInputScreenComponent();
 	// UScreenComponent
 	virtual void NativeConstruct() override;
 	// UScreenComponent End

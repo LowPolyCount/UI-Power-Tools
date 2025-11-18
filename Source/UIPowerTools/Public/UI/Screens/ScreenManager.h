@@ -21,13 +21,15 @@ struct UIPOWERTOOLS_API FScreenStruct
 	GENERATED_BODY()
 public:
 	FScreenStruct() {}
-	FScreenStruct(TScriptInterface<IScreenInterface> Screen, bool bHideScreensBelow = true);
+	//FScreenStruct(TScriptInterface<IScreenInterface> Screen, bool bHideScreensBelow = true);
+	FScreenStruct(UUserWidget* InScreen, bool bHideScreensBelow = true);
 	bool operator==(const FScreenStruct& rhs) const { return Screen == rhs.Screen; }
 	void SetVisibility(bool bIsVisible);
+	void SetEnableInput(bool bEnableInput);
 
 	// the screen being added
 	UPROPERTY(BlueprintReadWrite, Category = ScreenManager)
-	TScriptInterface<IScreenInterface> Screen;
+	TObjectPtr<UUserWidget> Screen;
 
 	// status of what all screens 
 	UPROPERTY(BlueprintReadWrite, Category = ScreenManager)
@@ -68,11 +70,15 @@ public:
 	// to remove a screen, call the screen's Close()
 	// @bHideScreensBelow = Are all existing displayed screens hidden when this screen is added?
 	UFUNCTION(BlueprintCallable, Category = ScreenManager)
-	void AddScreen(TScriptInterface<IScreenInterface> Screen, bool bHideScreensBelow = true);
+	void AddScreen(UUserWidget* Screen, bool bHideScreensBelow = true);
+
+	// *Only Added for convenience*
+	// Instead of calling this, call the UUserWidget's RemoveFromParent()
+	void RemoveScreen(UUserWidget* Screen);
 
 	// is the given screen instance on the stack?
 	UFUNCTION(BlueprintCallable, Category = ScreenManager)
-	bool IsScreenOnStack(TScriptInterface<IScreenInterface> Screen) const;
+	bool IsScreenOnStack(UUserWidget* Screen) const;
 
 	// is an instance of a screen of the given class on the stack?
 	UFUNCTION(BlueprintCallable, Category = ScreenManager)
@@ -89,7 +95,8 @@ public:
 protected:
 	
 	UFUNCTION()
-	void HandleOnScreenClose(TScriptInterface<IScreenInterface> Screen);
+	//void HandleOnScreenClose(TScriptInterface<IScreenInterface> Screen);
+	void HandleOnNativeDestruct(UUserWidget* Screen);
 
 	UFUNCTION()
 	void HandleOnAddToViewport();

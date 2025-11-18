@@ -6,7 +6,7 @@
 
 #include "UI/Tools/UIPowerToolsDeveloperSettings.h"
 
-UInputScreenComponent::UInputScreenComponent()
+/*UInputScreenComponent::UInputScreenComponent()
 {
 	if (const UUIPowerToolsDeveloperSettings* DefaultSettings = GetDefault<UUIPowerToolsDeveloperSettings>())
 	{
@@ -15,7 +15,7 @@ UInputScreenComponent::UInputScreenComponent()
 			SetInputMapping(DefaultMappingContext);
 		}
 	}
-}
+}*/
 
 void UInputScreenComponent::NativeConstruct()
 {
