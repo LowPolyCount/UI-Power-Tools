@@ -13,12 +13,14 @@ class UIPOWERTOOLS_API UScreenComponent : public UScreenComponentWorldContext, p
 {
 	GENERATED_BODY()
 public:
+	UScreenComponent(const FObjectInitializer& Initializer);
 	virtual void Initialize() {}
 	virtual void NativePreConstruct(bool bIsDesingTime) {}
 	virtual void NativeConstruct() {}
 	virtual void NativeDestruct() {}
 	virtual void ReleaseSlateResources(bool bReleaseChildren) {}
 	const FGuid& GetGuid() const;
+	const FName& GetComponentName() const;
 
 #ifdef WITH_EDITORONLY_DATA
 	virtual FString GetDisplayName() const;
@@ -26,6 +28,8 @@ public:
 #endif
 
 protected:
-	UPROPERTY(BlueprintReadWrite, Category = ScreenComponent)
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ScreenComponent)
+	//FName ComponentName;
+	UPROPERTY(BlueprintReadOnly, Category = ScreenComponent)
 	mutable FGuid Guid;
 };

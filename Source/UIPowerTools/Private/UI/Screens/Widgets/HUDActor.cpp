@@ -53,7 +53,7 @@ void AHUDActor::CreateScreensAndAddToManager()
 
 		for (TSubclassOf<UUserWidget>& ScreenClass : ScreensToDisplayAtStart)
 		{
-			TScriptInterface<IScreenInterface> Screen(CreateWidget(GetWorld(), ScreenClass));
+			UUserWidget* Screen(CreateWidget(GetWorld(), ScreenClass));
 			if (Screen)
 			{
 				ScreenManager->AddScreen(Screen);

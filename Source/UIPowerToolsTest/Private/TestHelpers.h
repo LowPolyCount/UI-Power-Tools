@@ -21,6 +21,9 @@ public:
 
 	// we don't have a viewport to add to in testing, so override to do nothing
 	virtual void AddScreenToViewport(int32 ZOrder) override {}
+	// same applies to remove from parent
+	virtual void RemoveFromParent() {OnNativeDestruct.Broadcast(this); }
+
 };
 
 UCLASS(Hidden)

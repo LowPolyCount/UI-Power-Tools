@@ -14,6 +14,8 @@
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FScreenManagerAddRemoveTest, "UIPowerTools.UICS.ScreenManager.AddRemove", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FScreenManagerAddRemoveTest::RunTest(const FString& Parameters)
 {
+	// @todo we get warnings saying that UScreenHarness doesn't have a world. But we don't want to create a world here 
+	//			because that will overwrite the world in the editor. 
 	UScreenManager* ScreenManager = NewObject<UScreenManager>();
 	TestNotNull("ScreenManager", ScreenManager);
 	
@@ -47,7 +49,7 @@ bool FScreenManagerAddRemoveTest::RunTest(const FString& Parameters)
 		TestEqual("NumScreens", ScreenManager->NumScreens(), 4);
 
 		
-		Screen3->Close();
+		Screen3->RemoveFromParent();
 		
 		
 		TestEqual("Visibility", Screen0->GetVisibility(), ESlateVisibility::Hidden);
@@ -56,13 +58,13 @@ bool FScreenManagerAddRemoveTest::RunTest(const FString& Parameters)
 		TestEqual("NumScreens", ScreenManager->NumScreens(), 3);
 
 		// close screen out of order
-		Screen1->Close();
+		Screen1->RemoveFromParent();
 
 		TestEqual("Visibility", Screen0->GetVisibility(), ESlateVisibility::Hidden);
 		TestEqual("Visibility", Screen2->GetVisibility(), ESlateVisibility::SelfHitTestInvisible);
 		TestEqual("NumScreens", ScreenManager->NumScreens(), 2);
 
-		Screen2->Close();
+		Screen2->RemoveFromParent();
 
 		TestEqual("Visibility", Screen0->GetVisibility(), ESlateVisibility::SelfHitTestInvisible);
 		TestEqual("NumScreens", ScreenManager->NumScreens(), 1);

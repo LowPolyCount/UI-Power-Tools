@@ -19,19 +19,18 @@
 #include "Components/Overlay.h"
 #include "Components/OverlaySlot.h"
 
-
-FScreenStruct::FScreenStruct(TScriptInterface<IScreenInterface> InScreen, bool bInHideScreensBelow)
+FScreenStruct::FScreenStruct(UUserWidget* InScreen, bool bHideScreensBelow)
 	:Screen(InScreen)
-	,bHideScreensBelow(bInHideScreensBelow)
+	, bHideScreensBelow(bHideScreensBelow)
 {
-	
+
 }
 
 void FScreenStruct::SetVisibility(bool bIsVisible)
 {
 	if (Screen)
 	{
-		if (UUserWidget* AsUWidget = Screen->AsUserWidget())
+		if (UUserWidget* AsUWidget = Screen)
 		{
 			AsUWidget->SetVisibility((bIsVisible) ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Hidden);
 		}
@@ -45,6 +44,25 @@ void FScreenStruct::SetVisibility(bool bIsVisible)
 		// @todo: log error
 	}
 
+}
+
+void FScreenStruct::SetEnableInput(bool bEnableInput)
+{
+	if (UCommonActivatableWidget* AsActivatableWidget = Cast<UCommonActivatableWidget>(Screen))
+	{
+		if (bEnableInput)
+		{
+			AsActivatableWidget->ActivateWidget();
+		}
+		else
+		{
+			AsActivatableWidget->DeactivateWidget();
+		}
+	}
+	else
+	{
+		// @todo: log error
+	}
 }
 
 UScreenManager::UScreenManager()
@@ -114,7 +132,7 @@ void UScreenManager::EndPlay(const EEndPlayReason::Type Reason)
 	{
 		if (Screens[i].Screen)
 		{
-			Screens[i].Screen->Close();
+			Screens[i].Screen->RemoveFromParent();
 		}
 	}
 }
@@ -215,7 +233,7 @@ void UScreenManager::HandleOnAddToViewport()
 }*/
 
 
-void UScreenManager::AddScreen(TScriptInterface<IScreenInterface> Screen, bool bHideScreensBelow)
+void UScreenManager::AddScreen(UUserWidget* Screen, bool bHideScreensBelow)
 {	
 	if (Screen)
 	{
@@ -231,7 +249,15 @@ void UScreenManager::AddScreen(TScriptInterface<IScreenInterface> Screen, bool b
 	}
 }
 
-bool UScreenManager::IsScreenOnStack(TScriptInterface<IScreenInterface> Screen) const
+void UScreenManager::RemoveScreen(UUserWidget* Screen)
+{ 
+	if (IsValid(Screen)) 
+	{ 
+		Screen->RemoveFromParent(); 
+	} 
+}
+
+bool UScreenManager::IsScreenOnStack(UUserWidget* Screen) const
 {
 	FScreenStruct TempScreenStruct(Screen);
 	return Screens.Find(TempScreenStruct) != INDEX_NONE;
@@ -242,7 +268,7 @@ bool UScreenManager::IsScreenOfClassOnStack(TSubclassOf<UUserWidget> Class) cons
 	bool bRetVal = false;
 	for (const FScreenStruct& IterScreen : Screens)
 	{
-		if (UObject* AsObject = IterScreen.Screen.GetObject())
+		if (UObject* AsObject = IterScreen.Screen)
 		{
 			if (AsObject->IsA(Class))
 			{
@@ -269,18 +295,13 @@ TScriptInterface<IScreenInterface> UScreenManager::GetScreenOnTop() const
 	return RetVal;
 }
 
-void UScreenManager::HandleOnScreenClose(TScriptInterface<IScreenInterface> Screen)
+void UScreenManager::HandleOnNativeDestruct(UUserWidget* Screen)
 {
 	if (Screen)
 	{
-		Screen->GetOnScreenClose().RemoveDynamic(this, &UScreenManager::HandleOnScreenClose);
-
 		// make a temp struct so that we hold on to Screen, but also can use the == operator 
-		FScreenStruct TempStruct(Screen);
-		Screens.Remove(TempStruct);
-
-		RemoveScreenUsingViewport(Screen);
-		//RemoveScreenUsingPanel(Screen);
+		FScreenStruct SearchStruct(Screen);
+		Screens.Remove(SearchStruct);
 
 		ActivateTopScreen();
 	}
@@ -307,12 +328,10 @@ void UScreenManager::AddScreen_Internal(FScreenStruct& ScreenToAdd)
 	if (ScreenToAdd.Screen)
 	{
 		Screens.Add(ScreenToAdd);
-		ScreenToAdd.Screen->GetOnScreenClose().AddUniqueDynamic(this, &UScreenManager::HandleOnScreenClose);
+		ScreenToAdd.Screen->OnNativeDestruct.AddUObject(this, &UScreenManager::HandleOnNativeDestruct);
 
 		// for now, we're using the viewport to add. Panel still requires some R&D
 		AddScreenUsingViewport(ScreenToAdd);
-
-		//AddScreenUsingPanel(ScreenToAdd);
 	}
 	else
 	{
@@ -325,7 +344,7 @@ void UScreenManager::AddScreenUsingPanel(FScreenStruct& ScreenToAdd)
 {
 	if (ParentPanel)
 	{
-		if (UOverlaySlot* Slot = ParentPanel->AddChildToOverlay(Cast<UWidget>(ScreenToAdd.Screen.GetObject())))
+		if (UOverlaySlot* Slot = ParentPanel->AddChildToOverlay(Cast<UWidget>(ScreenToAdd.Screen)))
 		{
 			Slot->SetHorizontalAlignment(HAlign_Fill);
 			Slot->SetVerticalAlignment(VAlign_Fill);
@@ -339,7 +358,7 @@ void UScreenManager::AddScreenUsingPanel(FScreenStruct& ScreenToAdd)
 
 void UScreenManager::AddScreenUsingViewport(FScreenStruct& ScreenToAdd)
 {
-	ScreenToAdd.Screen->AddScreenToViewport(++ZValue);
+	ScreenToAdd.Screen->AddToViewport(++ZValue);
 }
 
 void UScreenManager::ActivateTopScreen()
@@ -348,9 +367,9 @@ void UScreenManager::ActivateTopScreen()
 	
 	if (Screens.IsValidIndex(TopIndex))
 	{
-		if (UCommonUIActionRouterBase* ActionRouter = UCommonUIActionRouterBase::Get(*Cast<UWidget>(Screens[TopIndex].Screen->AsUserWidget())))
+		if (UCommonUIActionRouterBase* ActionRouter = UCommonUIActionRouterBase::Get(*Cast<UWidget>(Screens[TopIndex].Screen)))
 		{
-			UCommonActivatableWidget* AsCommon = Cast<UCommonActivatableWidget>(Screens[TopIndex].Screen.GetObject());
+			UCommonActivatableWidget* AsCommon = Cast<UCommonActivatableWidget>(Screens[TopIndex].Screen);
 			if (!ActionRouter->IsWidgetInActiveRoot(AsCommon))
 			{
 				TOptional<FUIInputConfig> InputConfig = AsCommon->GetDesiredInputConfig();
@@ -369,7 +388,7 @@ void UScreenManager::ActivateTopScreen()
 				FScreenStruct& ScreenToProcess = Screens[TopIndex];
 				check(ScreenToProcess.Screen);
 				ScreenToProcess.SetVisibility(true);
-				ScreenToProcess.Screen->SetInputEnabled(true);
+				ScreenToProcess.SetEnableInput(true);
 
 				if (ScreenToProcess.bHideScreensBelow)
 				{
@@ -381,7 +400,7 @@ void UScreenManager::ActivateTopScreen()
 							FScreenStruct& ScreenToHide = Screens[RemainingScreens];
 							check(ScreenToHide.Screen);
 							ScreenToHide.SetVisibility(false);
-							ScreenToHide.Screen->SetInputEnabled(false);
+							ScreenToHide.SetEnableInput(false);
 						}
 						else
 						{
