@@ -37,7 +37,6 @@
 			"LoadingPhase": "Default",
 			"TargetConfigurationDenyList": [
 				"Shipping",
-				"Development"
 			]
 		},
 		{
@@ -46,7 +45,6 @@
 			"LoadingPhase": "Default",
 			"TargetConfigurationDenyList": [
 				"Shipping",
-				"Development"
 			]
 		}
 	]
