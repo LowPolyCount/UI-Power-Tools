@@ -57,6 +57,21 @@ TArray<UScreenComponent*> UScreenComponentManager::GetAllComponents(TSubclassOf<
 	return RetVal;
 }
 
+UScreenComponent* UScreenComponentManager::GetComponentByName(const FName Name, TSubclassOf<UScreenComponent> Type) const
+{
+	UScreenComponent* RetVal = nullptr;
+	for (UScreenComponent* Component : Components)
+	{
+		if (Component && Component->IsA(Type) && Component->GetComponentName() == Name)
+		{
+			RetVal = Component;
+			break;
+		}
+	}
+
+	return RetVal;
+}
+
 UScreenComponent* UScreenComponentManager::GetComponentFromSelector(const FComponentSelector& Selector) const
 {
 	UScreenComponent* RetVal = nullptr;

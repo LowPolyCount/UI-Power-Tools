@@ -25,17 +25,33 @@ class UIPOWERTOOLS_API IUICSAccessor
 {
 	GENERATED_BODY()
 public:
-	UFUNCTION(BlueprintCallable, Category = ScreenComponent, Meta=(DisplayName = "GetScreenComponent", DeterminesOutputType="Type"))
+	// get the first screen component of the given type
+	UFUNCTION(BlueprintCallable, Category = ScreenComponent, Meta=(DisplayName = "Get Screen Component", DeterminesOutputType="Type"))
 	virtual UScreenComponent* GetScreenComponent_BP(TSubclassOf<UScreenComponent> Type) const;
-	UFUNCTION(BlueprintCallable, Category = ScreenComponent, Meta = (DisplayName = "GetAllScreenComponents", DeterminesOutputType = "Type"))
+
+	// get all screen components of type
+	UFUNCTION(BlueprintCallable, Category = ScreenComponent, Meta = (DisplayName = "Get All Screen Components", DeterminesOutputType = "Type"))
 	virtual TArray<UScreenComponent*> GetAllScreenComponents_BP(TSubclassOf<UScreenComponent> Type) const;
-	UFUNCTION(BlueprintCallable, Category = ScreenComponent, Meta = (DisplayName = "GetScreenComponentFromSelector", DeterminesOutputType = "Type"))
+
+	// get a screen component by Name
+	UFUNCTION(BlueprintCallable, Category = ScreenComponent, Meta = (DisplayName = "Get Screen Component By Name", DeterminesOutputType = "Type"))
+	virtual UScreenComponent* GetScreenComponentByName_BP(const FName Name, TSubclassOf<UScreenComponent> Type) const;
+
+	// get a screen component through a component selector 
+	UFUNCTION(BlueprintCallable, Category = ScreenComponent, Meta = (DisplayName = "Get ScreenComponent From Selector", DeterminesOutputType = "Type"))
 	virtual UScreenComponent* GetScreenComponentFromSelector_BP(const FComponentSelector& Selector, TSubclassOf<UScreenComponent> Type) const;
+
+
 
 	template<class ComponentType>
 	ComponentType* GetScreenComponent() const;
+
 	template<class ComponentType>
 	TArray<ComponentType*> GetAllScreenComponents() const;
+
+	template<class ComponentType>
+	ComponentType* GetScreenComponentByName(const FName& Name) const;
+
 	template<class ComponentType>
 	ComponentType* GetScreenComponentFromSelector(const FComponentSelector& Selector) const;
 
@@ -49,13 +65,14 @@ class UUICSScreenAccessor : public UUICSAccessor
 	GENERATED_BODY()
 };
 
-// Signifies the terminal node when looking up a component. 
+// Signifies the terminal node (the screen) when looking up a component. 
 class UIPOWERTOOLS_API IUICSScreenAccessor : public IUICSAccessor
 {
 	GENERATED_BODY()
 public:
 	virtual UScreenComponent* GetScreenComponent_BP(TSubclassOf<UScreenComponent> Type) const override;
 	virtual TArray<UScreenComponent*> GetAllScreenComponents_BP(TSubclassOf<UScreenComponent> Type) const override;
+	virtual UScreenComponent* GetScreenComponentByName_BP(const FName Name, TSubclassOf<UScreenComponent> Type) const override;
 	virtual UScreenComponent* GetScreenComponentFromSelector_BP(const FComponentSelector& Selector, TSubclassOf<UScreenComponent> Type) const override;
 
 	// these functions correspond to and should be called with the implementor's UUserWidget Functions
@@ -95,6 +112,12 @@ TArray<ComponentType*> IUICSAccessor::GetAllScreenComponents() const
 		}
 	}
 	return RetVal;
+}
+
+template<class ComponentType>
+ComponentType* IUICSAccessor::GetScreenComponentByName(const FName& Name) const
+{
+	return Cast<ComponentType>(GetScreenComponentByName_BP(Name, TSubclassOf<UScreenComponent>(ComponentType::StaticClass())));
 }
 
 template<class ComponentType>

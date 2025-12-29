@@ -27,6 +27,16 @@ TArray<UScreenComponent*> IUICSAccessor::GetAllScreenComponents_BP(TSubclassOf<U
 	return RetVal;
 }
 
+UScreenComponent* IUICSAccessor::GetScreenComponentByName_BP(const FName Name, TSubclassOf<UScreenComponent> Type) const
+{
+	UScreenComponent* RetVal = nullptr;
+	if (TScriptInterface<IUICSScreenAccessor> Screen = GetScreenAccessor())
+	{
+		RetVal = Screen->GetScreenComponentByName_BP(Name, Type);
+	}
+	return RetVal;
+}
+
 UScreenComponent* IUICSAccessor::GetScreenComponentFromSelector_BP(const FComponentSelector& Selector, TSubclassOf<UScreenComponent> Type) const
 {
 	UScreenComponent* RetVal = nullptr;
@@ -75,12 +85,24 @@ TArray<UScreenComponent*> IUICSScreenAccessor::GetAllScreenComponents_BP(TSubcla
 	return RetVal;
 }
 
+UScreenComponent* IUICSScreenAccessor::GetScreenComponentByName_BP(const FName Name, TSubclassOf<UScreenComponent> Type) const
+{
+	UScreenComponent* RetVal = nullptr;
+	UScreenComponentManager* ComponentManager = GetComponentManager();
+	if (ComponentManager)
+	{
+		RetVal = ComponentManager->GetComponentByName(Name, Type);
+	}
+	return RetVal;
+}
+
 UScreenComponent* IUICSScreenAccessor::GetScreenComponentFromSelector_BP(const FComponentSelector& Selector, TSubclassOf<UScreenComponent> Type) const
 {
 	UScreenComponent* RetVal = nullptr;
 	UScreenComponentManager* ComponentManager = GetComponentManager();
 	if (ComponentManager)
 	{
+		//@todo: Should we enforce Type here?
 		RetVal = ComponentManager->GetComponentFromSelector(Selector);
 	}
 	return RetVal;

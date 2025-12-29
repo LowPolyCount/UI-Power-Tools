@@ -20,7 +20,7 @@ public:
 	virtual void NativeDestruct() {}
 	virtual void ReleaseSlateResources(bool bReleaseChildren) {}
 	const FGuid& GetGuid() const;
-	const FName& GetComponentName() const;
+	const FName& GetComponentName() const {return ComponentName;}
 
 #ifdef WITH_EDITORONLY_DATA
 	virtual FString GetDisplayName() const;
@@ -28,8 +28,11 @@ public:
 #endif
 
 protected:
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ScreenComponent)
-	//FName ComponentName;
+	// the name of the component. Can be used with GetScreenComponentByName().  A Generated name is provided when created. 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ScreenComponent)
+	FName ComponentName;
+
+	// used to lookup the component. Needs to be Blueprint Accessible for Screen Selectors to work
 	UPROPERTY(BlueprintReadOnly, Category = ScreenComponent)
 	mutable FGuid Guid;
 };

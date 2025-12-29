@@ -8,8 +8,8 @@ UScreenComponent::UScreenComponent(const FObjectInitializer& Initializer)
 	:Super(Initializer)
 {
 	//ComponentName = GetFName();
-	//RemoveClassPrefix();
-	//MakeUniqueObjectName(this, Initializer.GetClass(), NAME_None, EUniqueObjectNameOptions::None);
+	////RemoveClassPrefix();
+	ComponentName = MakeUniqueObjectName(this, Initializer.GetClass(), NAME_None, EUniqueObjectNameOptions::GloballyUnique);
 }
 
 const FGuid& UScreenComponent::GetGuid() const
@@ -25,11 +25,11 @@ const FGuid& UScreenComponent::GetGuid() const
 #ifdef WITH_EDITORONLY_DATA
 FString UScreenComponent::GetDisplayName() const
 {
-	return GetClass()->GetFName().ToString();
+	return ComponentName.ToString() + TEXT(" ") + GetClass()->GetFName().ToString();
 }
 
 FString UScreenComponent::GetDisplayNameVerbose() const
 {
-	return GetClass()->GetFName().ToString();
+	return ComponentName.ToString() + TEXT(" ") + GetClass()->GetFName().ToString();
 }
 #endif

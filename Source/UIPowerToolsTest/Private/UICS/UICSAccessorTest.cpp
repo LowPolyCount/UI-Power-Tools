@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "TestHelpers.h"
+#include "UICSTestHarness.h"
 #include "UI/Screens/UICS/IUICSAccessor.h"
 #include "UI/Screens/Tools/ComponentSelector.h"
 #include "UI/Screens/UICS/DataScreenComponent.h"
@@ -15,15 +16,21 @@ bool FAccessorTest::RunTest(const FString& Parameters)
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
 	TestNotNull("Screen", Screen);
 
-	UDataScreenComponent* Data = NewObject<UDataScreenComponent>(Screen);
-	UDataScreenComponent* Data2 = NewObject<UDataScreenComponent>(Screen);
-	UDataScreenComponent* Data3 = NewObject<UDataScreenComponent>(Screen);
-	UViewScreenComponent* View = NewObject<UViewScreenComponent>(Screen);
+	UDataHarness* Data = NewObject<UDataHarness>(Screen);
+	UDataHarness* Data2 = NewObject<UDataHarness>(Screen);
+	UDataHarness* Data3 = NewObject<UDataHarness>(Screen);
+	UViewHarness* View = NewObject<UViewHarness>(Screen);
 
 	TestNotNull("Data", Data);
 	TestNotNull("Data2", Data2);
 	TestNotNull("Data3", Data3);
 	TestNotNull("View", View);
+
+	const FName Data2Name = FName(TEXT("Data2TestName"));
+	const FName ViewTestName = FName(TEXT("ViewTestName"));
+
+	Data2->SetFName(Data2Name);
+	View->SetFName(ViewTestName);
 
 	Screen->AddComponent(Data);
 	Screen->AddComponent(View);
@@ -34,6 +41,10 @@ bool FAccessorTest::RunTest(const FString& Parameters)
 	{
 		TestTrue("Screen->GetComponent<UUICSData>()", Screen->GetScreenComponent<UDataScreenComponent>() == Data);
 		TestTrue("Screen->GetComponent<UUICSView>()", Screen->GetScreenComponent<UViewScreenComponent>() == View);
+
+		// test using GetByName
+		TestTrue("Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name)", Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name) == Data2);
+		TestTrue("Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName)", Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName) == View);
 
 		TArray<UDataScreenComponent*> AllComponents = Screen->GetAllScreenComponents<UDataScreenComponent>();
 		TestTrue("AllComponents.Num()", AllComponents.Num() == 3);
@@ -46,6 +57,9 @@ bool FAccessorTest::RunTest(const FString& Parameters)
 	{
 		TestTrue("Data->GetComponent<UUICSData>()", Data->GetScreenComponent<UDataScreenComponent>() == Data);
 		TestTrue("Data->GetComponent<UUICSView>()", Data->GetScreenComponent<UViewScreenComponent>() == View);
+
+		TestTrue("Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name)", Data->GetScreenComponentByName<UDataScreenComponent>(Data2Name) == Data2);
+		TestTrue("Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName)", Data->GetScreenComponentByName<UViewScreenComponent>(ViewTestName) == View);
 
 		TArray<UDataScreenComponent*> AllComponents = Data->GetAllScreenComponents<UDataScreenComponent>();
 		TestTrue("AllComponents.Num()", AllComponents.Num() == 3);
@@ -83,15 +97,21 @@ bool FInterfaceAccessorTest::RunTest(const FString& Parameters)
 	UUICSTestActivatableWidgetHarness* Screen = NewObject<UUICSTestActivatableWidgetHarness>();
 	TestNotNull("Screen", Screen);
 
-	UDataScreenComponent* Data = NewObject<UDataScreenComponent>(Screen);
-	UDataScreenComponent* Data2 = NewObject<UDataScreenComponent>(Screen);
-	UDataScreenComponent* Data3 = NewObject<UDataScreenComponent>(Screen);
-	UViewScreenComponent* View = NewObject<UViewScreenComponent>(Screen);
+	UDataHarness* Data = NewObject<UDataHarness>(Screen);
+	UDataHarness* Data2 = NewObject<UDataHarness>(Screen);
+	UDataHarness* Data3 = NewObject<UDataHarness>(Screen);
+	UViewHarness* View = NewObject<UViewHarness>(Screen);
 
 	TestNotNull("Data", Data);
 	TestNotNull("Data2", Data2);
 	TestNotNull("Data3", Data3);
 	TestNotNull("View", View);
+
+	const FName Data2Name = FName(TEXT("Data2TestName"));
+	const FName ViewTestName = FName(TEXT("ViewTestName"));
+
+	Data2->SetFName(Data2Name);
+	View->SetFName(ViewTestName);
 
 	Screen->AddComponent(Data);
 	Screen->AddComponent(View);
@@ -102,6 +122,10 @@ bool FInterfaceAccessorTest::RunTest(const FString& Parameters)
 	{
 		TestTrue("Screen->GetComponent<UUICSData>()", Screen->GetScreenComponent<UDataScreenComponent>() == Data);
 		TestTrue("Screen->GetComponent<UUICSView>()", Screen->GetScreenComponent<UViewScreenComponent>() == View);
+
+		// test using GetByName
+		TestTrue("Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name)", Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name) == Data2);
+		TestTrue("Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName)", Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName) == View);
 
 		TArray<UDataScreenComponent*> AllComponents = Screen->GetAllScreenComponents<UDataScreenComponent>();
 		TestTrue("AllComponents.Num()", AllComponents.Num() == 3);
@@ -114,6 +138,10 @@ bool FInterfaceAccessorTest::RunTest(const FString& Parameters)
 	{
 		TestTrue("Data->GetComponent<UUICSData>()", Data->GetScreenComponent<UDataScreenComponent>() == Data);
 		TestTrue("Data->GetComponent<UUICSView>()", Data->GetScreenComponent<UViewScreenComponent>() == View);
+
+		// test using GetByName
+		TestTrue("Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name)", Data->GetScreenComponentByName<UDataScreenComponent>(Data2Name) == Data2);
+		TestTrue("Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName)", Data->GetScreenComponentByName<UViewScreenComponent>(ViewTestName) == View);
 
 		TArray<UDataScreenComponent*> AllComponents = Data->GetAllScreenComponents<UDataScreenComponent>();
 		TestTrue("AllComponents.Num()", AllComponents.Num() == 3);

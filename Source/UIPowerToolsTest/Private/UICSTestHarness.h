@@ -62,6 +62,7 @@ class UDataHarness : public UDataScreenComponent
 	GENERATED_BODY()
 public:
 	virtual void Initialize() override;
+	void SetFName(FName InName){ ComponentName = InName;}
 
 	UFUNCTION()
 	void HandleOnRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries);
@@ -82,6 +83,7 @@ class UViewHarness : public UViewScreenComponent
 {
 	GENERATED_BODY()
 public:
+	void SetFName(FName InName) { ComponentName = InName; }
 	virtual void Initialize() override;
 	void TestHandleOnDataRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries) { HandleOnDataRetrieval(Component, Entries); }
 	const TArray<TScriptInterface<IViewWidgetInterface>> GetAllCachedWidgets() { CachedWidgets; }
@@ -109,7 +111,7 @@ public:
 };
 
 UCLASS(Hidden)
-class UTransactionTestHarness: public UActionScreenComponentProvider
+class UActionTestHarness: public UActionScreenComponentProvider
 {
 	GENERATED_BODY()
 public:
@@ -127,6 +129,7 @@ class UActionHarness : public UActionScreenComponent
 {
 	GENERATED_BODY()
 public:
+	void SetFName(FName InName) { ComponentName = InName; }
 	virtual void Initialize() override;
 
 	int32 IsValidSuccess = 0;
@@ -143,6 +146,7 @@ class UEntryHarness : public UEntryScreenComponent
 {
 	GENERATED_BODY()
 public:
+	void SetFName(FName InName) { ComponentName = InName; }
 	virtual void Initialize() override;
 
 	int32 OnBroadcasts = 0;
@@ -197,13 +201,3 @@ namespace UICSTest
 		return Panel;
 	}
 }
-
-/*struct FUICSTestSetup
-{
-public:
-	TStrongObjectPtr<UWorld> World = nullptr;
-	TStrongObjectPtr<UScreenHarness> Screen = nullptr;
-	TStrongObjectPtr<UViewHarness> View = nullptr;
-	TStrongObjectPtr<UDataHarness> Data = nullptr;
-	TArray<TStrongObjectPtr<UObject>> EntryData;
-};*/

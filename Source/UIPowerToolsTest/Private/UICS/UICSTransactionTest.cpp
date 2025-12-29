@@ -16,7 +16,7 @@ bool FExecuteActionTest::RunTest(const FString& Parameters)
 	UActionHarness* ActionComponent = UICSTest::CreateComponent<UActionHarness>(Screen);
 	TestNotNull("Transaction", ActionComponent);
 
-	UTransactionTestHarness* Transaction = NewObject<UTransactionTestHarness>(ActionComponent);
+	UActionTestHarness* Transaction = NewObject<UActionTestHarness>(ActionComponent);
 	TestNotNull("Transaction", Transaction);
 	ActionComponent->SetTransactor(Transaction);
 	Transaction->bCanTransact = false;
@@ -71,7 +71,7 @@ bool FListeningToViewAction::RunTest(const FString& Parameters)
 	TestNotNull("Data", Data);
 	UActionHarness* ActionComponent = UICSTest::CreateComponent<UActionHarness>(Screen);
 	TestNotNull("Transaction", ActionComponent);
-	UTransactionTestHarness* Transaction = NewObject<UTransactionTestHarness>(ActionComponent);
+	UActionTestHarness* Transaction = NewObject<UActionTestHarness>(ActionComponent);
 	TestNotNull("Transaction", Transaction);
 	ActionComponent->SetTransactor(Transaction);
 

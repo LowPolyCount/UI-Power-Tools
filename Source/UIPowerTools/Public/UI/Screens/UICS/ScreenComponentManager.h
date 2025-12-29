@@ -20,6 +20,7 @@ public:
 	void Add(UScreenComponent* Component);
 	UScreenComponent* GetComponent(TSubclassOf<UScreenComponent> Type) const;
 	TArray<UScreenComponent*> GetAllComponents(TSubclassOf<UScreenComponent> Type) const;
+	UScreenComponent* GetComponentByName(const FName Name, TSubclassOf<UScreenComponent> Type) const;
 	UScreenComponent* GetComponentFromSelector(const FComponentSelector& Selector) const;
 #if WITH_EDITOR
 	UScreenComponent* GetComponentFromGUID(const FGuid& Selector) const;
