@@ -10,7 +10,6 @@
 
 class UOverlay;
 class UScreen;
-class IScreenInterface;
 class UCommonActivatableWidget;
 enum class EScreenInputMode : uint8;
 
@@ -21,7 +20,6 @@ struct UIPOWERTOOLS_API FScreenStruct
 	GENERATED_BODY()
 public:
 	FScreenStruct() {}
-	//FScreenStruct(TScriptInterface<IScreenInterface> Screen, bool bHideScreensBelow = true);
 	FScreenStruct(UUserWidget* InScreen, bool bHideScreensBelow = true);
 	bool operator==(const FScreenStruct& rhs) const { return Screen == rhs.Screen; }
 	void SetVisibility(bool bIsVisible);
@@ -90,12 +88,11 @@ public:
 
 	// get the screen at the top of the stack
 	UFUNCTION(BlueprintCallable, Category = ScreenManager)
-	TScriptInterface<IScreenInterface> GetScreenOnTop() const;
+	UUserWidget* GetScreenOnTop() const;
 
 protected:
 	
 	UFUNCTION()
-	//void HandleOnScreenClose(TScriptInterface<IScreenInterface> Screen);
 	void HandleOnNativeDestruct(UUserWidget* Screen);
 
 	UFUNCTION()
@@ -106,8 +103,8 @@ protected:
 	void AddScreen_Internal(FScreenStruct& ScreenToAdd);
 	void AddScreenUsingPanel(FScreenStruct& ScreenToAdd);
 	void AddScreenUsingViewport(FScreenStruct& ScreenToAdd);
-	void RemoveScreenUsingPanel(TScriptInterface<IScreenInterface>& Screen);
-	void RemoveScreenUsingViewport(TScriptInterface<IScreenInterface>& Screen);
+	void RemoveScreenUsingPanel(UUserWidget* Screen);
+	void RemoveScreenUsingViewport(UUserWidget* Screen);
 	virtual APlayerController* GetPlayerController();
 	//virtual void SetInputMode(APlayerController* PlayerController, const UInputScreenComponent* InputComponent);
 	void ActivateTopScreen();

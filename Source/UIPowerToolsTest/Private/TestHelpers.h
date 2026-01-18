@@ -19,9 +19,8 @@ class UScreenHarness : public UScreen
 public:
 	void AddComponent(UScreenComponent* Component) { ComponentManager->Add(Component); }
 
-	// we don't have a viewport to add to in testing, so override to do nothing
-	virtual void AddScreenToViewport(int32 ZOrder) override {}
-	// same applies to remove from parent
+	// we don't have a viewport to add to in testing, so the normal destruct process will not run. Instead, simulate by 
+	// calling OnNativeDestruct 
 	virtual void RemoveFromParent() {OnNativeDestruct.Broadcast(this); }
 
 };
@@ -32,8 +31,5 @@ class UUICSTestActivatableWidgetHarness : public UUICSTestActivatableWidget
 	GENERATED_BODY()
 public:
 	void AddComponent(UScreenComponent* Component) { GetComponentManager()->Add(Component); }
-
-	// we don't have a viewport to add to in testing, so override to do nothing
-	virtual void AddScreenToViewport(int32 ZOrder) {}
 };
 

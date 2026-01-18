@@ -92,7 +92,7 @@ bool FScreenManagerDoubleAddTest::RunTest(const FString& Parameters)
 		TestEqual("NumScreens", ScreenManager->NumScreens(), 3);
 		TestTrue("IsScreenOnStack", ScreenManager->IsScreenOnStack(Screen0));
 		TestTrue("IsScreenOnStack", ScreenManager->IsScreenOnStack(Screen1));
-		TestEqual("GetTop", ScreenManager->GetScreenOnTop(), TScriptInterface<IScreenInterface>(Screen0));
+		TestEqual("GetTop", ScreenManager->GetScreenOnTop(), Cast<UUserWidget>(Screen0));
 	}
 
 	return true;

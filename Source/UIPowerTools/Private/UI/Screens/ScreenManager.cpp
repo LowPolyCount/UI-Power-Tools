@@ -12,7 +12,6 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/Tools/UIPowerToolsDeveloperSettings.h"
-#include "UI/Screens/ScreenInterface.h"
 #include "CommonActivatableWidget.h"
 #include "Blueprint/WidgetTree.h"
 #include "Blueprint/GameViewportSubsystem.h"
@@ -282,9 +281,9 @@ bool UScreenManager::IsScreenOfClassOnStack(TSubclassOf<UUserWidget> Class) cons
 	return bRetVal;
 }
 
-TScriptInterface<IScreenInterface> UScreenManager::GetScreenOnTop() const
+UUserWidget* UScreenManager::GetScreenOnTop() const
 {
-	TScriptInterface<IScreenInterface> RetVal;
+	UUserWidget* RetVal = nullptr;
 
 	const int32 TopIndex = Screens.Num() - 1;
 	if (Screens.IsValidIndex(TopIndex))
@@ -307,19 +306,19 @@ void UScreenManager::HandleOnNativeDestruct(UUserWidget* Screen)
 	}
 }
 
-void UScreenManager::RemoveScreenUsingPanel(TScriptInterface<IScreenInterface>& Screen)
+void UScreenManager::RemoveScreenUsingPanel(UUserWidget* Screen)
 {
-	if (UUserWidget* AsUWidget = Screen->AsUserWidget())
+	if (Screen)
 	{
-		AsUWidget->RemoveFromParent();
+		Screen->RemoveFromParent();
 	}
 }
 
-void UScreenManager::RemoveScreenUsingViewport(TScriptInterface<IScreenInterface>& Screen)
+void UScreenManager::RemoveScreenUsingViewport(UUserWidget* Screen)
 {
-	if (UUserWidget* AsUWidget = Screen->AsUserWidget())
+	if (Screen)
 	{
-		AsUWidget->RemoveFromParent();
+		Screen->RemoveFromParent();
 	}
 }
 
