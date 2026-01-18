@@ -29,7 +29,7 @@ void UViewScreenComponent::PostEditChangeChainProperty(struct FPropertyChangedCh
 			if (!ViewWidgetPrototype->Implements<UViewWidgetInterface>())
 			{
 				// does not implement. :( 
-				UE_LOG(LogTemp, Error, TEXT("ViewWidgetPrototype Must implement IViewWidgetInterface to work. Use ViewCommonButtonBase, ViewUserWidget, etc."));
+				UE_LOG(LogTemp, Error, TEXT("The Selected ViewWidgetPrototype Must implement IViewWidgetInterface to work with View Screen Component. UViewCommonButtonBase and UViewUserWidget implement IViewWidgetInterface and are provided as part of UICS"));
 				ViewWidgetPrototype = nullptr;
 			}
 		}
@@ -111,6 +111,7 @@ void UViewScreenComponent::SetWidgetPrototype(UUserWidget* InWidgetPrototype)
 	// flush system
 	if (ActiveViewWidgets.Num() > 0)
 	{
+		//@todo: We should handle this case and recreate the widgets from data. 
 		UE_LOG(LogUICS, Warning, TEXT("There were %i Active Widgets when setting View Prototype. They will not be recreated, you will have to set the data for them again"), ActiveViewWidgets.Num());
 	}
 	ActiveViewWidgets.Empty();
