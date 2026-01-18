@@ -4,7 +4,6 @@
 
 #include "CommonActivatableWidget.h"
 #include "UI/Screens/UICS/IUICSAccessor.h"
-#include "UI/Screens/ScreenInterface.h"
 #include "Screen.generated.h"
 
 class UScreenComponentManager;
@@ -15,20 +14,12 @@ struct FUIInputConfig;
 // a screen is the base unit of our UI System, it can have widgets, controls, etc attached to it as part of a hierarchy to display visual elements
 // it has an array of UICS Components that can be used to add functionality
 UCLASS(BlueprintType, Blueprintable, Abstract, meta = (PrioritizeCategories = "Screen"))
-class UIPOWERTOOLS_API UScreen : public UCommonActivatableWidget, public IUICSScreenAccessor, public IScreenInterface
+class UIPOWERTOOLS_API UScreen : public UCommonActivatableWidget, public IUICSScreenAccessor
 {
 	GENERATED_BODY()
 public:
 	UScreen(const FObjectInitializer& Initializer);
 	
-	// called when the screen closes
-	UPROPERTY(BlueprintAssignable)
-	FScreenDelegate OnScreenClose;
-
-	// IScreenInterface begin
-	virtual FScreenDelegate& GetOnScreenClose() { return OnScreenClose;};
-	// IScreenInterface end
-
 	// UUserWidget begin
 	virtual bool Initialize() override;
 	virtual void NativePreConstruct() override;

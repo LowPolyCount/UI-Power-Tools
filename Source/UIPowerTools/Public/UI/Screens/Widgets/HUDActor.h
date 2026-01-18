@@ -31,9 +31,8 @@ protected:
 	UFUNCTION()
 	virtual void CreateScreensAndAddToManager();
 
-	// will create and add these screen to manager when BeginPlay happens.
-	// they must be a Screen class or implement IScreenInterface
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = HudActor, Meta=(MustImplement = "/Script/UIPOWERTOOLS.ScreenInterface"))
+	// will create and add these screens to manager when BeginPlay happens.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = HudActor)
 	TArray<TSubclassOf<UUserWidget>> ScreensToDisplayAtStart;
 
 	UPROPERTY()

@@ -1,4 +1,4 @@
-# UI-Power-Tools
+# UI-Power-Tools™
 ## Make Better UI™
 
 UI Power Tools is a plugin for Unreal Engine to help you make User Interfaces
@@ -125,6 +125,4 @@ That wasn't a question.
 
 ### Sorry!
 It's Ok. 
-
-UI Power Tools is a Trademark of Joel Gonzales.
 
