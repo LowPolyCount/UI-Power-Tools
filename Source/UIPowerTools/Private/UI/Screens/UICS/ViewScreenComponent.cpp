@@ -10,6 +10,15 @@
 #include "Components/PanelWidget.h"
 #include "Blueprint/UserWidget.h"
 
+FCachedWidget::FCachedWidget(const TScriptInterface<IViewWidgetInterface>& InWidget)
+	: UserWidget(InWidget)
+{ 
+	if (UUserWidget* AsUserWidget = Cast<UUserWidget>(UserWidget.GetObject()))
+	{
+		SlateWidget = AsUserWidget->GetCachedWidget();
+	}
+}
+
 #if WITH_EDITOR
 void UViewScreenComponent::PostEditChangeChainProperty(struct FPropertyChangedChainEvent& PropertyChangedEvent)
 {
@@ -240,10 +249,13 @@ void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetAndSetupEntryWidget()
 {
 	TScriptInterface<IViewWidgetInterface> RetVal;
+	int32 FoundIndex = INDEX_NONE;
+
 	if (CachedWidgets.Num() > 0 && bCacheWidgets)
 	{
-		RetVal = CachedWidgets[CachedWidgets.Num() - 1];
-		CachedWidgets.RemoveAt(CachedWidgets.Num() - 1);
+		FoundIndex = CachedWidgets.Num() - 1;
+		RetVal = CachedWidgets[FoundIndex].UserWidget;
+		
 	}
 	else if(ViewWidgetPrototype)
 	{
@@ -259,6 +271,12 @@ TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetAndSetupEntryWid
 		ActiveViewWidgets.Emplace(RetVal);
 		ListenToWidgetDelegates(RetVal);
 		AddToPanel(RetVal);
+
+		// we can't remove the entry from CachedWidgets until after AddToPanel() otherwise the slate widget will be destroyed
+		if (FoundIndex != INDEX_NONE)
+		{
+			CachedWidgets.RemoveAt(FoundIndex);
+		}
 	}
 
 	return RetVal;
@@ -282,10 +300,11 @@ void UViewScreenComponent::RemoveViewWidget(TScriptInterface<IViewWidgetInterfac
 
 			RemoveWidgetDelegates(Widget);
 
-			// @todo: Add option to hold onto swidgets
+			
 			if (bCacheWidgets)
 			{
-				CachedWidgets.Add(Widget);
+				// must add the widget to CachedWidgets Before RemoveFromParent() is called, otherwise the SWidget will be destroyed
+				CachedWidgets.Add(FCachedWidget(Widget));
 			}
 
 			ActiveViewWidgets.Remove(Widget);

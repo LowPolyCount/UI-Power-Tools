@@ -10,12 +10,31 @@
 class UPanelWidget;
 class UDataScreenComponent;
 
+
+
 // a generic event coming from this component
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FViewComp, UViewScreenComponent*, Component);
 // an event involving a widget
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FViewActionComp, UViewScreenComponent*, Component, const TScriptInterface<IViewWidgetInterface>&, Widget);
 // an event involving a widget where the widget gains or loses something
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FViewEventComp, UViewScreenComponent*, Component, const TScriptInterface<IViewWidgetInterface>&, Widget, bool, bGained);
+
+
+
+// a struct that holds pointers to a UserWidget that implements IViewWidgetInterface and the underlying SWidget
+// this makes it easy for us to hold on to the underlying SWidget so that it isn't destroyed when the UserWidget leaves the viewport
+USTRUCT()
+struct FCachedWidget
+{
+	GENERATED_BODY()
+	FCachedWidget() = default;
+	FCachedWidget(const TScriptInterface<IViewWidgetInterface>& InWidget);
+
+	UPROPERTY()
+	TScriptInterface<IViewWidgetInterface> UserWidget;
+	TSharedPtr<SWidget> SlateWidget;
+};
+
 
 
 // responsible for managing, caching widgets, sending data to display entries and acting as a central point for Widget actions like Focus Gain/Loss
@@ -181,14 +200,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = ViewScreenComponent)
 	bool InitialFocus = true;
 
-	// are widgets cached when taken off the panel?
+	// are widgets cached when removed from their panel? Will Cache both the Widget and Slate Widget
 	UPROPERTY(EditAnywhere, Category = ViewScreenComponent)
 	bool bCacheWidgets = true;
-
-	// when caching a widget, do we cache the Slate Widget?
-	/*UPROPERTY(EditAnywhere, Category = ViewScreenComponent, Meta = (EditCondition = "bCacheWidgets"))
-	bool bCacheSlateWidgets = true;
-	*/
 
 	// can only one widget can be selected at a time?
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent)
@@ -205,12 +219,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UDataScreenComponent> LinkedDataComponent;
 	UPROPERTY()
-	TArray<TScriptInterface<IViewWidgetInterface>> CachedWidgets;
+	TArray<FCachedWidget> CachedWidgets;
 	UPROPERTY()
 	TArray<TScriptInterface<IViewWidgetInterface>> ActiveViewWidgets;
-
-
-
-
-
 };
