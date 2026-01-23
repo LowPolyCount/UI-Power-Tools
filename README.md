@@ -19,20 +19,9 @@ The Roadmap section has information on upcoming features
 
 # Quick Start Guide
 ## Install Plugin
-[Get a release version](https://codeberg.org/LowPolyCount/UI-Power-Tools/releases) and place in your engine or project plugins folder. Example: YourProject/Plugins/UIPowerTools
-
-In your Project's Build.cs file, add "UIPowerTools" to PublicDependencyModuleNames and then add the following after that:
-
-
-        if (Target.bBuildEditor)
-        {
-            PublicDependencyModuleNames.Add("UIPowerToolsEd");
-
-			if (Target.WithAutomationTests)
-			{
-				PublicDependencyModuleNames.Add("UIPowerToolsTest");
-			}
-		}
+-If it doesn't exist, create a Plugins directory in your project
+- [Diwbkiad a release version](https://codeberg.org/LowPolyCount/UI-Power-Tools/releases) and unzip to the plugins directory
+-Restart your project and it will prompt you to build the plugin.  
 
 ## UICS Setup
 
