@@ -19,11 +19,12 @@ The Roadmap section has information on upcoming features
 
 # Quick Start Guide
 ## Install Plugin
--If it doesn't exist, create a Plugins directory in your project
-- [Diwbkiad a release version](https://codeberg.org/LowPolyCount/UI-Power-Tools/releases) and unzip to the plugins directory
--Restart your project and it will prompt you to build the plugin.  
+- If it doesn't exist, create a Plugins directory in your project
+- [Download a release version](https://codeberg.org/LowPolyCount/UI-Power-Tools/releases) and unzip to the plugins directory
+- Restart your project and it will prompt you to build the plugin.  
 
-## UICS Setup
+## Setup
+### UICS Setup
 
 See [UICS Setup](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UICS)
 
@@ -53,39 +54,23 @@ You can ask questions on [The UIPT Discord Server](https://discord.gg/nBnvbf8TnU
 
 # Status
 
-UI Power Tools v1 is currently in BETA. v1 is focused on implementing UICS, providing a basic screen manager, and giving examples & documentation of how to use everything. 
+UI Power Tools v1 is currently in BETA. [View remaining issues to resolve](https://codeberg.org/LowPolyCount/UI-Power-Tools/projects/27641) before leaving BETA.
 
 # Roadmap
 
 v1 will feature:
 - Implementation of UICS
-- Data, View, Action, and Entry Components 
-- A Basic ScreenManager
-- Documentation on UICS and the provided screen components
-
-v2 will feature:
-- Fully featured Screen Manager with Layer, Animation support
-- Better logging and debugging
-- Screen Viewer Tool showing which screens are on the ScreenManager with additional debugging information
-
-v3 and Beyond:
-- Screen and Widget Templates
-- Focus Display Tool
-- Verse Support
-- Additional UICS Components
-- Composable Widgets?
+- Data, View, Action, and Entry Components
+- A ScreenManager
+- Documentation and Examples for UICS
 
 # License 
-UIPT is distributed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-
-While not required, We ask that you attribute by including the follow line in the credits of your product:
-
-Using UI Power Tools™
+Licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 # FAQ
 
 ### Can I use MVVM with UICS?
-Yes.  UICS doesn't specify how you set the visual elements of your widgets so you can use MVVM, blueprint, or some other method. 
+Yes, UICS doesn't specify how you set the visual elements of your widgets so you can use MVVM, blueprint, slate, or whatever method you want.
 
 ### Who made this?
 This was created by [Joel Gonzales | "LowPolyCount"](https://www.lowpolycount.com)
