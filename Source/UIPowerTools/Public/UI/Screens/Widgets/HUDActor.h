@@ -20,12 +20,7 @@ class UIPOWERTOOLS_API AHUDActor : public AHUD
 	GENERATED_BODY()
 
 public:
-	AHUDActor(const FObjectInitializer& ObjectInitializer);
 	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type Reason) override;
-
-	// use UScreenManager::Get() to retrieve the ScreenManager in Blueprint
-	UScreenManager* GetScreenManager() const { return ScreenManager; }
 
 protected:
 	UFUNCTION()
@@ -34,7 +29,4 @@ protected:
 	// will create and add these screens to manager when BeginPlay happens.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = HudActor)
 	TArray<TSubclassOf<UUserWidget>> ScreensToDisplayAtStart;
-
-	UPROPERTY()
-	TObjectPtr<UScreenManager> ScreenManager;
 };
