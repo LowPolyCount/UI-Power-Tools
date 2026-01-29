@@ -14,7 +14,7 @@
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FScreenManagerAddRemoveTest, "UIPowerTools.UICS.ScreenManager.AddRemove", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FScreenManagerAddRemoveTest::RunTest(const FString& Parameters)
 {
-	// @todo we get warnings saying that UScreenHarness doesn't have a world. But we don't want to create a world here 
+	// @note we get warnings saying that UScreenHarness doesn't have a world. But we don't want to create a world here 
 	//			because that will overwrite the world in the editor. 
 	UScreenManager* ScreenManager = NewObject<UScreenManager>();
 	TestNotNull("ScreenManager", ScreenManager);
@@ -22,17 +22,25 @@ bool FScreenManagerAddRemoveTest::RunTest(const FString& Parameters)
 
 	// test screen adding functionality like visibility, etc. 
 	{
-		UScreenHarness* Screen0 = NewObject<UScreenHarness>();
-		UScreenHarness* Screen1 = NewObject<UScreenHarness>();
-		UScreenHarness* Screen2 = NewObject<UScreenHarness>();
-		UScreenHarness* Screen3 = NewObject<UScreenHarness>();
+		// @note turn off warnings saying that UScreenHarness doesn't have a world. Creating a world here will overwrite the world in the editor.
+		
+		UScreenHarness* Screen0 = NewObject<UScreenHarness>(ScreenManager);
+		UScreenHarness* Screen1 = NewObject<UScreenHarness>(ScreenManager);
+		UScreenHarness* Screen2 = NewObject<UScreenHarness>(ScreenManager);
+		UScreenHarness* Screen3 = NewObject<UScreenHarness>(ScreenManager);
+		
+
 		TSubclassOf<UUserWidget> AsSubclassOf(UScreenHarness::StaticClass());
 
 		TestFalse("IsScreenOfClassOnStack", ScreenManager->IsScreenOfClassOnStack(AsSubclassOf));
 		
+		// @note turn off warnings saying that UScreenHarness doesn't have a world. Creating a world here will overwrite the world in the editor.
+		// @todo: We could make a ScreenManager Harness and override AddToScreen()
+		bSuppressLogWarnings = true;
 		ScreenManager->AddScreen(Screen0);
 		ScreenManager->AddScreen(Screen1);
 		ScreenManager->AddScreen(Screen2);
+		bSuppressLogWarnings = false;
 
 		TestEqual("Visibility", Screen2->GetVisibility(), ESlateVisibility::SelfHitTestInvisible );
 		TestEqual("NumScreens", ScreenManager->NumScreens(), 3);
@@ -40,7 +48,9 @@ bool FScreenManagerAddRemoveTest::RunTest(const FString& Parameters)
 		TestFalse("IsScreenOnStack", ScreenManager->IsScreenOnStack(Screen3));
 		TestTrue("IsScreenOfClassOnStack", ScreenManager->IsScreenOfClassOnStack(AsSubclassOf));
 
+		bSuppressLogWarnings = true;
 		ScreenManager->AddScreen(Screen3, false);
+		bSuppressLogWarnings = false;
 
 		TestEqual("Visibility", Screen0->GetVisibility(), ESlateVisibility::Hidden);
 		TestEqual("Visibility", Screen1->GetVisibility(), ESlateVisibility::Hidden);
@@ -48,7 +58,6 @@ bool FScreenManagerAddRemoveTest::RunTest(const FString& Parameters)
 		TestEqual("Visibility", Screen3->GetVisibility(), ESlateVisibility::SelfHitTestInvisible);
 		TestEqual("NumScreens", ScreenManager->NumScreens(), 4);
 
-		
 		Screen3->RemoveFromParent();
 		
 		
@@ -70,8 +79,6 @@ bool FScreenManagerAddRemoveTest::RunTest(const FString& Parameters)
 		TestEqual("NumScreens", ScreenManager->NumScreens(), 1);
 	}
 
-	ScreenManager->RemoveFromRoot();
-
 	return true;
 }
 
@@ -83,15 +90,25 @@ bool FScreenManagerDoubleAddTest::RunTest(const FString& Parameters)
 
 	// test adding same screen twice
 	{
+		
+		
 		UScreenHarness* Screen0 = NewObject<UScreenHarness>();
 		UScreenHarness* Screen1 = NewObject<UScreenHarness>();
+		
+		// @note turn off warnings saying that UScreenHarness doesn't have a world. Creating a world here will overwrite the world in the editor.
+		// @todo: We could make a ScreenManager Harness and override AddToScreen()
+		bSuppressLogWarnings = true;
 		ScreenManager->AddScreen(Screen0);
 		ScreenManager->AddScreen(Screen1);
 		ScreenManager->AddScreen(Screen0);
+		bSuppressLogWarnings = false;
 
 		TestEqual("NumScreens", ScreenManager->NumScreens(), 3);
 		TestTrue("IsScreenOnStack", ScreenManager->IsScreenOnStack(Screen0));
 		TestTrue("IsScreenOnStack", ScreenManager->IsScreenOnStack(Screen1));
+		TestEqual("GetScreenAtIndex", Screen0, Cast<UScreenHarness>(ScreenManager->GetScreenAtIndex(0)));
+		TestEqual("GetScreenAtIndex", Screen1, Cast<UScreenHarness>(ScreenManager->GetScreenAtIndex(1)));
+		TestEqual("GetScreenAtIndex", Screen0, Cast<UScreenHarness>(ScreenManager->GetScreenAtIndex(2)));
 		TestEqual("GetTop", ScreenManager->GetScreenOnTop(), Cast<UUserWidget>(Screen0));
 	}
 

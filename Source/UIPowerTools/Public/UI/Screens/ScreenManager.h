@@ -54,15 +54,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = ScreenManager, Meta=(DisplayName="Get ScreenManager", WorldContext = "WorldContextObject"))
 	static UScreenManager* Get(const UObject* WorldContextObject);
 
-	// broadcasts when the subsystem is ready to accept screens
-	UPROPERTY(BlueprintAssignable, Category = ScreenManager)
-	FReadyDelegate OnReady;
-
-	// this only needs to be checked when first starting a game instance, such as with the Hud Actor
-	// this is because the subsystem can be created before the Viewport, so we need to wait on that before
-	// something can be added.
+	// get the screen at the top of the stack
 	UFUNCTION(BlueprintCallable, Category = ScreenManager)
-	bool IsReady() const;
+	UUserWidget* GetScreenOnTop() const;
 
 	// add a screen to the manager to be displayed
 	// to remove a screen, call the screen's Close()
@@ -73,6 +67,15 @@ public:
 	// *Only Added for convenience*
 	// Instead of calling this, call the UUserWidget's RemoveFromParent()
 	void RemoveScreen(UUserWidget* Screen);
+
+	// Remove All Screens 
+	void RemoveAllScreens();
+
+	// this only needs to be checked when first starting a game instance, such as with the Hud Actor
+	// this is because the subsystem can be created before the Viewport, so we need to wait on that before
+	// something can be added.
+	UFUNCTION(BlueprintCallable, Category = ScreenManager, Meta = (DeprecatedFunction))
+	bool IsReady() const;
 
 	// is the given screen instance on the stack?
 	UFUNCTION(BlueprintCallable, Category = ScreenManager)
@@ -86,30 +89,21 @@ public:
 	UFUNCTION(BlueprintCallable, Category = ScreenManager)
 	int32 NumScreens() const {return Screens.Num();}
 
-	// get the screen at the top of the stack
+	// get the screen at the given index
 	UFUNCTION(BlueprintCallable, Category = ScreenManager)
-	UUserWidget* GetScreenOnTop() const;
+	UUserWidget* GetScreenAtIndex(int32 Index) const;
 
 protected:
 	
 	UFUNCTION()
 	void HandleOnNativeDestruct(UUserWidget* Screen);
 
-	UFUNCTION()
-	void HandleOnAddToViewport();
-	UFUNCTION()
-	void HandleOnReady();
-
 	void AddScreen_Internal(FScreenStruct& ScreenToAdd);
 	void AddScreenUsingPanel(FScreenStruct& ScreenToAdd);
 	void AddScreenUsingViewport(FScreenStruct& ScreenToAdd);
 	void RemoveScreenUsingPanel(UUserWidget* Screen);
 	void RemoveScreenUsingViewport(UUserWidget* Screen);
-	virtual APlayerController* GetPlayerController();
-	//virtual void SetInputMode(APlayerController* PlayerController, const UInputScreenComponent* InputComponent);
 	void ActivateTopScreen();
-
-	//EScreenInputMode CurrentInputMode;
 
 	UPROPERTY()
 	TArray<FScreenStruct> Screens;
