@@ -48,7 +48,7 @@ class UIPOWERTOOLS_API UViewScreenComponent : public UScreenComponent
 #endif
 
 public:
-	// an input action has occured on a widget
+	// an input action has occurred on a widget
 	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
 	FViewActionComp OnAction;
 	// a widget has gained or lost selection
