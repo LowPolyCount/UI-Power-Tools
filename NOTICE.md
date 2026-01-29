@@ -1,2 +1,2 @@
-This Project is using UI Power Tools
-Copyright 2025 Joel Gonzales
+UI Power Tools™
+Copyright (c) 2026. Joel Gonzales. All rights reserved.

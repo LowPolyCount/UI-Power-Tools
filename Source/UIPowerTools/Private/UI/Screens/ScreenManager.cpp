@@ -2,7 +2,7 @@
 
 
 #include "UI/Screens/ScreenManager.h"
-#include "UI/Screens/Widgets/HUDActor.h"
+//#include "UI/Screens/Widgets/HUDActor.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
 #include "Input/UIActionBindingHandle.h"
@@ -17,6 +17,7 @@
 #include "Blueprint/GameViewportSubsystem.h"
 #include "Components/Overlay.h"
 #include "Components/OverlaySlot.h"
+#include "UI/Tools/ScreenManagerSubsystem.h"
 
 FScreenStruct::FScreenStruct(UUserWidget* InScreen, bool bHideScreensBelow)
 	:Screen(InScreen)
@@ -75,59 +76,22 @@ UScreenManager::UScreenManager()
 
 void UScreenManager::BeginPlay()
 {
-	/*RootWidget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*GetWorld(), UCommonActivatableWidget::StaticClass(), FName()));
 	if (ZValue == INDEX_NONE)
 	{
 		const UUIPowerToolsDeveloperSettings* Settings = GetDefault<UUIPowerToolsDeveloperSettings>();
 		ZValue = (Settings) ? Settings->ScreenManagerZOrderStart : 1;
 	}
 
-	if (RootWidget)
-	{
-		RootWidget->AddToViewport(ZValue);
-		Cast< UCommonActivatableWidget>(RootWidget)->ActivateWidget();
-		if (UOverlay* AsOverlay = RootWidget->WidgetTree->ConstructWidget<UOverlay>())
-		{
-			RootWidget->WidgetTree->RootWidget = Cast<UWidget>(AsOverlay);
-			ParentPanel = AsOverlay;
-		}
-
-		if (ParentPanel)
-		{
-			TSubclassOf<UUserWidget> AsSubclass(UScreenBaseWidget::StaticClass());
-
-			if (UCommonActivatableWidget* AsCommon = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*GetWorld(), UCommonActivatableWidget::StaticClass(), FName())))
-			{
-				if (UOverlaySlot* Slot = ParentPanel->AddChildToOverlay(AsCommon))
-				{
-					Slot->SetHorizontalAlignment(HAlign_Fill);
-					Slot->SetVerticalAlignment(VAlign_Fill);
-				}
-				AsCommon->ActivateWidget();
-				if (UOverlay* AsOverlay = AsCommon->WidgetTree->ConstructWidget<UOverlay>())
-				{
-					AsCommon->WidgetTree->RootWidget = Cast<UWidget>(AsOverlay);
-					ParentPanel = AsOverlay;
-				}
-			}
-		}
-		if (UGameViewportSubsystem* Subsystem = UGameViewportSubsystem::Get(GetWorld()))
-		{
-			UE_LOG(LogTemp, Warning, TEXT(""));
-		}
-
-		if (!IsReady())
-		{
-			check(GetWorld());
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UScreenManagerSubsystem::HandleOnAddToViewport, 0.01, true);// true); //FTimerDelegate::CreateWeakLambda(this, [this, Screen, bHideScreensBelow]()
-			//FORCEINLINE void SetTimer(FTimerHandle& InOutHandle, FTimerDynamicDelegate const& InDynDelegate, float InRate, bool InbLoop, float InFirstDelay = -1.f)
-		}
-	//}*/
 }
 
 void UScreenManager::EndPlay(const EEndPlayReason::Type Reason)
 {
-	for(int i=Screens.Num() - 1; i >= 0; --i)
+	RemoveAllScreens();
+}
+
+void UScreenManager::RemoveAllScreens()
+{
+	for (int i = Screens.Num() - 1; i >= 0; --i)
 	{
 		if (Screens[i].Screen)
 		{
@@ -139,40 +103,23 @@ void UScreenManager::EndPlay(const EEndPlayReason::Type Reason)
 UScreenManager* UScreenManager::Get(const UObject* WorldContextObject)
 {
 	UScreenManager* RetVal = nullptr;
-	if(const APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	if (WorldContextObject)
 	{
-		if (const AHUDActor* HudActor = Cast<AHUDActor>(PC->GetHUD()))
+		RetVal = UScreenManagerSubsystem::GetScreenManager(WorldContextObject->GetWorld());
+#if !UE_BUILD_SHIPPING 
+		if (!RetVal)
 		{
-			RetVal = HudActor->GetScreenManager();
+			//@todo: Log Error
 		}
-		else
-		{
-			if (PC->GetHUD())
-			{
-				UE_LOG(LogTemp, Error, TEXT("HUD on the player controller is a %s, not a AHUDActor. Have you changed the HUD class in the GameMode to use HudActor?"), *PC->GetHUD()->GetName());
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("HUD on the player controller does not exist.  "));
-			}
-			
-			
-		}
+#endif //!UE_BUILD_SHIPPING
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("There was no player controller at index 0"));
+		//@todo: Log Error
 	}
 
 	return RetVal;
 }
-
-/*UScreenManagerSubsystem& UScreenManagerSubsystem::GetChecked(UWorld* WorldContextObject)
-{
-	UScreenManagerSubsystem* ContainerSubsystem = Get(WorldContextObject);
-	check(ContainerSubsystem);
-	return *ContainerSubsystem;
-}*/
 
 bool UScreenManager::IsReady() const
 {
@@ -184,52 +131,6 @@ bool UScreenManager::IsReady() const
 
 	return RetVal;
 }
-
-void UScreenManager::HandleOnReady()
-{
-	OnReady.Broadcast();
-}
-
-void UScreenManager::HandleOnAddToViewport()
-{
-	//if (GEngine)
-	//{
-		/*if (UGameViewportSubsystem* Subsystem = UGameViewportSubsystem::Get())
-		{
-			if (!Subsystem->IsWidgetAdded(RootWidget))
-			{
-				//UGameViewportClient::
-				RootWidget->AddToViewport(ZValue);
-
-				// no error message is given if AddToViewport failed, so check it here instead
-				if (Subsystem->IsWidgetAdded(RootWidget))
-				{
-					Cast<UCommonActivatableWidget>(RootWidget)->ActivateWidget();
-					check(GetWorld());
-					GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-
-					// We need to wait until next frame to actually "Be ready" otherwise activatable widgets will not fire correctly
-					GetWorld()->GetTimerManager().SetTimerForNextTick(this, &UScreenManagerSubsystem::HandleOnReady);
-				}
-			}
-			else
-			{
-				
-
-			}
-		}*/
-	//}
-}
-
-/*void UScreenManagerSubsystem::Deinitialize()
-{
-	Super::Deinitialize();
-	if (RootWidget)
-	{
-		RootWidget->RemoveFromParent();
-		RootWidget = nullptr;
-	}
-}*/
 
 
 void UScreenManager::AddScreen(UUserWidget* Screen, bool bHideScreensBelow)
@@ -279,6 +180,20 @@ bool UScreenManager::IsScreenOfClassOnStack(TSubclassOf<UUserWidget> Class) cons
 	}
 
 	return bRetVal;
+}
+
+UUserWidget* UScreenManager::GetScreenAtIndex(int32 Index) const
+{
+	UUserWidget* RetVal = nullptr;
+	if (Screens.IsValidIndex(Index))
+	{
+		RetVal = Screens[Index].Screen;
+	}
+	else
+	{
+		//@todo: log warning
+	}
+	return RetVal;
 }
 
 UUserWidget* UScreenManager::GetScreenOnTop() const
@@ -420,12 +335,25 @@ void UScreenManager::ActivateTopScreen()
 	{
 		// @todo: log that it's not a UserWidget
 	}
-
-
 }
+
+// code used if we want to add things to the ScreenManager via a Widget instead of to the viewport. 
+// TODO: Move to another ScreenManagerClass for testing. 
+/*
+
+/*void UScreenManagerSubsystem::Deinitialize()
+{
+	Super::Deinitialize();
+	if (RootWidget)
+	{
+		RootWidget->RemoveFromParent();
+		RootWidget = nullptr;
+	}
+}*/
 
 /*void UScreenManager::SetInputMode(APlayerController* PlayerController, const UInputScreenComponent* InputComponent)
 {
+
 	if (InputComponent)
 	{
 		const EScreenInputMode NextMode = InputComponent->GetInputMode();
@@ -454,10 +382,100 @@ void UScreenManager::ActivateTopScreen()
 	}
 }*/
 
-APlayerController* UScreenManager::GetPlayerController()
-{
 
-	check(GetWorld());
-	//@note:  For now, we get the player controller from the first player
-	return UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+
+
+
+/*
+void UScreenManager::HandleOnAddToViewport()
+{
+	//if (GEngine)
+	//{
+		/*if (UGameViewportSubsystem* Subsystem = UGameViewportSubsystem::Get())
+		{
+			if (!Subsystem->IsWidgetAdded(RootWidget))
+			{
+				//UGameViewportClient::
+				RootWidget->AddToViewport(ZValue);
+
+				// no error message is given if AddToViewport failed, so check it here instead
+				if (Subsystem->IsWidgetAdded(RootWidget))
+				{
+					Cast<UCommonActivatableWidget>(RootWidget)->ActivateWidget();
+					check(GetWorld());
+					GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+
+					// We need to wait until next frame to actually "Be ready" otherwise activatable widgets will not fire correctly
+					GetWorld()->GetTimerManager().SetTimerForNextTick(this, &UScreenManagerSubsystem::HandleOnReady);
+				}
+			}
+			else
+			{
+
+
+			}
+		}
+		//}
+}*/
+
+/*void UScreenManagerSubsystem::Deinitialize()
+{
+	Super::Deinitialize();
+	if (RootWidget)
+	{
+		RootWidget->RemoveFromParent();
+		RootWidget = nullptr;
+	}
+}*/
+
+
+
+/*
+UScreenManager::BeginPlayUsingRootWidget()
+{
+RootWidget = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*GetWorld(), UCommonActivatableWidget::StaticClass(), FName()));
+
+
+if (RootWidget)
+{
+	RootWidget->AddToViewport(ZValue);
+	Cast< UCommonActivatableWidget>(RootWidget)->ActivateWidget();
+	if (UOverlay* AsOverlay = RootWidget->WidgetTree->ConstructWidget<UOverlay>())
+	{
+		RootWidget->WidgetTree->RootWidget = Cast<UWidget>(AsOverlay);
+		ParentPanel = AsOverlay;
+	}
+
+	if (ParentPanel)
+	{
+		TSubclassOf<UUserWidget> AsSubclass(UScreenBaseWidget::StaticClass());
+
+		if (UCommonActivatableWidget* AsCommon = Cast<UCommonActivatableWidget>(UUserWidget::CreateWidgetInstance(*GetWorld(), UCommonActivatableWidget::StaticClass(), FName())))
+		{
+			if (UOverlaySlot* Slot = ParentPanel->AddChildToOverlay(AsCommon))
+			{
+				Slot->SetHorizontalAlignment(HAlign_Fill);
+				Slot->SetVerticalAlignment(VAlign_Fill);
+			}
+			AsCommon->ActivateWidget();
+			if (UOverlay* AsOverlay = AsCommon->WidgetTree->ConstructWidget<UOverlay>())
+			{
+				AsCommon->WidgetTree->RootWidget = Cast<UWidget>(AsOverlay);
+				ParentPanel = AsOverlay;
+			}
+		}
+	}
+	if (UGameViewportSubsystem* Subsystem = UGameViewportSubsystem::Get(GetWorld()))
+	{
+		UE_LOG(LogTemp, Warning, TEXT(""));
+	}
+
+	if (!IsReady())
+	{
+		check(GetWorld());
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UScreenManagerSubsystem::HandleOnAddToViewport, 0.01, true);// true); //FTimerDelegate::CreateWeakLambda(this, [this, Screen, bHideScreensBelow]()
+		//FORCEINLINE void SetTimer(FTimerHandle& InOutHandle, FTimerDynamicDelegate const& InDynDelegate, float InRate, bool InbLoop, float InFirstDelay = -1.f)
+	}
 }
+}*/
