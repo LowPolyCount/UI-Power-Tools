@@ -11,9 +11,7 @@ class UScreenManager;
  * @note: We remove all screens on the screen manager on world transition as the GameViewPortSubsystem removes all widgets
  */
 UCLASS()
-//class UIPOWERTOOLS_API UScreenManagerSubsystem : public UEngineSubsystem
 class UIPOWERTOOLS_API UScreenManagerSubsystem : public UWorldSubsystem
-//class UIPOWERTOOLS_API UScreenManagerSubsystem : public UGameViewportSubsystem
 {
 	GENERATED_BODY()
 public:
@@ -23,9 +21,6 @@ public:
 	virtual void Deinitialize() override;
 
 	static UScreenManagerSubsystem* Get(const UWorld* World);
-	//static UScreenManagerSubsystem* Get();
-
-	UFUNCTION(BlueprintCallable)
 	static UScreenManager* GetScreenManager(const UWorld* World);
 
 protected:
