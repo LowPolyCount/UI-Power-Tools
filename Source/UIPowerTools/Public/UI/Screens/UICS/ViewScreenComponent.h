@@ -38,14 +38,10 @@ struct FCachedWidget
 
 
 // responsible for managing, caching widgets, sending data to display entries and acting as a central point for Widget actions like Focus Gain/Loss
-UCLASS(BlueprintType, Blueprintable, meta = (EntryInterface = "/Script/UIPowerTools.ViewWidgetInterface"))
+UCLASS(BlueprintType, Blueprintable)
 class UIPOWERTOOLS_API UViewScreenComponent : public UScreenComponent
 {
 	GENERATED_BODY()
-
-#if WITH_EDITOR
-	virtual void PostEditChangeChainProperty(struct FPropertyChangedChainEvent& PropertyChangedEvent) override;
-#endif
 
 public:
 	// an input action has occurred on a widget
@@ -208,11 +204,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent)
 	bool bSingleSelection = false;
 	
-	// define an instance of a class used to display data.  This is done using the prototype pattern, so clones of this instance are made 
-	// which lets you set specific values in the editor per instance of this component.
-	// @note the class must implement  IViewWidgetInterface, but we don't have a way to enforce that in the dropdown.  
-	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent, Meta=(EntryInterface = "/Script/UIPowerTools.ViewWidgetInterface"))
-	TObjectPtr<UUserWidget> ViewWidgetPrototype = nullptr;
+	// define an instance / prototype of a widget class that implements IViewWidgetInterface that we will use to display our data with.
+	// This uses the prototype pattern, meaning that we will close this widget instance when we need to make widgets instead of Creating it from a class.
+	// This allows you set properties on this widget through the editor
+	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent, Meta=(ObjectMustImplement = "/Script/UIPowerTools.ViewWidgetInterface"))
+	TObjectPtr<UUserWidget> ViewWidgetPrototype;
 
 	UPROPERTY()
 	TObjectPtr<UPanelWidget> Panel;
