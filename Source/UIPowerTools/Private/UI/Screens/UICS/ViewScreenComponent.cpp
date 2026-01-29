@@ -19,33 +19,6 @@ FCachedWidget::FCachedWidget(const TScriptInterface<IViewWidgetInterface>& InWid
 	}
 }
 
-#if WITH_EDITOR
-void UViewScreenComponent::PostEditChangeChainProperty(struct FPropertyChangedChainEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeChainProperty(PropertyChangedEvent);
-
-	const FProperty* MemberProperty = nullptr;
-	if (PropertyChangedEvent.PropertyChain.GetActiveMemberNode())
-	{
-		MemberProperty = PropertyChangedEvent.PropertyChain.GetActiveMemberNode()->GetValue();
-	}
-
-	if (MemberProperty
-		&& MemberProperty->GetFName() == GET_MEMBER_NAME_CHECKED(UViewScreenComponent, ViewWidgetPrototype))
-	{
-		if (ViewWidgetPrototype)
-		{
-			if (!ViewWidgetPrototype->Implements<UViewWidgetInterface>())
-			{
-				// does not implement. :( 
-				UE_LOG(LogTemp, Error, TEXT("The Selected ViewWidgetPrototype Must implement IViewWidgetInterface to work with View Screen Component. UViewCommonButtonBase and UViewUserWidget implement IViewWidgetInterface and are provided as part of UICS"));
-				ViewWidgetPrototype = nullptr;
-			}
-		}
-	}
-}
-#endif
-
 void UViewScreenComponent::Initialize()
 {
 	Super::Initialize();
