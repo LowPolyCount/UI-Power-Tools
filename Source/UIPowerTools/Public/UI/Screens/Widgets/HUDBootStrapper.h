@@ -4,18 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "HUDActor.generated.h"
+#include "HUDBootStrapper.generated.h"
 
-class UScreen;
 class UUserWidget;
-class UScreenManager;
 
 /**
- * The HUD actor is defined on the game instance and can be used to bootstrap the UI
- * Will add the defined ScreensToDisplayAtStart to the Screen Manager when BeginPlay occurs
+ * This actor can be set on your game instance and will add any screens in ScreensToDisplayAtStart
+ * to the Screen Manager when BeginPlay occurs
  */
 UCLASS()
-class UIPOWERTOOLS_API AHUDActor : public AHUD
+class UIPOWERTOOLS_API AHUDBootStrapper : public AHUD
 {
 	GENERATED_BODY()
 

@@ -1,12 +1,12 @@
 // Copyright (c) 2025 Joel Gonzales
 
 
-#include "UI/Screens/Widgets/HUDActor.h"
+#include "UI/Screens/Widgets/HUDBootStrapper.h"
 #include "UI/Screens/ScreenManager.h"
 #include "UI/Tools/ScreenManagerSubsystem.h"
 #include "Blueprint/UserWidget.h"
 
-void AHUDActor::BeginPlay()
+void AHUDBootStrapper::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -14,7 +14,7 @@ void AHUDActor::BeginPlay()
 
 }
 
-void AHUDActor::CreateScreensAndAddToManager()
+void AHUDBootStrapper::CreateScreensAndAddToManager()
 {
 	if (UScreenManagerSubsystem* System = UScreenManagerSubsystem::Get(GetWorld()))
 	{
