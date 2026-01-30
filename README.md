@@ -40,15 +40,7 @@ You can ask questions on [The UIPT Discord Server](https://discord.gg/nBnvbf8TnU
 
 # Status
 
-The Library is considered stable meaning it can be used in production code.  It has not yet hit v1 meaning there may be API changes before then. [View remaining v1 issues to resolve](https://codeberg.org/LowPolyCount/UI-Power-Tools/projects/27641)
-
-# Roadmap
-
-v1 will feature:
-- Implementation of UICS
-- Data, View, Action, and Entry Components
-- A ScreenManager
-- Documentation and Examples for UICS
+The Library is considered stable meaning it can be used in production code.  It has not yet hit v1 meaning there may be API changes before then. [View remaining v1 issues to resolve](https://codeberg.org/LowPolyCount/UI-Power-Tools/milestone/55170)
 
 # License 
 Licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
