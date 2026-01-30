@@ -28,33 +28,19 @@ The Roadmap section has information on upcoming features
 
 See [UICS Setup](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UICS)
 
-
-### ScreenManager Setup
-The ScreenManager will let you add a Screen to the viewport and will display screens in the order they are added with the ability to hide screens. Think of it as showing a stack of screens. Any UUserWidget can be added to the ScreenManager
-
-To setup the ScreenManager:
-- Create a New Blueprint Class and Choose HudActor as the parent class
-- Open the Blueprint you created. Under the "Screens to Display at Start" property, you can add any screens that you would like to be created and put on the ScreenManager when the HudActor's BeginPlay() is called.
-- Open any gamemodes you want to use the ScreenManager and you Set the HUD Class to use the Blueprint you created. You will likely want to create other Blueprints for different gamemodes.
-
-In Blueprint, you can access the ScreenManager by calling the ScreenManager node which is global. 
-In C++, you can call the static function UScreenManager::Get(UObject* WorldContextObject)
-
-You can remove a Screen from the ScreenManagerby calling it's RemoveFromParent() function.
-
 # Help & Learning
 ### Wiki
 [The Wiki](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki) has information on how to use UI Power Tools.
 
 ### Example Project
-The [UI Power Tools Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has examples of how to use UICS to build screens and use the Screen Manager. 
+The [UI Power Tools Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has examples of how to use this library to build screens.
 
 ### Discord
 You can ask questions on [The UIPT Discord Server](https://discord.gg/nBnvbf8TnU)
 
 # Status
 
-UI Power Tools v1 is currently in BETA. [View remaining issues to resolve](https://codeberg.org/LowPolyCount/UI-Power-Tools/projects/27641) before leaving BETA.
+The Library is considered stable meaning it can be used in production code.  It has not yet hit v1 meaning there may be API changes before then. [View remaining v1 issues to resolve](https://codeberg.org/LowPolyCount/UI-Power-Tools/projects/27641)
 
 # Roadmap
 
