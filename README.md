@@ -23,10 +23,14 @@ The Roadmap section has information on upcoming features
 - [Download a release version](https://codeberg.org/LowPolyCount/UI-Power-Tools/releases) and unzip to the plugins directory
 - Restart your project and it will prompt you to build the plugin.  
 
-## Setup
-### UICS Setup
+## Usage
+### UICS
 
-See [UICS Setup](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UICS)
+See [UICS Usage](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UICS)
+
+### Screen Manager
+
+You can get the Screen Manager globally by calling it's static Get() function in either C++ or blueprint. Any UUserWidget can be added as a Screen which will make it visible.  A Screen can be removed from the Manager by calling the Widget's RemoveFromParent()
 
 # Help & Learning
 ### Wiki
