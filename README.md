@@ -17,7 +17,7 @@ The [Screen Manager](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Scree
 
 # Help & Learning
 ### Tutorials
-- If you want to see what UI Power Tools is capable of, see [A Step-by-Step Tutorial on how to use UI Power Tools to Create a Screen](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Tutorial-Using-Data%2C-View-Components)
+- If you want to see what UI Power Tools is capable of, follow [A Step-by-Step Tutorial on how to use UI Power Tools to Create a Screen](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Tutorial-Using-Data%2C-View-Components)
 
 ### Example Project
 - [The UIPT Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has several UI screens implemented showing how UIPT works.
@@ -41,7 +41,7 @@ UI Power Tools is considered stable meaning it can be used in production code.  
 Yes, UICS doesn't specify how you set the visual elements of your widgets so you can use MVVM, blueprint, slate, or whatever method you want.
 
 ### What if I want to use this with an existing codebase?
-While We provide Base Classes that let you use this plugin "Out of the Box", we do let you override these classes with (hopefully) minimal effort. See [Overriding Classes](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UIPT-Overriding-Classes)
+While We provide Base Classes that let you use this plugin "Out of the Box", we do let you override these classes with (hopefully) minimal effort. See [Overriding Provided Classes](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UIPT-Overriding-Provided-Classes)
 
 ### Who made this?
 This was created by [Joel Gonzales | "LowPolyCount"](https://www.lowpolycount.com)
