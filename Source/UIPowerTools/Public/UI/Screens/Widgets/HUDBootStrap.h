@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "HUDBootStrapper.generated.h"
+#include "HUDBootStrap.generated.h"
 
 class UUserWidget;
 
@@ -13,7 +13,7 @@ class UUserWidget;
  * to the Screen Manager when BeginPlay occurs
  */
 UCLASS()
-class UIPOWERTOOLS_API AHUDBootStrapper : public AHUD
+class UIPOWERTOOLS_API AHUDBootStrap : public AHUD
 {
 	GENERATED_BODY()
 

@@ -2,7 +2,7 @@
 
 
 #include "UI/Screens/UICS/ScreenComponentWorldContext.h"
-#include "UI/Screens/Screen.h"
+#include "UI/Screens/UICSScreen.h"
 
 UWorld* UScreenComponentWorldContext::GetWorld() const
 {

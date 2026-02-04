@@ -3,7 +3,7 @@
 
 #include "UI/Screens/UICS/ViewScreenComponent.h"
 #include "UIPowerTools.h"
-#include "UI/Screens/Screen.h"
+#include "UI/Screens/UICSScreen.h"
 #include "UObject/UObjectGlobals.h"
 #include "UI/Screens/UICS/DataScreenComponent.h"
 #include "UI/Screens/UICS/EntryScreenComponent.h"

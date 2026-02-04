@@ -1,7 +1,7 @@
 // Copyright (c) Joel Gonzales
 
 
-#include "UI/Screens/Screen.h"
+#include "UI/Screens/UICSScreen.h"
 #include "InputAction.h"
 #include "UI/Screens/UICS/ScreenComponentManager.h"
 #include "UI/Tools/UIPowerToolsDeveloperSettings.h"
@@ -15,13 +15,13 @@
 
 
 
-UScreen::UScreen(const FObjectInitializer& Initializer)
+UUICSScreen::UUICSScreen(const FObjectInitializer& Initializer)
 	:Super(Initializer)
 {
 	ComponentManager = Initializer.CreateDefaultSubobject<UScreenComponentManager>(this, TEXT("ScreenComponentManager"));
 }
 
-UWidget* UScreen::NativeGetDesiredFocusTarget() const
+UWidget* UUICSScreen::NativeGetDesiredFocusTarget() const
 {
 	// if we haven't overridden this in BP, then get the focus from the view component
 	return (GetClass()->IsFunctionImplementedInScript(FName(L"BP_GetDesiredFocusTarget")))
@@ -29,7 +29,7 @@ UWidget* UScreen::NativeGetDesiredFocusTarget() const
 		: IUICSScreenAccessor::GetDesiredFocusTargetFromViewComponents();
 }
 
-bool UScreen::Initialize()
+bool UUICSScreen::Initialize()
 {
 	const bool bRetVal = Super::Initialize();
 	
@@ -38,19 +38,19 @@ bool UScreen::Initialize()
 	return bRetVal;
 }
 
-void UScreen::NativePreConstruct()
+void UUICSScreen::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	IUICSScreenAccessor::WidgetNativePreConstruct(IsDesignTime());
 }
 
-void UScreen::NativeConstruct()
+void UUICSScreen::NativeConstruct()
 {
 	Super::NativeConstruct();
 	IUICSScreenAccessor::NativeConstruct();
 }
 
-void UScreen::NativeDestruct()
+void UUICSScreen::NativeDestruct()
 {
 	IUICSScreenAccessor::NativeDestruct();
 	Super::NativeDestruct();

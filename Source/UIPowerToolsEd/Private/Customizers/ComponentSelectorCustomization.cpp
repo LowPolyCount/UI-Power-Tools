@@ -3,7 +3,7 @@
 #include "Customizers/ComponentSelectorCustomization.h"
 #include "UI/Screens/UICS/ScreenComponent.h"
 #include "UI/Screens/Tools/ComponentSelector.h"
-#include "UI/Screens/Screen.h"
+#include "UI/Screens/UICSScreen.h"
 #include "PropertyHandle.h"
 #include "DetailWidgetRow.h"
 #include "Blueprint/WidgetBlueprintGeneratedClass.h"

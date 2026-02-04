@@ -8,7 +8,7 @@
 #include "UI/Screens/Tools/ComponentSelector.h"
 #include "UI/Screens/UICS/DataScreenComponent.h"
 #include "UI/Screens/UICS/ViewScreenComponent.h"
-#include "UI/Screens/Screen.h"
+#include "UI/Screens/UICSScreen.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAccessorTest, "UIPowerTools.UICS.Accessor", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FAccessorTest::RunTest(const FString& Parameters)

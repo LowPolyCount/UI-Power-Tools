@@ -5,7 +5,7 @@
 #include "UICSTestHarness.h"
 #include "Components/HorizontalBox.h"
 #include "Components/PanelWidget.h"
-#include "UI/Screens/Screen.h"
+#include "UI/Screens/UICSScreen.h"
 
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FExecuteActionTest, "UIPowerTools.UICS.Action", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)

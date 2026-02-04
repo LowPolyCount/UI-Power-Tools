@@ -5,7 +5,7 @@
 #include "UICSTestHarness.h"
 #include "TestHelpers.h"
 #include "Components/HorizontalBox.h"
-#include "UI/Screens/Screen.h"
+#include "UI/Screens/UICSScreen.h"
 #include "UI/Screens/ScreenManager.h"
 #include "Blueprint/GameViewportSubsystem.h"
 #include "UI/Tools/UIPowerToolsDeveloperSettings.h"

@@ -4,7 +4,7 @@
 
 #include "CommonActivatableWidget.h"
 #include "UI/Screens/UICS/IUICSAccessor.h"
-#include "Screen.generated.h"
+#include "UICSScreen.generated.h"
 
 class UScreenComponentManager;
 class UInputAction;
@@ -14,11 +14,11 @@ struct FUIInputConfig;
 // a screen is the base unit of our UI System, it can have widgets, controls, etc attached to it as part of a hierarchy to display visual elements
 // it has an array of UICS Components that can be used to add functionality
 UCLASS(BlueprintType, Blueprintable, Abstract, meta = (PrioritizeCategories = "Screen"))
-class UIPOWERTOOLS_API UScreen : public UCommonActivatableWidget, public IUICSScreenAccessor
+class UIPOWERTOOLS_API UUICSScreen : public UCommonActivatableWidget, public IUICSScreenAccessor
 {
 	GENERATED_BODY()
 public:
-	UScreen(const FObjectInitializer& Initializer);
+	UUICSScreen(const FObjectInitializer& Initializer);
 	
 	// UUserWidget begin
 	virtual bool Initialize() override;

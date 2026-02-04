@@ -4,7 +4,7 @@
 #include "UI/Screens/UICS/ScreenComponentManager.h"
 #include "UI/Screens/UICS/ViewScreenComponent.h"
 #include "UIPowerTools.h"
-#include "UI/Screens/Screen.h"
+#include "UI/Screens/UICSScreen.h"
 
 UScreenComponent* IUICSAccessor::GetScreenComponent_BP(TSubclassOf<UScreenComponent> Type) const
 {

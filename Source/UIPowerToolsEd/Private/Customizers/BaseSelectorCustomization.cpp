@@ -3,7 +3,7 @@
 
 #include "Customizers/BaseSelectorCustomization.h"
 #include "PropertyHandle.h"
-#include "UI/Screens/Screen.h"
+#include "UI/Screens/UICSScreen.h"
 
 
 void FBaseSelectorCustomization::CustomizeHeader(TSharedRef<IPropertyHandle> PropertyHandle, FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& CustomizationUtils)

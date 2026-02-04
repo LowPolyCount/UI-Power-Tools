@@ -5,7 +5,7 @@
 #include "UI/Screens/Tools/WidgetSelector.h"
 #include "Components/Widget.h"
 #include "BLueprint/WidgetTree.h"
-#include "UI/Screens/Screen.h"
+#include "UI/Screens/UICSScreen.h"
 #include "PropertyHandle.h"
 #include "DetailWidgetRow.h"
 #include "Blueprint/WidgetBlueprintGeneratedClass.h"

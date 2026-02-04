@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/Screens/Screen.h"
+#include "UI/Screens/UICSScreen.h"
 #include "UICS/UICSTestActivatableWidget.h"
 #include "UI/Screens/UICS/ScreenComponentManager.h"
 #include "TestHelpers.generated.h"
@@ -13,7 +13,7 @@ class UScreenComponent;
 // this file contains helpers for us to test our classes
 
 UCLASS(Hidden)
-class UScreenHarness : public UScreen
+class UScreenHarness : public UUICSScreen
 {
 	GENERATED_BODY()
 public:

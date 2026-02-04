@@ -4,7 +4,7 @@
 #include "Misc/AutomationTest.h"
 #include "TestHelpers.h"
 #include "UICSTestHarness.h"
-#include "UI/Screens/Screen.h"
+#include "UI/Screens/UICSScreen.h"
 
 
 
