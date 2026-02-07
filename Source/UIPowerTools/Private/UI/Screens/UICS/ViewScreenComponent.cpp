@@ -32,6 +32,7 @@ void UViewScreenComponent::Initialize()
 	SetLinkedDataComponent(GetScreenComponentFromSelector<UDataScreenComponent>(DataToListenTo));
 }
 
+
 void UViewScreenComponent::NativePreConstruct(bool bIsDesignTime)
 {
 	Super::NativePreConstruct(bIsDesignTime);
@@ -42,20 +43,48 @@ void UViewScreenComponent::NativePreConstruct(bool bIsDesignTime)
 		// show preview of widgets in design view
 		if (bIsDesignTime)
 		{
-			if (Panel)
-			{
-				Panel->ClearChildren();
-				for (int32 i = 0; i < DesignEntriesToShow; ++i)
-				{
-					if (UUserWidget* EntryWidget = DuplicateObject<UUserWidget>(ViewWidgetPrototype, this))
-					{
-						Panel->AddChild(EntryWidget);
-					}
-				}
-			}
+			SetupPreConstructWidgets();
 		}
 	}
 }
+
+void UViewScreenComponent::SetupPreConstructWidgets()
+{
+	if (Panel)
+	{
+		// PreConstruct can run multiple times while in design time. 
+		// Don't clear the panel so we preserve any widgets we didn't add
+		// but Remove existing View Widgets and recreate them in case properties have changed. 
+		for (TScriptInterface<IViewWidgetInterface> ViewWidget : ActiveViewWidgets)
+		{
+			if (UWidget* AsUWidget = Cast<UWidget>(ViewWidget.GetObject()))
+			{
+				if (Panel->HasChild(AsUWidget))
+				{
+					Panel->RemoveChild(AsUWidget);
+				}
+			}
+		}
+
+		ActiveViewWidgets.Empty();
+
+		for (int32 i = 0; i < DesignEntriesToShow; ++i)
+		{
+			TScriptInterface<IViewWidgetInterface> ViewWidget = DuplicateWidget(ViewWidgetPrototype);
+			AddToPanel(ViewWidget);
+			ActiveViewWidgets.Emplace(ViewWidget);
+		}
+	}
+}
+
+// in it's own function to make sure we're consistent with how we duplicate
+TScriptInterface<IViewWidgetInterface> UViewScreenComponent::DuplicateWidget(const TObjectPtr<UUserWidget>& Prototype)
+{
+	TScriptInterface<IViewWidgetInterface> RetVal = DuplicateObject<UUserWidget>(ViewWidgetPrototype, this);
+	ensure(IsValid(RetVal.GetObject()));
+	return RetVal;
+}
+
 
 void UViewScreenComponent::NativeDestruct()
 {
@@ -232,7 +261,7 @@ TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetAndSetupEntryWid
 	}
 	else if(ViewWidgetPrototype)
 	{
-		RetVal = DuplicateObject<UUserWidget>(ViewWidgetPrototype, this);
+		RetVal = DuplicateWidget(ViewWidgetPrototype);
 	}
 	else
 	{

@@ -173,11 +173,12 @@ protected:
 	TScriptInterface<IViewWidgetInterface> GetAndSetupEntryWidget();
 
 	void AddToPanel(TScriptInterface<IViewWidgetInterface>& Widget);
-
+	
 	void RemoveViewWidget(TScriptInterface<IViewWidgetInterface> Widget);
 	void ListenToWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget);
 	void RemoveWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget);
-
+	void SetupPreConstructWidgets();
+	TScriptInterface<IViewWidgetInterface> DuplicateWidget(const TObjectPtr<UUserWidget>& Prototype);
 	virtual void PopulateWidgets(const TArray<UObject*>& Entries);
 
 	// data screen component we expect to receive data from
