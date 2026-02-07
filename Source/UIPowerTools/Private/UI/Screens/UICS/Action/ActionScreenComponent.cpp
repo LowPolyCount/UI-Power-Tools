@@ -84,18 +84,23 @@ void UActionScreenComponent::ListenToViewAction(UViewScreenComponent* InView)
 {
 	if (ViewListeningTo)
 	{
-		ViewListeningTo->OnAction.RemoveDynamic(this, &UActionScreenComponent::HandleOnAction);
+		ViewListeningTo->OnInputAction.RemoveDynamic(this, &UActionScreenComponent::HandleOnAction);
 	}
 
 	ViewListeningTo = InView;
 
 	if (ViewListeningTo)
 	{
-		ViewListeningTo->OnAction.AddUniqueDynamic(this, &UActionScreenComponent::HandleOnAction);
+		ViewListeningTo->OnInputAction.AddUniqueDynamic(this, &UActionScreenComponent::HandleOnAction);
 	}
 }
 
 void UActionScreenComponent::HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
+{
+	HandleOnInputAction(Component, Widget);
+}
+
+void UActionScreenComponent::HandleOnInputAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
 {
 	ExecuteAction(Widget->Execute_GetEntryData(Widget.GetObject()), true);
 }

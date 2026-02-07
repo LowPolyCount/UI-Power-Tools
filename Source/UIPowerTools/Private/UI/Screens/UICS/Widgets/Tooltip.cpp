@@ -37,7 +37,7 @@ void UTooltip::StartListeningToView(const FViewComponentSelector& ViewSelector)
 	{
 		if (UViewScreenComponent* ViewComponent = GetScreenComponentFromSelector<UViewScreenComponent>(ViewSelector))
 		{
-			ViewComponent->OnAction.AddUniqueDynamic(this, &UTooltip::HandleOnAction);
+			ViewComponent->OnInputAction.AddUniqueDynamic(this, &UTooltip::HandleOnAction);
 			ViewComponent->OnFocusChange.AddUniqueDynamic(this, &UTooltip::HandleOnFocusChange);
 			ViewComponent->OnSelectionChange.AddUniqueDynamic(this, &UTooltip::HandleOnSelectionChange);
 			ViewComponent->OnHoverChange.AddUniqueDynamic(this, &UTooltip::HandleOnHoverChange);
@@ -51,7 +51,7 @@ void UTooltip::StopListeningToView(const FViewComponentSelector& ViewSelector)
 	{
 		if (UViewScreenComponent* ViewComponent = GetScreenComponentFromSelector<UViewScreenComponent>(ViewSelector))
 		{
-			ViewComponent->OnAction.RemoveDynamic(this, &UTooltip::HandleOnAction);
+			ViewComponent->OnInputAction.RemoveDynamic(this, &UTooltip::HandleOnAction);
 			ViewComponent->OnFocusChange.RemoveDynamic(this, &UTooltip::HandleOnFocusChange);
 			ViewComponent->OnSelectionChange.RemoveDynamic(this, &UTooltip::HandleOnSelectionChange);
 			ViewComponent->OnHoverChange.RemoveDynamic(this, &UTooltip::HandleOnHoverChange);

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Engine/MemberReference.h"
 #include "UI/Screens/UICS/ScreenComponent.h"
 #include "UI/Screens/UICS/ViewWidgetInterface.h"
 #include "UI/Screens/Tools/WidgetSelector.h"
@@ -35,6 +36,33 @@ struct FCachedWidget
 	TSharedPtr<SWidget> SlateWidget;
 };
 
+// define all bindable events in a struct so that in editor, it will be it's own category
+USTRUCT()
+struct FBindableViewActions
+{
+	GENERATED_BODY()
+
+	// an input action has occurred on a widget
+	UPROPERTY(EditAnywhere, Category = "Events", Meta = (FunctionReference, AllowFunctionLibraries, PrototypeFunction = "/Script/UIPowerTools.ViewScreenComponent.HandleOnAction", DefaultBindingName = "InputAction", DisplayName="OnInputAction"))
+	FMemberReference Bind_InputAction;
+
+	// a widget has gained or lost selection
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.HandleWidgetOnSelectionChange", DefaultBindingName="SelectionChange", DisplayName = "OnSelectionChange"))
+	FMemberReference  Bind_SelectionChange;
+
+	// a widget has gained or lost focus
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.HandleOnFocusChange", DefaultBindingName="FocusChange", DisplayName = "OnFocusChange"))
+	FMemberReference  Bind_FocusChange;
+
+	// a widget has gained or lost focus
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.HandleOnHoverChange", DefaultBindingName="HoverChange", DisplayName = "OnHoverChange"))
+	FMemberReference  Bind_HoverChange;
+
+	// Widgets have been created and populated
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.Prototype_WidgetsPopulated", DefaultBindingName="WidgetsPopulated", DisplayName = "OnWidgetsPopulated"))
+	FMemberReference  Bind_WidgetsPopulated;
+};
+
 
 
 // responsible for managing, caching widgets, sending data to display entries and acting as a central point for Widget actions like Focus Gain/Loss
@@ -45,8 +73,12 @@ class UIPOWERTOOLS_API UViewScreenComponent : public UScreenComponent
 
 public:
 	// an input action has occurred on a widget
-	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
+	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent, meta = (DeprecatedProperty, DeprecationMessage = "OnAction is deprecated. Use OnInputAction instead"))
 	FViewActionComp OnAction;
+
+	// an input action has occurred on a widget
+	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
+	FViewActionComp OnInputAction;
 	// a widget has gained or lost selection
 	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
 	FViewEventComp OnSelectionChange;
@@ -143,7 +175,7 @@ public:
 protected:
 	// a widget has executed an input action (such as being clicked)
 	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)
-	void HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
+	void HandleOnInputAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
 
 	// the selected widget has changed
 	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)
@@ -181,13 +213,19 @@ protected:
 	TScriptInterface<IViewWidgetInterface> DuplicateWidget(const TObjectPtr<UUserWidget>& Prototype);
 	virtual void PopulateWidgets(const TArray<UObject*>& Entries);
 
-	// data screen component we expect to receive data from
+	// The Data Screen Component we will receive data from
 	UPROPERTY(EditAnywhere, Category = ViewScreenComponent)
 	FDataComponentSelector DataToListenTo;
 
 	// used in the editor to pick the panel that you want your widgets attached to. 
 	UPROPERTY(EditAnywhere, Category = ViewScreenComponent)
 	FWidgetSelector PanelSelector;
+
+	// define an instance / prototype of a widget class that implements IViewWidgetInterface that we will use to display our data with.
+	// This uses the prototype pattern, meaning that we will close this widget instance when we need to make widgets instead of Creating it from a class.
+	// This allows you set properties on this widget through the editor
+	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent, Meta=(ObjectMustImplement = "/Script/UIPowerTools.ViewWidgetInterface"))
+	TObjectPtr<UUserWidget> ViewWidgetPrototype;
 
 	// number of entries to show in design view
 	UPROPERTY(EditAnywhere, Category = ViewScreenComponent, Meta=(UIMin=0))
@@ -204,19 +242,23 @@ protected:
 	// can only one widget can be selected at a time?
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent)
 	bool bSingleSelection = false;
-	
-	// define an instance / prototype of a widget class that implements IViewWidgetInterface that we will use to display our data with.
-	// This uses the prototype pattern, meaning that we will close this widget instance when we need to make widgets instead of Creating it from a class.
-	// This allows you set properties on this widget through the editor
-	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent, Meta=(ObjectMustImplement = "/Script/UIPowerTools.ViewWidgetInterface"))
-	TObjectPtr<UUserWidget> ViewWidgetPrototype;
 
-	UPROPERTY()
+	// BEGIN FMember References that allow you to bind events to functions in editor
+#if WITH_EDITOR
+	UFUNCTION(BlueprintInternalUseOnly)
+	void Prototype_WidgetsPopulated(UViewScreenComponent* Component) {}
+#endif
+	// events that the user can bind to in editor
+	UPROPERTY(EditAnywhere, Meta=(DisplayName="Events"));
+	FBindableViewActions BindableEvents;
+
+
+	UPROPERTY(Transient)
 	TObjectPtr<UPanelWidget> Panel;
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TObjectPtr<UDataScreenComponent> LinkedDataComponent;
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TArray<FCachedWidget> CachedWidgets;
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TArray<TScriptInterface<IViewWidgetInterface>> ActiveViewWidgets;
 };
