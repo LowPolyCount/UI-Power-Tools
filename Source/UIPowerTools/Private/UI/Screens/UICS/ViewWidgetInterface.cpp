@@ -23,39 +23,26 @@ void IViewWidgetInterface::Reset_Implementation()
 
 	// clear the data
 	Index = INDEX_NONE;
-	bSelected = false;
-	bFocused = false;
 	SetEntry_Internal(nullptr);
 }
 
 
 bool IViewWidgetInterface::IsFocused_Implementation() const
 { 
-	return bFocused; 
+	return false; 
 }
 
 bool IViewWidgetInterface::IsSelected_Implementation() const
 { 
-	return bSelected; 
+	return false; 
 }
 
 bool IViewWidgetInterface::IsHovered_Implementation() const
 {
-	return bHovered;
+	return false;
 }
 
-void IViewWidgetInterface::SetHovered_Implementation(bool bInHovered)
-{
-	if (bHovered != bInHovered)
-	{
-		bHovered = bInHovered;
-		FViewEvent& HoverDelegate = GetOnHoverChange();
-		if (HoverDelegate.IsBound())
-		{
-			HoverDelegate.Broadcast(Cast<UObject>(this), bHovered);
-		}
-	}
-}
+
 
 void IViewWidgetInterface::ForceInputAction_Implementation()
 {
@@ -75,28 +62,53 @@ void IViewWidgetInterface::OnInputAction_Implementation()
 	}
 }
 
+void IViewWidgetInterface::SetHovered_Implementation(bool bInHovered)
+{
+	SetHovered_Internal(bInHovered);
+}
+
 void IViewWidgetInterface::SetFocus_Implementation(bool bInFocused)
 { 
-	if (bInFocused != bFocused)
-	{
-		bFocused = bInFocused;
-		FViewEvent& FocusDelegate = GetOnFocusChange();
-		if (FocusDelegate.IsBound())
-		{
-			FocusDelegate.Broadcast(Cast<UObject>(this), bFocused);
-		}
-	}
+	SetFocus_Internal(bInFocused);
 }
 
 void IViewWidgetInterface::SetSelected_Implementation(bool bInSelected)
 { 
-	if (bSelected != bInSelected)
+	SetSelected_Internal(bInSelected);
+}
+
+void IViewWidgetInterface::SetFocus_Internal(bool bInFocused)
+{
+	FViewEvent& FocusDelegate = GetOnFocusChange();
+	if (FocusDelegate.IsBound())
 	{
-		bSelected = bInSelected;
-		FViewEvent& SelectionDelegate = GetOnSelectionChange();
-		if (SelectionDelegate.IsBound())
-		{
-			SelectionDelegate.Broadcast(Cast<UObject>(this), bSelected);
-		}
+		FocusDelegate.Broadcast(Cast<UObject>(this), bInFocused);
+	}
+}
+
+void IViewWidgetInterface::SetHovered_Internal(bool bInHovered)
+{
+	FViewEvent& HoveredDelegate = GetOnHoverChange();
+	if (HoveredDelegate.IsBound())
+	{
+		HoveredDelegate.Broadcast(Cast<UObject>(this), bInHovered);
+	}
+}
+
+void IViewWidgetInterface::SetSelected_Internal(bool bInSelected)
+{
+	FViewEvent& SelectionDelegate = GetOnSelectionChange();
+	if (SelectionDelegate.IsBound())
+	{
+		SelectionDelegate.Broadcast(Cast<UObject>(this), bInSelected);
+	}
+}
+
+void IViewWidgetInterface::SetInputAction_Internal()
+{
+	FViewAction& ActionDelegate = GetOnAction();
+	if (ActionDelegate.IsBound())
+	{
+		ActionDelegate.Broadcast(Cast<UObject>(this));
 	}
 }

@@ -15,5 +15,5 @@ class UIPOWERTOOLS_API UViewCommonButtonBase : public UCommonButtonBase, public 
 	GENERATED_BODY()
 
 public:
-	VIEW_BUTTON_AND_WIDGET_BOILERPLATE()
+	VIEW_COMMONBUTTON_BOILERPLATE();
 };
