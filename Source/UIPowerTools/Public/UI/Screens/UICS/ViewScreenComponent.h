@@ -130,7 +130,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
 	UUserWidget* GetWidgetPrototype() const {return ViewWidgetPrototype;}
 
+
+
 	// widgets
+
+	// get all widgets being used 
+	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	TArray<UUserWidget*> GetAllWidgets() const;
+
+	// get the view widget at index
+	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UUserWidget* GetWidgetAt(int32 Index) const;
+
 	// get all view widgets being used
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
 	const TArray<TScriptInterface<IViewWidgetInterface>>& GetAllViewWidgets() const { return ActiveViewWidgets; }

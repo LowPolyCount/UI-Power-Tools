@@ -157,6 +157,34 @@ TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetViewWidgetAt(int
 	return RetVal;
 }
 
+TArray<UUserWidget*> UViewScreenComponent::GetAllWidgets() const
+{
+	TArray<UUserWidget*> RetVal;
+	for (const TScriptInterface<IViewWidgetInterface>& AsViewWidget : ActiveViewWidgets)
+	{
+		if (UUserWidget* AsUserWidget = Cast<UUserWidget>(AsViewWidget.GetObject()))
+		{
+			RetVal.Emplace(AsUserWidget);
+		}
+	}
+
+	return RetVal;
+}
+
+UUserWidget* UViewScreenComponent::GetWidgetAt(int32 Index) const
+{
+	UUserWidget* RetVal = nullptr;
+
+	TScriptInterface<IViewWidgetInterface> ViewWidget = GetViewWidgetAt(Index);
+
+	if (UUserWidget* AsUserWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
+	{
+		RetVal = AsUserWidget;
+	}
+
+	return RetVal;
+}
+
 bool UViewScreenComponent::IsSelectedWidget() const
 {
 	return static_cast<bool>(GetFirstSelectedWidget());
