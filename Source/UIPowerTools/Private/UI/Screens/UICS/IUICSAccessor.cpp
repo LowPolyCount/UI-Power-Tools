@@ -4,6 +4,7 @@
 #include "UI/Screens/UICS/ScreenComponentManager.h"
 #include "UI/Screens/UICS/ViewScreenComponent.h"
 #include "UIPowerTools.h"
+#include "Components/Button.h"
 #include "UI/Screens/UICSScreen.h"
 
 UScreenComponent* IUICSAccessor::GetScreenComponent_BP(TSubclassOf<UScreenComponent> Type) const
@@ -162,22 +163,19 @@ UWidget* IUICSScreenAccessor::GetDesiredFocusTargetFromViewComponents() const
 	{
 		if (ViewComponent->IsDesiredFocusTarget())
 		{
-			//if (TScriptInterface<IViewWidgetInterface> AsViewWidget = ViewComponent->GetViewWidgetAt(0))
-			//{
-				//@todo: Iterate through widgets and pick the first one that is Focusable
-				const TArray<TScriptInterface<IViewWidgetInterface>>& ViewWidgets = ViewComponent->GetAllViewWidgets();
-				for (TScriptInterface<IViewWidgetInterface> ViewWidget : ViewWidgets)
+			//@todo: Iterate through widgets and pick the first one that is Focusable
+			const TArray<TScriptInterface<IViewWidgetInterface>>& ViewWidgets = ViewComponent->GetAllViewWidgets();
+			for (TScriptInterface<IViewWidgetInterface> ViewWidget : ViewWidgets)
+			{
+				if (UUserWidget* AsUWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
 				{
-					if (UUserWidget* AsUWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
+					if (AsUWidget->IsFocusable())
 					{
-						if (AsUWidget->IsFocusable())
-						{
-							RetVal = AsUWidget;
-							break;
-						}
+						RetVal = AsUWidget;
+						break;
 					}
 				}
-			//}
+			}
 		}
 	}
 	return RetVal;
