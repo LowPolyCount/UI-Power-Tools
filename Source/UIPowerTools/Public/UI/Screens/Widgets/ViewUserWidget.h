@@ -15,5 +15,5 @@ class UIPOWERTOOLS_API UViewUserWidget : public UUserWidget, public IViewWidgetI
 	GENERATED_BODY()
 
 public:
-	VIEW_WIDGET_BOILERPLATE();
+	VIEW_USERWIDGET_BOILERPLATE();
 };

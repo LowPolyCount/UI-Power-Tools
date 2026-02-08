@@ -43,7 +43,7 @@ struct FBindableViewActions
 	GENERATED_BODY()
 
 	// an input action has occurred on a widget
-	UPROPERTY(EditAnywhere, Category = "Events", Meta = (FunctionReference, AllowFunctionLibraries, PrototypeFunction = "/Script/UIPowerTools.ViewScreenComponent.HandleOnAction", DefaultBindingName = "InputAction", DisplayName="OnInputAction"))
+	UPROPERTY(EditAnywhere, Category = "Events", Meta = (FunctionReference, AllowFunctionLibraries, PrototypeFunction = "/Script/UIPowerTools.ViewScreenComponent.HandleOnInputAction", DefaultBindingName = "InputAction", DisplayName="OnInputAction"))
 	FMemberReference Bind_InputAction;
 
 	// a widget has gained or lost selection
