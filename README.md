@@ -17,7 +17,7 @@ The [Screen Manager](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Scree
 
 # Help & Learning
 ### Tutorials
-- If you want to see what UI Power Tools is capable of, follow [A Step-by-Step Tutorial on how to use UI Power Tools to Create a Screen](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Tutorial-Using-Data%2C-View-Components)
+- If you want to see what UI Power Tools is capable of, follow [A Step-by-Step Tutorial on how to use UI Power Tools to Create a Screen](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Tutorial-Using-Data%2C-View%2C-Action-Components)
 
 ### Example Project
 - [The UIPT Example Project](https://codeberg.org/LowPolyCount/UIPowerTools_Example) has several UI screens implemented showing how UIPT works.
