@@ -35,7 +35,7 @@ void UViewHarness::Initialize()
 {
 	Super::Initialize();
 
-	OnAction.AddDynamic(this, &UViewHarness::HandleTestOnAction);
+	OnInputAction.AddDynamic(this, &UViewHarness::HandleTestOnAction);
 	OnSelectionChange.AddDynamic(this, &UViewHarness::HandleTestOnSelectedChange);
 	OnFocusChange.AddDynamic(this, &UViewHarness::HandleTestOnFocusChange);
 	OnWidgetsPopulated.AddDynamic(this, &UViewHarness::HandleTestOnWidgetsPopulated);

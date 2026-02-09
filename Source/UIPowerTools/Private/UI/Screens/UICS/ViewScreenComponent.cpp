@@ -25,7 +25,7 @@ void UViewScreenComponent::Initialize()
 
 
 	OnSelectionChange.AddDynamic(this, &UViewScreenComponent::HandleOnSelectedChange);
-	OnAction.AddDynamic(this, &UViewScreenComponent::HandleOnAction);
+	OnInputAction.AddDynamic(this, &UViewScreenComponent::HandleOnInputAction);
 	OnFocusChange.AddDynamic(this, &UViewScreenComponent::HandleOnFocusChange);
 	OnHoverChange.AddDynamic(this, &UViewScreenComponent::HandleOnHoverChange);
 
@@ -157,6 +157,34 @@ TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetViewWidgetAt(int
 	return RetVal;
 }
 
+TArray<UUserWidget*> UViewScreenComponent::GetAllWidgets() const
+{
+	TArray<UUserWidget*> RetVal;
+	for (const TScriptInterface<IViewWidgetInterface>& AsViewWidget : ActiveViewWidgets)
+	{
+		if (UUserWidget* AsUserWidget = Cast<UUserWidget>(AsViewWidget.GetObject()))
+		{
+			RetVal.Emplace(AsUserWidget);
+		}
+	}
+
+	return RetVal;
+}
+
+UUserWidget* UViewScreenComponent::GetWidgetAt(int32 Index) const
+{
+	UUserWidget* RetVal = nullptr;
+
+	TScriptInterface<IViewWidgetInterface> ViewWidget = GetViewWidgetAt(Index);
+
+	if (UUserWidget* AsUserWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
+	{
+		RetVal = AsUserWidget;
+	}
+
+	return RetVal;
+}
+
 bool UViewScreenComponent::IsSelectedWidget() const
 {
 	return static_cast<bool>(GetFirstSelectedWidget());
@@ -228,7 +256,7 @@ void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 		{
 			if (Panel)
 			{
-				Panel->AddChild(Cast<UWidget>(ActiveViewWidgets[i].GetObject()));
+				AddToPanel(ActiveViewWidgets[i]);
 			}
 
 			ActiveViewWidgets[i]->Execute_Reset(ActiveViewWidgets[i].GetObject());
@@ -245,6 +273,16 @@ void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 	if (OnWidgetsPopulated.IsBound())
 	{
 		OnWidgetsPopulated.Broadcast(this);
+	}
+
+
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_WidgetsPopulated))
+	{
+		struct {
+			UViewScreenComponent* Component;
+		} Args = { this };
+
+		ProcessFuncFromResolveMember(Func, &Args);
 	}
 }
 
@@ -341,15 +379,49 @@ void UViewScreenComponent::RemoveWidgetDelegates(TScriptInterface<IViewWidgetInt
 void UViewScreenComponent::HandleWidgetOnAction(TScriptInterface<IViewWidgetInterface> Widget)
 {
 	OnAction.Broadcast(this, Widget);
+	OnInputAction.Broadcast(this, Widget);
+
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_InputAction))
+	{
+		struct {
+			UViewScreenComponent* Component;
+			const TScriptInterface<IViewWidgetInterface>& Widget;
+		} Args = { this, Widget };
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}
 }
+
 void UViewScreenComponent::HandleWidgetOnFocusChange(TScriptInterface<IViewWidgetInterface> Widget, bool bGained)
 {
 	OnFocusChange.Broadcast(this, Widget, bGained);
+
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_FocusChange))
+	{
+		struct {
+			UViewScreenComponent* Component;
+			const TScriptInterface<IViewWidgetInterface>& Widget;
+			bool bGained;
+		} Args = { this, Widget, bGained };
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}	
 }
 
 void UViewScreenComponent::HandleWidgetOnHoverChange(TScriptInterface<IViewWidgetInterface> Widget, bool bGained)
 {
 	OnHoverChange.Broadcast(this, Widget, bGained);
+
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_HoverChange))
+	{
+		struct {
+			UViewScreenComponent* Component;
+			const TScriptInterface<IViewWidgetInterface>& Widget;
+			bool bGained;
+		} Args = { this, Widget, bGained };
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}
 }
 
 void UViewScreenComponent::HandleWidgetOnSelectionChange(TScriptInterface<IViewWidgetInterface> Widget, bool bGained)
@@ -364,5 +436,17 @@ void UViewScreenComponent::HandleWidgetOnSelectionChange(TScriptInterface<IViewW
 			}
 		}
 	}
+
 	OnSelectionChange.Broadcast(this, Widget, bGained);
+
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_SelectionChange))
+	{
+		struct {
+			UViewScreenComponent* Component;
+			const TScriptInterface<IViewWidgetInterface>& Widget;
+			bool bGained;
+		} Args = { this, Widget, bGained };
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}
 }

@@ -16,6 +16,6 @@ class UIPOWERTOOLS_API UViewCommonActivatableWidget : public UCommonActivatableW
 	GENERATED_BODY()
 
 public:
-	VIEW_WIDGET_BOILERPLATE()
+	VIEW_USERWIDGET_BOILERPLATE()
 
 };

@@ -75,7 +75,7 @@ class UViewWidgetHarness : public UUserWidget, public IViewWidgetInterface
 {
 	GENERATED_BODY()
 public:
-	VIEW_WIDGET_BOILERPLATE()
+	VIEW_USERWIDGET_BOILERPLATE()
 };
 
 UCLASS(Hidden)

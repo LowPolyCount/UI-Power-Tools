@@ -77,9 +77,12 @@ public:
 	void SetTransactor(UActionScreenComponentProvider* InTransaction) { ActionProvider = InTransaction; }
 
 protected:
-	UFUNCTION()
+	// todo - rename HandleOnInputAction
+	UFUNCTION(meta = (DeprecatedFunction, DeprecationMessage = "HandleOnAction is deprecated. Use HandleOnInputAction instead"))
 	void HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
 
+	UFUNCTION()
+	void HandleOnInputAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
 	// set the transactor that will be used
 	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Category = ActionScreenComponent, Meta=(Displayname="Action"))
 	TObjectPtr<UActionScreenComponentProvider> ActionProvider = nullptr;

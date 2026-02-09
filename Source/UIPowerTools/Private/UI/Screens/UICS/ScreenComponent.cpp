@@ -22,6 +22,25 @@ const FGuid& UScreenComponent::GetGuid() const
 	return Guid;
 }
 
+UFunction* UScreenComponent::ResolveMemberReference(const FMemberReference& Ref)
+{
+	UFunction* RetVal = nullptr;
+	if (UObjectBaseUtility* Screen = GetImplementingOuterObject(UUICSScreenAccessor::StaticClass()))
+	{
+		RetVal = Ref.ResolveMember<UFunction>(Screen->GetClass());
+	}
+	
+	return RetVal;
+}
+
+void UScreenComponent::ProcessFuncFromResolveMember(UFunction* Func, void* Args)
+{
+	if (UObject* Screen = Cast<UObject>(GetImplementingOuterObject(UUICSScreenAccessor::StaticClass())))
+	{
+		Screen->ProcessEvent(Func, Args);
+	}
+}
+
 #ifdef WITH_EDITORONLY_DATA
 FString UScreenComponent::GetDisplayName() const
 {
