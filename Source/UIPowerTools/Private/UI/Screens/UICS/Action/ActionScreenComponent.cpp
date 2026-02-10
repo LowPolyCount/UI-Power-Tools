@@ -5,7 +5,6 @@
 #include "Templates/SubclassOf.h"
 #include "UI/Screens/UICS/Transaction/ActionScreenComponentProvider.h"
 #include "UI/Screens/UICS/ViewScreenComponent.h"
-#include "UI/Screens/UICS/EntryScreenComponent.h"
 #include "UIPowerTools.h"
 
 void UActionScreenComponent::Initialize()
@@ -23,6 +22,17 @@ bool UActionScreenComponent::IsValidTransaction(UObject* Entry)
 		RetVal = ActionProvider->CanExecuteAction(this, Entry);
 	}
 	OnIsValidResult.Broadcast(this, RetVal);
+	
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_OnIsValidResult))
+	{
+		struct {
+			UActionScreenComponent* Component;
+			bool bResult;
+		} Args = { this, RetVal };
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}
+
 	return RetVal;
 }
 
@@ -36,6 +46,16 @@ ETransactionResult UActionScreenComponent::ExecuteAction(UObject* Entry, bool bP
 	}
 
 	OnExecuteResult.Broadcast(this, RetVal);
+
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_OnExecuteResult))
+	{
+		struct {
+			UActionScreenComponent* Component;
+			ETransactionResult Result;
+		} Args = { this, RetVal };
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}
 	return RetVal;
 }
 

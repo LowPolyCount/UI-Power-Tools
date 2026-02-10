@@ -74,6 +74,16 @@ const TArray<UObject*>& UDataScreenComponent::RetrieveEntries()
 
 	OnDataRetrieval.Broadcast(this, RetrievedEntries);
 
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_OnDataRetrieval))
+	{
+		struct {
+			UDataScreenComponent* Component;
+			const TArray<UObject*>& RetrievedEntries;
+		} Args = { this, RetrievedEntries };
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}
+
 	return RetrievedEntries;
 }
 

@@ -20,6 +20,20 @@ enum class ETransactionResult : uint8
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FValidTransactionResult, UActionScreenComponent*, Component, bool, bResult);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTransactionResult, UActionScreenComponent*, Component, ETransactionResult, Result);
 
+// define all bindable events in a struct so that in editor, it will be it's own category
+USTRUCT()
+struct FBindableActionEvents
+{
+	GENERATED_BODY()
+
+	// Widgets have been created and populated
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ActionScreenComponent.Binding_IsTransactionValid", DefaultBindingName="IsValidResult", DisplayName = "OnIsValidResult"))
+	FMemberReference  Bind_OnIsValidResult;
+
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ActionScreenComponent.Binding_TransactionResult", DefaultBindingName="ExecuteResult", DisplayName = "OnExecuteResult"))
+	FMemberReference  Bind_OnExecuteResult;
+};
+
 // Transaction Component collects all the information required to make a change to the system and executes it using a transactor class
 UCLASS()
 class UIPOWERTOOLS_API UActionScreenComponent : public UScreenComponent
@@ -93,6 +107,21 @@ protected:
 	// view screen component that we will list to events from
 	UPROPERTY(EditAnywhere, Category = ActionScreenComponent)
 	FViewComponentSelector ViewToListenTo;
+
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FValidTransactionResult, UActionScreenComponent*, Component, bool, bResult);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTransactionResult, UActionScreenComponent*, Component, ETransactionResult, Result);
+
+	UPROPERTY(EditAnywhere, Meta=(DisplayName="Events"));
+	FBindableActionEvents BindableEvents;
+
+	// BEGIN FMember References that allow you to bind events to functions in editor
+#if WITH_EDITOR
+	UFUNCTION(BlueprintInternalUseOnly)
+	void Binding_IsTransactionValid(UActionScreenComponent* Component, bool bResult) {}
+	UFUNCTION(BlueprintInternalUseOnly)
+	void Binding_TransactionResult(UActionScreenComponent* Component, ETransactionResult Result) {}
+#endif // WITH_EDITOR
 
 	// slots are provided as a holding place for data. So you can put it in a slot, and then have the action provider retrieve it later. 
 	UPROPERTY()

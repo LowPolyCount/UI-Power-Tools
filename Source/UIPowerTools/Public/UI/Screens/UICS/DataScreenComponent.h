@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
 #include "UI/Screens/UICS/ScreenComponent.h"
 #include "DataScreenComponent.generated.h"
@@ -14,6 +13,17 @@ class UDataFilter;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDataLocationFunction);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDataRetrieval, UDataScreenComponent*, Component, const TArray<UObject*>&, Entries);
 
+// define all bindable events in a struct so that in editor, it will be it's own category
+USTRUCT()
+struct FBindableDataEvents
+{
+	GENERATED_BODY()
+
+	// call when data retrieval has finished
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.HandleOnDataRetrieval", DefaultBindingName="DataRetrieval", DisplayName = "OnDataRetrieval"))
+	FMemberReference  Bind_OnDataRetrieval;
+};
+
 // responsible for managing & caching widgets to display entries
 UCLASS(BlueprintType, Blueprintable)
 class UIPOWERTOOLS_API UDataScreenComponent : public UScreenComponent
@@ -21,7 +31,7 @@ class UIPOWERTOOLS_API UDataScreenComponent : public UScreenComponent
 	GENERATED_BODY()
 public:
 	// call when data retrieval has finished
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Meta = (FunctionReference, AllowFunctionLibraries, PrototypeFunction = "/Script/UIPowerTools.ViewScreenComponent.HandleOnDataRetrieval", DefaultBindingName = "TestDataRetrieval", DisplayName = "OnDataRetrieval"))
 	FDataRetrieval OnDataRetrieval;
 
 	virtual void Initialize() override { Super::Initialize(); }
@@ -135,6 +145,11 @@ protected:
 	// retrieve entries when the screens construct runs?
 	UPROPERTY(EditAnywhere, Category = DataScreenComponent)
 	bool bRetrieveOnConstruct = true;
+
+	// events that the user can bind to in editor
+	UPROPERTY(EditAnywhere, Meta=(DisplayName="Events"));
+	FBindableDataEvents BindableEvents;
+
 
 	UPROPERTY()
 	TArray<UObject*> RetrievedEntries;
