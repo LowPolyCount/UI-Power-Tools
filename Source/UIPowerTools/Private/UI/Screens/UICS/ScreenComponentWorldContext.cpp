@@ -14,10 +14,7 @@ UWorld* UScreenComponentWorldContext::GetWorld() const
 			RetVal = AsObject->GetWorld();
 		}
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Could not get owning Screen from %s - GetComponent() functions will not work"), *GetFName().ToString());
-	}
+	// sometimes we may not find the outer such as in preconstruct
 
 	return RetVal;
 }

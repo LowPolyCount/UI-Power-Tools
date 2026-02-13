@@ -54,10 +54,7 @@ TScriptInterface<IUICSScreenAccessor> IUICSAccessor::GetScreenAccessor() const
 	{
 		UObjectBaseUtility* Outer = AsObject->GetImplementingOuterObject(UUICSScreenAccessor::StaticClass());
 		RetVal = TScriptInterface<IUICSScreenAccessor>(Cast<UObject>(Outer));
-		if (!RetVal)
-		{
-			UE_LOG(LogUICS, Warning, TEXT("Could not get owning Screen from %s - GetComponent() functions will not work"), *AsObject->GetFName().ToString());
-		}
+		// sometimes RetVal can be false, such as in preconstruct
 	}
 
 	return RetVal;
