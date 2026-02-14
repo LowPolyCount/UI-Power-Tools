@@ -22,14 +22,10 @@ public:
 	virtual FText GetSectionDescription() const override;
 #endif
 	//End
-
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = UIPowerToolsDeveloperSettings)
+	bool bEnableScreenManagerSubsystem = true;
 	// when screen is added to the screen manager, what number is used as the starting z-order when it gets added to the viewport?
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = UIPowerToolsDeveloperSettings, Meta=(ClampMin=0))
 	int32 ScreenManagerZOrderStart = 100;
-
-	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = UIPowerToolsDeveloperSettings, Meta=(AllowedClasses="/Script/EnhancedInput.InputAction"))
-	FSoftObjectPath DefaultCancelAction;
-
-	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = UIPowerToolsDeveloperSettings, Meta=(AllowedClasses="/Script/EnhancedInput.InputMappingContext"))
-	FSoftObjectPath DefaultInputMapping;
 };
+
