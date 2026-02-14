@@ -260,7 +260,7 @@ protected:
 	void Prototype_WidgetsPopulated(UViewScreenComponent* Component) {}
 #endif
 	// events that the user can bind to in editor
-	UPROPERTY(EditAnywhere, Meta=(DisplayName="Events"));
+	UPROPERTY(EditAnywhere, Category = ViewScreenComponent, Meta=(DisplayName="Events"));
 	FBindableViewActions BindableEvents;
 
 

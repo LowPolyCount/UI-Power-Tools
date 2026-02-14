@@ -92,7 +92,7 @@ public:
 
 protected:
 	// todo - rename HandleOnInputAction
-	UFUNCTION(meta = (DeprecatedFunction, DeprecationMessage = "HandleOnAction is deprecated. Use HandleOnInputAction instead"))
+	UFUNCTION(Category = ActionScreenComponent, meta = (DeprecatedFunction, DeprecationMessage = "HandleOnAction is deprecated. Use HandleOnInputAction instead"))
 	void HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
 
 	UFUNCTION()
@@ -112,7 +112,7 @@ protected:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FValidTransactionResult, UActionScreenComponent*, Component, bool, bResult);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTransactionResult, UActionScreenComponent*, Component, ETransactionResult, Result);
 
-	UPROPERTY(EditAnywhere, Meta=(DisplayName="Events"));
+	UPROPERTY(EditAnywhere, Category = ActionScreenComponent, Meta=(DisplayName="Events"));
 	FBindableActionEvents BindableEvents;
 
 	// BEGIN FMember References that allow you to bind events to functions in editor

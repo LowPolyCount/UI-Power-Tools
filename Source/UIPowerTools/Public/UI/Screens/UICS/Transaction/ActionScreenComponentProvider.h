@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "UI/Screens/UICS/ScreenComponentWorldContext.h"
 #include "UI/Screens/UICS/IUICSAccessor.h"
 #include "ActionScreenComponentProvider.generated.h"
@@ -17,10 +15,14 @@ class UIPOWERTOOLS_API UActionScreenComponentProvider : public UScreenComponentW
 	GENERATED_BODY()
 public:
 	// Do we have all the information required to execute the transaction?
+	// @Component - the component calling the 
+	// @Entry - Data (usually) from the currently focused/selected widget 
 	UFUNCTION(BlueprintNativeEvent, Category = ActionScreenComponent)
 	bool CanExecuteAction(UActionScreenComponent* Component, UObject* Entry);
 
 	// execute the transaction
+	// @Component - the component calling the 
+	// @Entry - Data (usually) from the currently focused/selected widget 
 	UFUNCTION(BlueprintNativeEvent, Category = ActionScreenComponent)
 	ETransactionResult ExecuteAction(UActionScreenComponent* Component, UObject* Entry);
 

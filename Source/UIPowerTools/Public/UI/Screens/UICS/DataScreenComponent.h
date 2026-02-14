@@ -147,7 +147,7 @@ protected:
 	bool bRetrieveOnConstruct = true;
 
 	// events that the user can bind to in editor
-	UPROPERTY(EditAnywhere, Meta=(DisplayName="Events"));
+	UPROPERTY(EditAnywhere, Category = DataScreenComponent, Meta=(DisplayName="Events"));
 	FBindableDataEvents BindableEvents;
 
 
