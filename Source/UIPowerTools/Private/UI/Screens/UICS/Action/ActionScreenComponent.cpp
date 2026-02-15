@@ -2,7 +2,6 @@
 
 
 #include "UI/Screens/UICS/Transaction/ActionScreenComponent.h"
-#include "Templates/SubclassOf.h"
 #include "UI/Screens/UICS/Transaction/ActionScreenComponentProvider.h"
 #include "UI/Screens/UICS/ViewScreenComponent.h"
 #include "UI/Utility/UIPTStatics.h"
@@ -17,31 +16,36 @@ void UActionScreenComponent::Initialize()
 
 bool UActionScreenComponent::IsValidTransaction(UObject* Entry)
 {
+	return CanExecuteAction(Entry);
+}
+
+bool UActionScreenComponent::CanExecuteAction(UObject* Entry)
+{
 	bool RetVal = false;
 	if (ActionProvider)
 	{
 		RetVal = ActionProvider->CanExecuteAction(this, Entry);
 	}
-	OnIsValidResult.Broadcast(this, RetVal);
-	
-	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_OnIsValidResult))
-	{
-		struct {
-			UActionScreenComponent* Component;
-			bool bResult;
-		} Args = { this, RetVal };
-
-		ProcessFuncFromResolveMember(Func, &Args);
-	}
 
 	return RetVal;
 }
 
-ETransactionResult UActionScreenComponent::ExecuteAction(UObject* Entry, bool bPerformCheck)
+EActionResult UActionScreenComponent::ExecuteActionIfAble(UObject* Entry)
 {
-	ETransactionResult RetVal = ETransactionResult::Failure;
+	EActionResult RetVal = EActionResult::CouldNotExecute;
 
-	if (ActionProvider && ((bPerformCheck) ? IsValidTransaction(Entry) : true))
+	if (ActionProvider && CanExecuteAction(Entry))
+	{
+		RetVal = ExecuteAction(Entry);
+	}
+	return RetVal;
+}
+
+EActionResult UActionScreenComponent::ExecuteAction(UObject* Entry)
+{
+	EActionResult RetVal = EActionResult::Failure;
+
+	if (ActionProvider)
 	{
 		RetVal = ActionProvider->ExecuteAction(this, Entry);
 	}
@@ -52,7 +56,7 @@ ETransactionResult UActionScreenComponent::ExecuteAction(UObject* Entry, bool bP
 	{
 		struct {
 			UActionScreenComponent* Component;
-			ETransactionResult Result;
+			EActionResult Result;
 		} Args = { this, RetVal };
 
 		ProcessFuncFromResolveMember(Func, &Args);
@@ -63,6 +67,7 @@ ETransactionResult UActionScreenComponent::ExecuteAction(UObject* Entry, bool bP
 UObject* UActionScreenComponent::GetSlot(int32 Index) const
 {
 	UObject* RetVal = nullptr;
+	PRAGMA_DISABLE_INTERNAL_WARNINGS
 	if (IsSlotValid(Index))
 	{
 		RetVal = Slots[Index];
@@ -71,11 +76,13 @@ UObject* UActionScreenComponent::GetSlot(int32 Index) const
 	{
 		UE_LOG(LogUICS, Warning, TEXT("UUICSTransaction::GetSlot() Slot %i was not valid"), Index);
 	}
+	PRAGMA_ENABLE_INTERNAL_WARNINGS
 	return RetVal;
 }
 
 void UActionScreenComponent::RemoveSlot(int32 Index)
 {
+	PRAGMA_DISABLE_INTERNAL_WARNINGS
 	if (IsSlotValid(Index))
 	{
 		Slots.Remove(Index);
@@ -84,6 +91,7 @@ void UActionScreenComponent::RemoveSlot(int32 Index)
 	{
 		UE_LOG(LogUICS, Warning, TEXT("RemoveSlot Slot %i was not valid"), Index);
 	}
+	PRAGMA_ENABLE_INTERNAL_WARNINGS
 }
 
 void UActionScreenComponent::SetSlot(UObject* InEntry, int32 Index)
@@ -123,5 +131,8 @@ void UActionScreenComponent::HandleOnAction(UViewScreenComponent* Component, con
 
 void UActionScreenComponent::HandleOnInputAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
 {
-	ExecuteAction(Widget->Execute_GetEntryData(Widget.GetObject()), true);
+	if (Widget)
+	{
+		ExecuteActionIfAble(Widget->Execute_GetEntryData(Widget.GetObject()));
+	}
 }

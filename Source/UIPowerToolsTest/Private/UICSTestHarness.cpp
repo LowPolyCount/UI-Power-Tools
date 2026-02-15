@@ -88,7 +88,9 @@ void UViewHarness::HandleTestOnWidgetsPopulated(UViewScreenComponent* Component)
 void UActionHarness::Initialize()
 {
 	Super::Initialize();
-	OnIsValidResult.AddDynamic(this, &UActionHarness::HandleOnIsValid);
+	PRAGMA_DISABLE_INTERNAL_WARNINGS
+	OnIsValidResult_DEPRECATED.AddDynamic(this, &UActionHarness::HandleOnIsValid);
+	PRAGMA_ENABLE_INTERNAL_WARNINGS
 	OnExecuteResult.AddDynamic(this, &UActionHarness::HandleOnComplete);
 }
 
@@ -100,9 +102,9 @@ void UActionHarness::HandleOnIsValid(UActionScreenComponent* Component, bool bIs
 	}
 	
 }
-void UActionHarness::HandleOnComplete(UActionScreenComponent* Component, ETransactionResult Result)
+void UActionHarness::HandleOnComplete(UActionScreenComponent* Component, EActionResult Result)
 {
-	if(Result == ETransactionResult::Success)
+	if(Result == EActionResult::Success)
 	{ 
 		OnCompleteSuccess++;
 	}
