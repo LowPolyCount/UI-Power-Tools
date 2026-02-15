@@ -7,6 +7,7 @@
 #include "UI/Screens/UICS/DataScreenComponent.h"
 #include "Components/PanelWidget.h"
 #include "Blueprint/UserWidget.h"
+#include "UI/Utility/UIPTStatics.h"
 
 FCachedWidget::FCachedWidget(const TScriptInterface<IViewWidgetInterface>& InWidget)
 	: UserWidget(InWidget)
@@ -27,7 +28,7 @@ void UViewScreenComponent::Initialize()
 	OnFocusChange.AddDynamic(this, &UViewScreenComponent::HandleOnFocusChange);
 	OnHoverChange.AddDynamic(this, &UViewScreenComponent::HandleOnHoverChange);
 
-	SetLinkedDataComponent(GetScreenComponentFromSelector<UDataScreenComponent>(DataToListenTo));
+	SetLinkedDataComponent(UUIPTStatics::GetScreenComponentFromSelector<UDataScreenComponent>(this, DataToListenTo));
 }
 
 
@@ -99,7 +100,26 @@ void UViewScreenComponent::NativeDestruct()
 
 }
 
-// Add default functionality here for any IUICSView functions that are not pure virtual.
+UWidget* UViewScreenComponent::GetDesiredFocusTarget() const
+{
+	UWidget* RetVal = nullptr;
+	ensureMsgf(InitialFocus, TEXT("bInitialFocus is false for %s"), *this->GetName());
+	
+	for (TScriptInterface<IViewWidgetInterface> ViewWidget : GetAllViewWidgets())
+	{
+		if (UUserWidget* AsUWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
+		{
+			if (AsUWidget->IsFocusable())
+			{
+				RetVal = AsUWidget;
+				break;
+			}
+		}
+	}
+
+	return RetVal;
+}
+
 void UViewScreenComponent::SetLinkedDataComponent(UDataScreenComponent* InDataComponent)
 {
 	if (LinkedDataComponent)

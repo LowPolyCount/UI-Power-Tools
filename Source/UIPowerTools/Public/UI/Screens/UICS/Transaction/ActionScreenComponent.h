@@ -91,10 +91,6 @@ public:
 	void SetTransactor(UActionScreenComponentProvider* InTransaction) { ActionProvider = InTransaction; }
 
 protected:
-	// todo - rename HandleOnInputAction
-	UFUNCTION(Category = ActionScreenComponent, meta = (DeprecatedFunction, DeprecationMessage = "HandleOnAction is deprecated. Use HandleOnInputAction instead"))
-	void HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
-
 	UFUNCTION()
 	void HandleOnInputAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
 	// set the transactor that will be used
@@ -126,5 +122,11 @@ protected:
 	// slots are provided as a holding place for data. So you can put it in a slot, and then have the action provider retrieve it later. 
 	UPROPERTY()
 	TMap<int32, UObject*> Slots;
+
+	// begin deprecated functions
+
+	UE_DEPRECATED(Any, "Is Deprecated. Use HandleOnInputAction() Instead")
+	UFUNCTION(Category = ActionScreenComponent, meta = (DeprecatedFunction, DeprecationMessage = "HandleOnAction is deprecated. Use HandleOnInputAction instead"))	
+	void HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
 };
 

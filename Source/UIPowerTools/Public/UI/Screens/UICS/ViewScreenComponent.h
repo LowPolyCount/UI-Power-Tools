@@ -183,6 +183,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
 	void ManuallySetData(const TArray<UObject*>& Entries);
 
+	// Get the first Widget that can be a Desired/Initial Focus Target
+	virtual UWidget* GetDesiredFocusTarget() const;
+
 protected:
 	// a widget has executed an input action (such as being clicked)
 	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)

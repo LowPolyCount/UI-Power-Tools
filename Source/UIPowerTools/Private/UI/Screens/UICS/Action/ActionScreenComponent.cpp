@@ -5,13 +5,14 @@
 #include "Templates/SubclassOf.h"
 #include "UI/Screens/UICS/Transaction/ActionScreenComponentProvider.h"
 #include "UI/Screens/UICS/ViewScreenComponent.h"
+#include "UI/Utility/UIPTStatics.h"
 #include "UIPowerTools.h"
 
 void UActionScreenComponent::Initialize()
 {
 	Super::Initialize();
 
-	ListenToViewAction(GetScreenComponentFromSelector<UViewScreenComponent>(ViewToListenTo));
+	ListenToViewAction(UUIPTStatics::GetScreenComponentFromSelector<UViewScreenComponent>(this, ViewToListenTo));
 }
 
 bool UActionScreenComponent::IsValidTransaction(UObject* Entry)
@@ -104,14 +105,14 @@ void UActionScreenComponent::ListenToViewAction(UViewScreenComponent* InView)
 {
 	if (ViewListeningTo)
 	{
-		ViewListeningTo->OnInputAction.RemoveDynamic(this, &UActionScreenComponent::HandleOnAction);
+		ViewListeningTo->OnInputAction.RemoveDynamic(this, &UActionScreenComponent::HandleOnInputAction);
 	}
 
 	ViewListeningTo = InView;
 
 	if (ViewListeningTo)
 	{
-		ViewListeningTo->OnInputAction.AddUniqueDynamic(this, &UActionScreenComponent::HandleOnAction);
+		ViewListeningTo->OnInputAction.AddUniqueDynamic(this, &UActionScreenComponent::HandleOnInputAction);
 	}
 }
 
