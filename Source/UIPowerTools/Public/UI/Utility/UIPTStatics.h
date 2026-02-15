@@ -27,21 +27,21 @@ public:
 	// get all screen components of a type
 	// @PathToScreen - A Widget or Screen Component that has an Outer/Parent chain to or is a Screen that holds the Screen Components
 	// @Type - The Type of Component you are getting
-	UFUNCTION(BlueprintPure, Category = ScreenComponent, Meta = (WorldContext = "PathToScreen", DisplayName = "Get All Screen Components"))
+	UFUNCTION(BlueprintPure, Category = ScreenComponent, Meta = (DefaultToSelf = "PathToScreen", DisplayName = "Get All Screen Components"))
 	static TArray<UScreenComponent*> GetAllScreenComponents_BP(const UObject* PathToScreen, TSubclassOf<UScreenComponent> Type);
 
 	// get a screen component by Name
 	// @PathToScreen - A Widget or Screen Component that has an Outer/Parent chain to or is a Screen that holds the Screen Components
 	// @Name - the FName of the component
 	// @Type - The Type of Component you are getting
-	UFUNCTION(BlueprintPure, Category = ScreenComponent, Meta = (WorldContext = "PathToScreen", DisplayName = "Get Screen Component By Name"))
+	UFUNCTION(BlueprintPure, Category = ScreenComponent, Meta = (DefaultToSelf = "PathToScreen", DisplayName = "Get Screen Component By Name"))
 	static UScreenComponent* GetScreenComponentByName_BP(const UObject* PathToScreen, FName Name, TSubclassOf<UScreenComponent> Type);
 
 	// get a screen component through a component selector
 	// @PathToScreen - A Widget or Screen Component that has an Outer/Parent chain to or is a Screen that holds the Screen Components
 	// @Selector - The Component Selector that is set in the editor to a specific component
 	// @Type - The Type of Component you are getting
-	UFUNCTION(BlueprintPure, Category = ScreenComponent, Meta = (WorldContext = "PathToScreen", DisplayName = "Get Screen Component From Selector"))
+	UFUNCTION(BlueprintPure, Category = ScreenComponent, Meta = (DefaultToSelf = "PathToScreen", DisplayName = "Get Screen Component From Selector"))
 	static UScreenComponent* GetScreenComponentFromSelector_BP(const UObject* PathToScreen, const FComponentSelector& Selector, TSubclassOf<UScreenComponent> Type);
 
 	// C++ Versions of the GetScreenComponent() functions using Templates for the Types
