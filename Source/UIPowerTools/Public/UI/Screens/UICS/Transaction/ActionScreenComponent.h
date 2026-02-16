@@ -93,6 +93,7 @@ protected:
 	UFUNCTION(BlueprintInternalUseOnly)
 	void Binding_TransactionResult(UActionScreenComponent* Component, EActionResult Result) {}
 #endif // WITH_EDITOR
+	// END FMember References
 
 public:
 	// begin deprecated functions
