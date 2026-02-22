@@ -327,7 +327,7 @@ TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetAndSetupEntryWid
 	if (RetVal)
 	{
 		ActiveViewWidgets.Emplace(RetVal);
-		ListenToWidgetDelegates(RetVal);
+		ViewWidgetSetup(RetVal);
 		AddToPanel(RetVal);
 
 		// we can't remove the entry from CachedWidgets until after AddToPanel() otherwise the slate widget will be destroyed
@@ -356,7 +356,7 @@ void UViewScreenComponent::RemoveViewWidget(TScriptInterface<IViewWidgetInterfac
 		{
 			Widget->Execute_Reset(Widget.GetObject());
 
-			RemoveWidgetDelegates(Widget);
+			ViewWidgetTeardown(Widget);
 
 			
 			if (bCacheWidgets)
@@ -372,10 +372,11 @@ void UViewScreenComponent::RemoveViewWidget(TScriptInterface<IViewWidgetInterfac
 	}
 }
 
-void UViewScreenComponent::ListenToWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget)
+void UViewScreenComponent::ViewWidgetSetup(TScriptInterface<IViewWidgetInterface> Widget)
 {
 	if (Widget)
 	{
+		Widget->SetOwningViewScreenComponent(this);
 		Widget->GetOnAction().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnAction);
 		Widget->GetOnSelectionChange().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnSelectionChange);
 		Widget->GetOnFocusChange().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnFocusChange);
@@ -383,10 +384,11 @@ void UViewScreenComponent::ListenToWidgetDelegates(TScriptInterface<IViewWidgetI
 	}
 }
 
-void UViewScreenComponent::RemoveWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget)
+void UViewScreenComponent::ViewWidgetTeardown(TScriptInterface<IViewWidgetInterface> Widget)
 {
 	if (Widget)
 	{
+		Widget->SetOwningViewScreenComponent(nullptr);
 		Widget->GetOnAction().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnAction);
 		Widget->GetOnSelectionChange().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnSelectionChange);
 		Widget->GetOnFocusChange().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnFocusChange);

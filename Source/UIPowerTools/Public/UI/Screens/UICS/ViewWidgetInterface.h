@@ -62,11 +62,12 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	void Reset();
 
-	// a pointer to the view screen component that is managing us. 
-	void SetOwningViewComponent(UViewScreenComponent* InOwningComponent);
+	// set a pointer to the view screen component that is managing us. 
+	void SetOwningViewScreenComponent(UViewScreenComponent* InOwningComponent);
 
+	// get the view screen component that is managing us
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
-	UViewScreenComponent* GetOwningViewComponent();
+	UViewScreenComponent* GetOwningScreenViewComponent() const;
 
 protected:
 	// list out events that are user facing
@@ -98,7 +99,7 @@ protected:
 	virtual UObject* GetEntryData_Implementation() const;
 	virtual int32 GetIndex_Implementation() const { return Index; }
 	virtual void Reset_Implementation();
-	UViewScreenComponent* GetOwningViewComponent_Implementation();
+	UViewScreenComponent* GetOwningViewScreenComponent_Implementation() const;
 
 	// these take the existing widget event calls, and translates them to a version where we will know who broadcast them. 
 	void SetFocus_Internal(bool bInFocused);
@@ -108,7 +109,7 @@ protected:
 
 	TStrongObjectPtr<UObject> Entry;	// the entry data
 	int32 Index = INDEX_NONE;			// what is the index of the widget in the view component array?
-	TWeakObjectPtr<UViewScreenComponent> ManagingViewComponent; // View Component that is managing this widget
+	TWeakObjectPtr<UViewScreenComponent> ManagingViewScreenComponent; // View Component that is managing this widget
 
 public:
 	// list out deprecated functions. 

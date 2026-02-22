@@ -216,8 +216,8 @@ protected:
 	void AddToPanel(TScriptInterface<IViewWidgetInterface>& Widget);
 	
 	void RemoveViewWidget(TScriptInterface<IViewWidgetInterface> Widget);
-	void ListenToWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget);
-	void RemoveWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget);
+	void ViewWidgetSetup(TScriptInterface<IViewWidgetInterface> Widget);
+	void ViewWidgetTeardown(TScriptInterface<IViewWidgetInterface> Widget);
 	void SetupPreConstructWidgets();
 	TScriptInterface<IViewWidgetInterface> DuplicateWidget(const TObjectPtr<UUserWidget>& Prototype);
 	virtual void PopulateWidgets(const TArray<UObject*>& Entries);
