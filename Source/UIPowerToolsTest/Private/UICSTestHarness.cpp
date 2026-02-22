@@ -102,9 +102,9 @@ void UActionHarness::HandleOnIsValid(UActionScreenComponent* Component, bool bIs
 	}
 	
 }
-void UActionHarness::HandleOnComplete(UActionScreenComponent* Component, EActionResult Result)
+void UActionHarness::HandleOnComplete(UActionScreenComponent* Component, FGameplayTag Result)
 {
-	if(Result == EActionResult::Success)
+	if(Result == UICS_Action_Success)
 	{ 
 		OnCompleteSuccess++;
 	}

@@ -18,7 +18,7 @@ class UIPOWERTOOLS_API UQuitGameActionProvider : public UActionScreenComponentPr
 {
 	GENERATED_BODY()
 protected:
-	virtual EActionResult ExecuteAction_Implementation(UActionScreenComponent* Component, UObject* Entry) override;
+	virtual FGameplayTag ExecuteAction_Implementation(UActionScreenComponent* Component, UObject* Entry) override;
 
 	// Quit application or move to background?
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ActionProvider)

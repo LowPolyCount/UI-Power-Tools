@@ -117,7 +117,7 @@ class UActionTestHarness: public UActionScreenComponentProvider
 	GENERATED_BODY()
 public:
 	virtual bool CanExecuteAction_Implementation(UActionScreenComponent* Component, UObject* Entry) override { return bCanTransact; }
-	virtual EActionResult ExecuteAction_Implementation(UActionScreenComponent* Component, UObject* Entry) override { return (bCanExecuteAction) ? EActionResult::Success : EActionResult::Failure; }
+	virtual FGameplayTag ExecuteAction_Implementation(UActionScreenComponent* Component, UObject* Entry) override { return (bCanExecuteAction) ? UICS_Action_Success : UICS_Action_Failure; }
 
 	bool bCanTransact = true;
 	bool bCanExecuteAction = true;
@@ -139,7 +139,7 @@ public:
 	UFUNCTION()
 	void HandleOnIsValid(UActionScreenComponent* Component, bool bIsValid);
 	UFUNCTION()
-	void HandleOnComplete(UActionScreenComponent* Component, EActionResult Result);
+	void HandleOnComplete(UActionScreenComponent* Component, FGameplayTag Result);
 };
 
 UCLASS(Hidden)

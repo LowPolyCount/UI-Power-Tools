@@ -1,6 +1,7 @@
 // Copyright (c) Joel Gonzales
 
 using UnrealBuildTool;
+using UnrealBuildTool.Rules;
 
 public class UIPowerToolsTest : ModuleRules
 {
@@ -12,9 +13,10 @@ public class UIPowerToolsTest : ModuleRules
 			{
 				"Core",
 				"UnrealEd",
-                "CommonUI",
-                "EnhancedInput"
-            });
+				"CommonUI",
+				"EnhancedInput",
+				"GameplayTags",
+			});
 			
 		
 		PrivateDependencyModuleNames.AddRange(new string[]
@@ -25,6 +27,6 @@ public class UIPowerToolsTest : ModuleRules
 				"SlateCore",
 				"UMG",
 				"UIPowerTools",
-            });
+			});
 	}
 }

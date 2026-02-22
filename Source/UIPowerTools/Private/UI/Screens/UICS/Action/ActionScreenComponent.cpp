@@ -7,6 +7,12 @@
 #include "UI/Utility/UIPTStatics.h"
 #include "UIPowerTools.h"
 
+
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_CouldNotExecute, "UICS.Action.Could Not Execute", "ExecuteActionIfAble() was called and The Action provider's CanExecuteAction() returned false");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Success, "UICS.Action.Success", "Executed Action Successfully");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Failure, "UICS.Action.Failure", "Was not able to execute action");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Async, "UICS.Action.Async", "Action is waiting for an asynchronous callback");
+
 void UActionScreenComponent::Initialize()
 {
 	Super::Initialize();
@@ -30,9 +36,9 @@ bool UActionScreenComponent::CanExecuteAction(UObject* Entry)
 	return RetVal;
 }
 
-EActionResult UActionScreenComponent::ExecuteActionIfAble(UObject* Entry)
+FGameplayTag UActionScreenComponent::ExecuteActionIfAble(UObject* Entry)
 {
-	EActionResult RetVal = EActionResult::CouldNotExecute;
+	FGameplayTag RetVal = UICS_Action_CouldNotExecute;
 
 	if (ActionProvider && CanExecuteAction(Entry))
 	{
@@ -41,9 +47,9 @@ EActionResult UActionScreenComponent::ExecuteActionIfAble(UObject* Entry)
 	return RetVal;
 }
 
-EActionResult UActionScreenComponent::ExecuteAction(UObject* Entry)
+FGameplayTag UActionScreenComponent::ExecuteAction(UObject* Entry)
 {
-	EActionResult RetVal = EActionResult::Failure;
+	FGameplayTag RetVal = UICS_Action_Failure;
 
 	if (ActionProvider)
 	{
@@ -56,7 +62,7 @@ EActionResult UActionScreenComponent::ExecuteAction(UObject* Entry)
 	{
 		struct {
 			UActionScreenComponent* Component;
-			EActionResult Result;
+			FGameplayTag Result;
 		} Args = { this, RetVal };
 
 		ProcessFuncFromResolveMember(Func, &Args);
@@ -104,7 +110,8 @@ bool UActionScreenComponent::IsSlotValid(int32 Index) const
 	return Slots.Find(Index) != nullptr;
 }
 
-int32 UActionScreenComponent::NumSlots() const
+int32 UActionScreenComponent::NumSlots()
+const
 {
 	return Slots.Num();
 }

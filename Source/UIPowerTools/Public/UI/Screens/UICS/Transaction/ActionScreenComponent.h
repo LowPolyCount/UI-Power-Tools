@@ -3,6 +3,7 @@
 #pragma once
 
 #include "UI/Screens/UICS/ScreenComponent.h"
+#include "NativeGameplayTags.h"
 #include "ActionScreenComponent.generated.h"
 
 class UViewScreenComponent;
@@ -10,16 +11,18 @@ class UActionScreenComponentProvider;
 
 // defines the results of a transaction
 UENUM(BlueprintType)
-enum class EActionResult : uint8
+enum class ETransactionResult : uint8
 {
-	CouldNotExecute,	// CanExecuteAction() was called and returned false 
+	// ExecuteActionIfAble() was called and The Action provider's CanExecuteAction() returned false
+	CouldNotExecute,	
 	Success,
 	Failure,
-	Async			// The result will need to come back from the server through a callback. (Not yet supported)
+	// The result is waiting on an Asynchronous call to complete
+	Async			
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FValidTransactionResult, UActionScreenComponent*, Component, bool, bResult);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTransactionResult, UActionScreenComponent*, Component, EActionResult, Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTransactionResult, UActionScreenComponent*, Component, FGameplayTag, Result);
 
 // define all bindable events in a struct so that in editor, it will be it's own category
 USTRUCT()
@@ -32,6 +35,12 @@ struct UIPOWERTOOLS_API FBindableActionEvents
 	FMemberReference  Bind_OnExecuteResult;
 };
 
+//Gameplay tags that define what the outcome of an action was
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_CouldNotExecute);	//ExecuteActionIfAble() was called and The Action provider's CanExecuteAction() returned false
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Success);			//Executed Action Successfully
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Failure);			//Was not able to execute action
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Async);				//Action is waiting for an asynchronous callback
+
 // Transaction Component collects all the information required to make a change to the system and executes it using a transactor class
 UCLASS()
 class UIPOWERTOOLS_API UActionScreenComponent : public UScreenComponent
@@ -42,7 +51,9 @@ protected:
 	void Initialize() override;
 
 public:
-	// result of ExecuteTransaction
+
+
+	// result of ExecuteAction
 	UPROPERTY(BlueprintAssignable, Category = ActionScreenComponent)
 	FTransactionResult OnExecuteResult;
 
@@ -50,17 +61,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	bool CanExecuteAction(UObject* Entry = nullptr);
 
-	// call CanExecuteAction() and if true, then call ExecuteAction()
+	// call CanExecuteAction() and if true, then call ExecuteAction(). If False, return CouldNotExecute
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
-	EActionResult ExecuteActionIfAble(UObject* Entry = nullptr);
+	FGameplayTag ExecuteActionIfAble(UObject* Entry = nullptr);
 
 	// execute our action, without checking CanExecuteAction()
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
-	EActionResult ExecuteAction(UObject* Entry = nullptr);
+	FGameplayTag ExecuteAction(UObject* Entry = nullptr);
 
+	// set the action provider
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	void SetActionProvider(UActionScreenComponentProvider* InActionProvider) { ActionProvider = InActionProvider; }
 
+	// get the action provider
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	UActionScreenComponentProvider* GetActionProvider() const {return ActionProvider;}
 
@@ -91,7 +104,7 @@ protected:
 	UFUNCTION(BlueprintInternalUseOnly)
 	void Binding_IsTransactionValid(UActionScreenComponent* Component, bool bResult) {}
 	UFUNCTION(BlueprintInternalUseOnly)
-	void Binding_TransactionResult(UActionScreenComponent* Component, EActionResult Result) {}
+	void Binding_TransactionResult(UActionScreenComponent* Component, FGameplayTag Result) {}
 #endif // WITH_EDITOR
 	// END FMember References
 
