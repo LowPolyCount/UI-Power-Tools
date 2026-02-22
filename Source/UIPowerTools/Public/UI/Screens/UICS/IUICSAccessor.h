@@ -83,6 +83,13 @@ class UIPOWERTOOLS_API IUICSScreenAccessor : public IUICSAccessor
 {
 	GENERATED_BODY()
 public:
+	// you will need to add a UScreenComponentManager* property in your class. We Recommend the following UProperty Tags: 
+	/*
+		UPROPERTY(EditAnywhere, Instanced, Export, Category = Screen, Meta = (DisplayPriority = 0, FullyExpand = true, DisplayName = "UI Component System"))
+		TObjectPtr<UScreenComponentManager> ComponentManager = nullptr;
+	*/
+	virtual UScreenComponentManager* GetComponentManager() const = 0;
+
 	// these functions correspond to and should be called in the implementor's UUserWidget Functions of the same name. 
 	// Example:
 	/*bool UImplementingWidget::Initialize()
@@ -91,27 +98,17 @@ public:
 		IUICSScreenAccessor::Initialize();
 		return RetVal;
 	}*/
-
-	// Initialize returns bool just to match UserWidget's definition of the function. 
-	// the bool does not mean anything in this context
-	virtual bool Initialize();
+	virtual bool Initialize();	// Initialize returns bool just to match UserWidget's definition of the function. the bool does not mean anything in this context
 	virtual void WidgetNativePreConstruct(bool bIsDesignTime);
 	virtual void NativeConstruct();
 	virtual void NativeDestruct();
+	// end function correspond
+
 
 	virtual UWidget* GetDesiredFocusTargetFromViewComponents() const;
-
 #if WITH_EDITOR
 	UScreenComponent* GetScreenComponentFromGUID(const FGuid& Selector) const;
 #endif
-
-protected:
-	// you will need to add a UScreenComponentManager* property in your class. We Recommend the following UProperty Tags: 
-	/*
-		UPROPERTY(EditAnywhere, Instanced, Export, Category = Screen, Meta = (DisplayPriority = 0, FullyExpand = true, DisplayName = "UI Component System"))
-		TObjectPtr<UScreenComponentManager> ComponentManager = nullptr;
-	*/
-	virtual UScreenComponentManager* GetComponentManager() const = 0;
 
 	// begin non-user facing functions
 public:
