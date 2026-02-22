@@ -139,7 +139,7 @@ public:
 	UFUNCTION()
 	void HandleOnIsValid(UActionScreenComponent* Component, bool bIsValid);
 	UFUNCTION()
-	void HandleOnComplete(UActionScreenComponent* Component, FGameplayTag Result);
+	void HandleOnComplete(UActionScreenComponent* Component, const FGameplayTag& Result);
 };
 
 UCLASS(Hidden)

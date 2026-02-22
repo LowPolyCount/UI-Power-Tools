@@ -9,20 +9,16 @@
 class UViewScreenComponent;
 class UActionScreenComponentProvider;
 
-// defines the results of a transaction
-UENUM(BlueprintType)
-enum class ETransactionResult : uint8
-{
-	// ExecuteActionIfAble() was called and The Action provider's CanExecuteAction() returned false
-	CouldNotExecute,	
-	Success,
-	Failure,
-	// The result is waiting on an Asynchronous call to complete
-	Async			
-};
+
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FValidTransactionResult, UActionScreenComponent*, Component, bool, bResult);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTransactionResult, UActionScreenComponent*, Component, FGameplayTag, Result);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTransactionResult, UActionScreenComponent*, Component, const FGameplayTag&, Result);
+
+//Gameplay tags that define what the outcome of an action was
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_CouldNotExecute);	//ExecuteActionIfAble() was called and The Action provider's CanExecuteAction() returned false
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Success);			//Executed Action Successfully
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Failure);			//Was not able to execute action
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Async);				//Action is waiting for an asynchronous callback
 
 // define all bindable events in a struct so that in editor, it will be it's own category
 USTRUCT()
@@ -34,12 +30,6 @@ struct UIPOWERTOOLS_API FBindableActionEvents
 	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ActionScreenComponent.Binding_TransactionResult", DefaultBindingName="ExecuteResult", DisplayName = "OnExecuteResult"))
 	FMemberReference  Bind_OnExecuteResult;
 };
-
-//Gameplay tags that define what the outcome of an action was
-UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_CouldNotExecute);	//ExecuteActionIfAble() was called and The Action provider's CanExecuteAction() returned false
-UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Success);			//Executed Action Successfully
-UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Failure);			//Was not able to execute action
-UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Async);				//Action is waiting for an asynchronous callback
 
 // Transaction Component collects all the information required to make a change to the system and executes it using a transactor class
 UCLASS()
@@ -104,7 +94,7 @@ protected:
 	UFUNCTION(BlueprintInternalUseOnly)
 	void Binding_IsTransactionValid(UActionScreenComponent* Component, bool bResult) {}
 	UFUNCTION(BlueprintInternalUseOnly)
-	void Binding_TransactionResult(UActionScreenComponent* Component, FGameplayTag Result) {}
+	void Binding_TransactionResult(UActionScreenComponent* Component, const FGameplayTag& Result) {}
 #endif // WITH_EDITOR
 	// END FMember References
 
@@ -165,3 +155,15 @@ private:
 
 };
 
+// deprecated
+// defines the results of a transaction
+UENUM(BlueprintType)
+enum class ETransactionResult : uint8
+{
+	// ExecuteActionIfAble() was called and The Action provider's CanExecuteAction() returned false
+	CouldNotExecute,	
+	Success,
+	Failure,
+	// The result is waiting on an Asynchronous call to complete
+	Async			
+};

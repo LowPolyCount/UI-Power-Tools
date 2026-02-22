@@ -89,7 +89,7 @@ protected:
 	// If there is a linked Action Component linked to our widgt's View Component, what was the result of calling Action's CanExecute() function?
 	// Example: ViewWidgets are displaying items a player can buy, Result would return if the player had enough money to buy the item this widget represents.
 	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget)
-	void HandleOnActionExecuteResult(UActionScreenComponent* Component, EActionResult Result);
+	void HandleOnActionExecuteResult(UActionScreenComponent* Component, const FGameplayTag& Result);
 
 	// these internal functions are broken out and made virtual in case an implementing class needs to override them. 
 	virtual UObject* GetEntry_Internal() const { return Entry.Get(); }
