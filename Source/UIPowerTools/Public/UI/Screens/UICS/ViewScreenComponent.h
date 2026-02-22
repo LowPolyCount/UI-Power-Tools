@@ -12,7 +12,6 @@ class UPanelWidget;
 class UDataScreenComponent;
 
 
-
 // a generic event coming from this component
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FViewComp, UViewScreenComponent*, Component);
 // an event involving a widget
@@ -72,10 +71,6 @@ class UIPOWERTOOLS_API UViewScreenComponent : public UScreenComponent
 	GENERATED_BODY()
 
 public:
-	// an input action has occurred on a widget
-	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent, meta = (DeprecatedProperty, DeprecationMessage = "OnAction is deprecated. Use OnInputAction instead"))
-	FViewActionComp OnAction;
-
 	// an input action has occurred on a widget
 	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
 	FViewActionComp OnInputAction;
@@ -275,4 +270,11 @@ protected:
 	TArray<FCachedWidget> CachedWidgets;
 	UPROPERTY(Transient)
 	TArray<TScriptInterface<IViewWidgetInterface>> ActiveViewWidgets;
+
+public:
+	// start deprecated items
+
+	// an input action has occurred on a widget
+	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent, meta = (DeprecatedProperty, DeprecationMessage = "OnAction is deprecated. Use OnInputAction instead"))
+	FViewActionComp OnAction;
 };
