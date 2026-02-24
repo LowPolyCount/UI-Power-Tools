@@ -17,7 +17,7 @@ void UActionScreenComponent::Initialize()
 {
 	Super::Initialize();
 
-	ListenToViewAction(UUIPTStatics::GetScreenComponentFromSelector<UViewScreenComponent>(this, ViewToListenTo));
+	ListenToViewScreenComponent(UUIPTStatics::GetScreenComponentFromSelector<UViewScreenComponent>(this, ViewToListenTo));
 }
 
 bool UActionScreenComponent::IsValidTransaction(UObject* Entry)
@@ -110,35 +110,101 @@ bool UActionScreenComponent::IsSlotValid(int32 Index) const
 	return Slots.Find(Index) != nullptr;
 }
 
-int32 UActionScreenComponent::NumSlots()
-const
+int32 UActionScreenComponent::NumSlots() const
 {
 	return Slots.Num();
 }
 
 void UActionScreenComponent::ListenToViewAction(UViewScreenComponent* InView)
 {
+	ListenToViewScreenComponent(InView);
+}
+
+void UActionScreenComponent::SetActionTriggers(EActionTriggers InActionTriggers)
+{
+	UViewScreenComponent* CurrentView = ViewListeningTo;
+
+	// reset listeners
+	RemoveCurrentViewScreenComponent();
+	ActionTriggers = static_cast<int32>(InActionTriggers);
+	SetupListenersToViewScreenComponent(CurrentView);
+}
+
+void UActionScreenComponent::ListenToViewScreenComponent(UViewScreenComponent* InView)
+{
+	RemoveCurrentViewScreenComponent();
+	SetupListenersToViewScreenComponent(InView);
+}
+
+void UActionScreenComponent::RemoveCurrentViewScreenComponent()
+{
 	if (ViewListeningTo)
 	{
-		ViewListeningTo->OnInputAction.RemoveDynamic(this, &UActionScreenComponent::HandleOnInputAction);
+		if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Focus))
+		{
+			ViewListeningTo->OnFocusChange.RemoveDynamic(this, &UActionScreenComponent::HandleOnActionTriggerGain);
+		}
+		if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Hover))
+		{
+			ViewListeningTo->OnHoverChange.RemoveDynamic(this, &UActionScreenComponent::HandleOnActionTriggerGain);
+		}
+		if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Input))
+		{
+			ViewListeningTo->OnInputAction.RemoveDynamic(this, &UActionScreenComponent::HandleOnActionTrigger);
+		}
+		
+		ViewListeningTo = nullptr;
 	}
+}
 
-	ViewListeningTo = InView;
-
-	if (ViewListeningTo)
+void UActionScreenComponent::SetupListenersToViewScreenComponent(UViewScreenComponent* InView)
+{
+	if (!ViewListeningTo)
 	{
-		ViewListeningTo->OnInputAction.AddUniqueDynamic(this, &UActionScreenComponent::HandleOnInputAction);
+		if (InView)
+		{
+			ViewListeningTo = InView;
+
+			if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Focus))
+			{
+				ViewListeningTo->OnFocusChange.AddDynamic(this, &UActionScreenComponent::HandleOnActionTriggerGain);
+			}
+			if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Hover))
+			{
+				ViewListeningTo->OnHoverChange.AddDynamic(this, &UActionScreenComponent::HandleOnActionTriggerGain);
+			}
+			if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Input))
+			{
+				ViewListeningTo->OnInputAction.AddDynamic(this, &UActionScreenComponent::HandleOnActionTrigger);
+			}
+		}
+		else
+		{
+			// @todo: add logging
+		}
+	}
+	else
+	{
+		// @todo: add logging
 	}
 }
 
 void UActionScreenComponent::HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
 {
-	HandleOnInputAction(Component, Widget);
+	HandleOnActionTrigger(Component, Widget);
 }
 
-void UActionScreenComponent::HandleOnInputAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
+void UActionScreenComponent::HandleOnActionTrigger(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
 {
 	if (Widget)
+	{
+		ExecuteActionIfAble(Widget->Execute_GetEntryData(Widget.GetObject()));
+	}
+}
+
+void UActionScreenComponent::HandleOnActionTriggerGain(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained)
+{
+	if (bGained && Widget)
 	{
 		ExecuteActionIfAble(Widget->Execute_GetEntryData(Widget.GetObject()));
 	}

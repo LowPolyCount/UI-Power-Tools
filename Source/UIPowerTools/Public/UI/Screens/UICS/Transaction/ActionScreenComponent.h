@@ -20,6 +20,20 @@ UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Success);			//Execut
 UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Failure);			//Was not able to execute action
 UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Async);				//Action is waiting for an asynchronous callback
 
+// define what events from a View Screen Component will cause an action to trigger
+UENUM(BlueprintType, meta = (Bitflags))
+enum class EActionTriggers : uint8
+{
+	None = 0 UMETA(Hidden),
+	// widget has received hover 
+	Hover = 1 << 0,
+	// widget has received focus
+	Focus = 1 << 1,
+	// an input button on a widget was pressed
+	Input = 1 << 2,
+};
+ENUM_CLASS_FLAGS(EActionTriggers)
+
 // define all bindable events in a struct so that in editor, it will be it's own category
 USTRUCT()
 struct UIPOWERTOOLS_API FBindableActionEvents
@@ -41,7 +55,6 @@ protected:
 	void Initialize() override;
 
 public:
-
 
 	// result of ExecuteAction
 	UPROPERTY(BlueprintAssignable, Category = ActionScreenComponent)
@@ -67,13 +80,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	UActionScreenComponentProvider* GetActionProvider() const {return ActionProvider;}
 
-	// listen for input events from the given View
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
-	void ListenToViewAction(UViewScreenComponent* InView);
+	void SetActionTriggers(UPARAM(meta = (Bitmask, BitmaskEnum= EActionTriggers)) EActionTriggers InActionTriggers);
+
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
+	void ListenToViewScreenComponent(UViewScreenComponent* InView);
 
 protected:
 	UFUNCTION()
-	void HandleOnInputAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
+	void HandleOnActionTrigger(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
+	UFUNCTION()
+	void HandleOnActionTriggerGain(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained);
+
+	void RemoveCurrentViewScreenComponent();
+	void SetupListenersToViewScreenComponent(UViewScreenComponent* InView);
 
 	// The action provider implements the action that you want to take place
 	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Category = ActionScreenComponent, Meta=(Displayname="Action"))
@@ -83,7 +103,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = ActionScreenComponent)
 	FViewComponentSelector ViewToListenTo;
 
-	UPROPERTY(EditAnywhere, Category = ActionScreenComponent, Meta=(DisplayName="Events"));
+	// what events from the view screen component will trigger the action?
+	UPROPERTY(EditAnywhere, Category = ActionScreenComponent, meta = (Bitmask, BitmaskEnum = "/Script/UIPowerTools.EActionTriggers"))
+	int32 ActionTriggers = static_cast<int32>(EActionTriggers::Input);
+	//EActionTriggers ActionTriggers;
+
+	UPROPERTY(EditAnywhere, Category = ActionScreenComponent, Meta = (DisplayName = "Events"));
 	FBindableActionEvents BindableEvents;
 
 	UPROPERTY()
@@ -145,6 +170,11 @@ public:
 	UE_DEPRECATED(Any, "Is Deprecated. Use HandleOnInputAction() Instead")
 	UFUNCTION(Category = ActionScreenComponent, meta = (DeprecatedFunction, DeprecationMessage = "HandleOnAction is deprecated. Use HandleOnInputAction instead"))	
 	void HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
+
+		// listen for input events from the given View
+	UE_DEPRECATED(Any, "Is Deprecated. Use ListenToViewScreenComponent() Instead")
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent, meta = (DeprecatedFunction, DeprecationMessage = "HandleOnAction is deprecated. Use ListenToViewScreenComponent instead"))
+	void ListenToViewAction(UViewScreenComponent* InView);
 
 private:
 

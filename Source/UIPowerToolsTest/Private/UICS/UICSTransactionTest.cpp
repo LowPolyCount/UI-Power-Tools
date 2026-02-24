@@ -82,7 +82,7 @@ bool FListeningToViewAction::RunTest(const FString& Parameters)
 
 	UPanelWidget* Panel = UICSTest::SetupViewTest(View, Data);
 
-	ActionComponent->ListenToViewAction(View);
+	ActionComponent->ListenToViewScreenComponent(View);
 	UViewWidgetHarness* ViewWidget = Cast<UViewWidgetHarness>(View->GetWidgetAt(0));
 	TestNotNull("ViewWidget", ViewWidget);
 	ViewWidget->ExecuteTriggeredInput();

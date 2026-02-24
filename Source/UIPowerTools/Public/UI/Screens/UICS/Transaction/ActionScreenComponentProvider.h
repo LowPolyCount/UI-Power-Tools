@@ -7,8 +7,6 @@
 #include "NativeGameplayTags.h"
 #include "ActionScreenComponentProvider.generated.h"
 
-enum class EActionResult : uint8;
-
 // Transactions make changes to our data and can query if we're in the correct state to start the transaction
 UCLASS(Blueprintable, BlueprintType, EditInlineNew, Abstract)
 class UIPOWERTOOLS_API UActionScreenComponentProvider : public UScreenComponentWorldContext, public IUICSAccessor
