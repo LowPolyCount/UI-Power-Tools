@@ -3,13 +3,12 @@
 #pragma once
 
 #include "UI/Screens/UICS/ScreenComponentWorldContext.h"
-#include "UI/Screens/UICS/IUICSAccessor.h"
 #include "NativeGameplayTags.h"
 #include "ActionScreenComponentProvider.generated.h"
 
 // Transactions make changes to our data and can query if we're in the correct state to start the transaction
 UCLASS(Blueprintable, BlueprintType, EditInlineNew, Abstract)
-class UIPOWERTOOLS_API UActionScreenComponentProvider : public UScreenComponentWorldContext, public IUICSAccessor
+class UIPOWERTOOLS_API UActionScreenComponentProvider : public UScreenComponentWorldContext
 {
 	GENERATED_BODY()
 public:

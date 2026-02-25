@@ -4,6 +4,7 @@
 
 #include "UI/Screens/UICS/ScreenComponent.h"
 #include "NativeGameplayTags.h"
+#include "UI/Screens/Tools/ComponentSelector.h"
 #include "ActionScreenComponent.generated.h"
 
 class UViewScreenComponent;

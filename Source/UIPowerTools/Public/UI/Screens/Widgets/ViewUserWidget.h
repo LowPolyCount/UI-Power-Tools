@@ -5,12 +5,11 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/Screens/UICS/ViewWidgetInterface.h"
-#include "UI/Screens/UICS/IUICSAccessor.h"
 #include "ViewUserWidget.generated.h"
 
 // a UserWidget that can be used with View Screen Component
 UCLASS(Abstract)
-class UIPOWERTOOLS_API UViewUserWidget : public UUserWidget, public IViewWidgetInterface, public IUICSAccessor
+class UIPOWERTOOLS_API UViewUserWidget : public UUserWidget, public IViewWidgetInterface
 {
 	GENERATED_BODY()
 

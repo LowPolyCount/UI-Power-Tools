@@ -6,6 +6,7 @@
 #include "UI/Screens/UICS/ScreenComponent.h"
 #include "UI/Screens/UICS/ViewWidgetInterface.h"
 #include "UI/Screens/Tools/WidgetSelector.h"
+#include "UI/Screens/Tools/ComponentSelector.h"
 #include "ViewScreenComponent.generated.h"
 
 class UPanelWidget;

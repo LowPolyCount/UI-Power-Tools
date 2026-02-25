@@ -3,6 +3,7 @@
 
 #include "UI/Screens/Tools/WidgetSelector.h"
 #include "UI/Screens/UICSScreen.h"
+#include "UI/Screens/UICS/IUICSAccessor.h"
 #include "Blueprint/WidgetTree.h"
 
 FSelector::FSelector(const UClass* Filter)

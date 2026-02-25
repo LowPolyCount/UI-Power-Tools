@@ -2,6 +2,7 @@
 
 
 #include "UI/Screens/UICS/ScreenComponent.h"
+#include "UI/Screens/UICS/IUICSAccessor.h"
 #include "UObject/UObjectGlobals.h"
 
 UScreenComponent::UScreenComponent(const FObjectInitializer& Initializer)

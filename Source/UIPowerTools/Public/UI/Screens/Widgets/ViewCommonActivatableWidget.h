@@ -4,14 +4,13 @@
 
 #include "CommonActivatableWidget.h"
 #include "UI/Screens/UICS/ViewWidgetInterface.h"
-#include "UI/Screens/UICS/IUICSAccessor.h"
 #include "ViewCommonActivatableWidget.generated.h"
 
 /**
  * Activatable Widget that can be used with View Screen Components
  */
 UCLASS(Abstract)
-class UIPOWERTOOLS_API UViewCommonActivatableWidget : public UCommonActivatableWidget, public IViewWidgetInterface, public IUICSAccessor
+class UIPOWERTOOLS_API UViewCommonActivatableWidget : public UCommonActivatableWidget, public IViewWidgetInterface
 {
 	GENERATED_BODY()
 

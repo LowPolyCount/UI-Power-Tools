@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
 #include "UI/Screens/Tools/ComponentSelector.h"
-#include "UI/Screens/UICS/IUICSAccessor.h"
 #include "Tooltip.generated.h"
 
 class UViewScreenComponent;
@@ -15,7 +14,7 @@ class IViewWidgetInterface;
  * Listens to provided Screen Components and can display detailed information about a hovered or focused entry
  */
 UCLASS()
-class UIPOWERTOOLS_API UTooltip : public UCommonActivatableWidget, public IUICSAccessor
+class UIPOWERTOOLS_API UTooltip : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 protected:
