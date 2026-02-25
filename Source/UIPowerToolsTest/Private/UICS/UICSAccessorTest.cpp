@@ -41,17 +41,15 @@ bool FAccessorTest::RunTest(const FString& Parameters)
 
 
 	// test our basic get functions from the screen
-	// we want to test that these deprecated function still work until they are removed
-	PRAGMA_DISABLE_INTERNAL_WARNINGS
 	{
-		TestTrue("Screen->GetComponent<UUICSData>()", Screen->GetScreenComponent<UDataScreenComponent>() == Data);
-		TestTrue("Screen->GetComponent<UUICSView>()", Screen->GetScreenComponent<UViewScreenComponent>() == View);
+		TestTrue("Screen->GetComponent<UUICSData>()", UUIPTStatics::GetScreenComponent<UDataScreenComponent>(Screen) == Data);
+		TestTrue("Screen->GetComponent<UUICSView>()", UUIPTStatics::GetScreenComponent<UViewScreenComponent>(Screen) == View);
 
 		// test using GetByName
-		TestTrue("Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name)", Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name) == Data2);
-		TestTrue("Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName)", Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName) == View);
+		TestTrue("Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name)", UUIPTStatics::GetScreenComponentByName<UDataScreenComponent>(Screen, Data2Name) == Data2);
+		TestTrue("Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName)", UUIPTStatics::GetScreenComponentByName<UViewScreenComponent>(Screen, ViewTestName) == View);
 
-		TArray<UDataScreenComponent*> AllComponents = Screen->GetAllScreenComponents<UDataScreenComponent>();
+		TArray<UDataScreenComponent*> AllComponents = UUIPTStatics::GetAllScreenComponents<UDataScreenComponent>(Screen);
 		TestTrue("AllComponents.Num()", AllComponents.Num() == 3);
 		TestTrue("AllComponents[0]", AllComponents[0] == Data);
 		TestTrue("AllComponents[1]", AllComponents[1] == Data2);
@@ -60,13 +58,12 @@ bool FAccessorTest::RunTest(const FString& Parameters)
 
 	// test getter functions from a component
 	{
-		TestTrue("Data->GetComponent<UUICSData>()", Data->GetScreenComponent<UDataScreenComponent>() == Data);
-		TestTrue("Data->GetComponent<UUICSView>()", Data->GetScreenComponent<UViewScreenComponent>() == View);
+		TestTrue("Data->GetComponent<UUICSData>()", UUIPTStatics::GetScreenComponent<UDataScreenComponent>(Data) == Data);
+		TestTrue("Data->GetComponent<UUICSView>()", UUIPTStatics::GetScreenComponent<UViewScreenComponent>(Data) == View);
+		TestTrue("Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name)", UUIPTStatics::GetScreenComponentByName<UDataScreenComponent>(Data, Data2Name) == Data2);
+		TestTrue("Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName)", UUIPTStatics::GetScreenComponentByName<UViewScreenComponent>(Data, ViewTestName) == View);
 
-		TestTrue("Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name)", Data->GetScreenComponentByName<UDataScreenComponent>(Data2Name) == Data2);
-		TestTrue("Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName)", Data->GetScreenComponentByName<UViewScreenComponent>(ViewTestName) == View);
-
-		TArray<UDataScreenComponent*> AllComponents = Data->GetAllScreenComponents<UDataScreenComponent>();
+		TArray<UDataScreenComponent*> AllComponents = UUIPTStatics::GetAllScreenComponents<UDataScreenComponent>(Data);
 		TestTrue("AllComponents.Num()", AllComponents.Num() == 3);
 		TestTrue("AllComponents[0]", AllComponents[0] == Data);
 		TestTrue("AllComponents[1]", AllComponents[1] == Data2);
@@ -77,7 +74,7 @@ bool FAccessorTest::RunTest(const FString& Parameters)
 	{
 		FComponentSelector Selector;
 		Selector.SetComponent(Data);
-		TestTrue("GetComponentFromSelector Failed", Screen->GetScreenComponentFromSelector<UDataScreenComponent>(Selector) == Data);
+		TestTrue("GetComponentFromSelector Failed", UUIPTStatics::GetScreenComponentFromSelector<UDataScreenComponent>(Screen, Selector) == Data);
 	}
 
 	// test what happens when a component does not have a screen as an outer
@@ -87,11 +84,10 @@ bool FAccessorTest::RunTest(const FString& Parameters)
 
 		bSuppressLogs = true;
 
-		TestNull("ViewWithNoParent->GetComponent<UUICSView>()", ViewWithNoParent->GetScreenComponent<UViewScreenComponent>());
+		TestNull("ViewWithNoParent->GetComponent<UUICSView>()", UUIPTStatics::GetScreenComponent<UViewScreenComponent>(ViewWithNoParent));
 
 		bSuppressLogs = false;
 	}
-	PRAGMA_ENABLE_INTERNAL_WARNINGS
 
 	return true;
 }
@@ -124,19 +120,17 @@ bool FInterfaceAccessorTest::RunTest(const FString& Parameters)
 	Screen->AddComponent(Data2);
 	Screen->AddComponent(Data3);
 
-	// we want to test that these deprecated function still work until they are removed
-	PRAGMA_DISABLE_INTERNAL_WARNINGS
-
 	// test our basic get functions from the screen
 	{
-		TestTrue("Screen->GetComponent<UUICSData>()", Screen->GetScreenComponent<UDataScreenComponent>() == Data);
-		TestTrue("Screen->GetComponent<UUICSView>()", Screen->GetScreenComponent<UViewScreenComponent>() == View);
+
+		TestTrue("Screen->GetComponent<UUICSData>()", UUIPTStatics::GetScreenComponent<UDataScreenComponent>(Screen) == Data);
+		TestTrue("Screen->GetComponent<UUICSView>()", UUIPTStatics::GetScreenComponent<UViewScreenComponent>(Screen) == View);
 
 		// test using GetByName
-		TestTrue("Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name)", Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name) == Data2);
-		TestTrue("Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName)", Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName) == View);
+		TestTrue("Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name)", UUIPTStatics::GetScreenComponentByName<UDataScreenComponent>(Screen, Data2Name) == Data2);
+		TestTrue("Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName)", UUIPTStatics::GetScreenComponentByName<UViewScreenComponent>(Screen, ViewTestName) == View);
 
-		TArray<UDataScreenComponent*> AllComponents = Screen->GetAllScreenComponents<UDataScreenComponent>();
+		TArray<UDataScreenComponent*> AllComponents = UUIPTStatics::GetAllScreenComponents<UDataScreenComponent>(Screen);
 		TestTrue("AllComponents.Num()", AllComponents.Num() == 3);
 		TestTrue("AllComponents[0]", AllComponents[0] == Data);
 		TestTrue("AllComponents[1]", AllComponents[1] == Data2);
@@ -145,14 +139,14 @@ bool FInterfaceAccessorTest::RunTest(const FString& Parameters)
 
 	// test getter functions from a component
 	{
-		TestTrue("Data->GetComponent<UUICSData>()", Data->GetScreenComponent<UDataScreenComponent>() == Data);
-		TestTrue("Data->GetComponent<UUICSView>()", Data->GetScreenComponent<UViewScreenComponent>() == View);
+		TestTrue("Data->GetComponent<UUICSData>()", UUIPTStatics::GetScreenComponent<UDataScreenComponent>(Data) == Data);
+		TestTrue("Data->GetComponent<UUICSView>()", UUIPTStatics::GetScreenComponent<UViewScreenComponent>(Data) == View);
 
 		// test using GetByName
-		TestTrue("Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name)", Data->GetScreenComponentByName<UDataScreenComponent>(Data2Name) == Data2);
-		TestTrue("Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName)", Data->GetScreenComponentByName<UViewScreenComponent>(ViewTestName) == View);
+		TestTrue("Screen->GetScreenComponentByName<UDataScreenComponent>(Data2Name)", UUIPTStatics::GetScreenComponentByName<UDataScreenComponent>(Data, Data2Name) == Data2);
+		TestTrue("Screen->GetScreenComponentByName<UViewScreenComponent>(ViewTestName)", UUIPTStatics::GetScreenComponentByName<UViewScreenComponent>(Data, ViewTestName) == View);
 
-		TArray<UDataScreenComponent*> AllComponents = Data->GetAllScreenComponents<UDataScreenComponent>();
+		TArray<UDataScreenComponent*> AllComponents = UUIPTStatics::GetAllScreenComponents<UDataScreenComponent>(Data);
 		TestTrue("AllComponents.Num()", AllComponents.Num() == 3);
 		TestTrue("AllComponents[0]", AllComponents[0] == Data);
 		TestTrue("AllComponents[1]", AllComponents[1] == Data2);
@@ -163,7 +157,7 @@ bool FInterfaceAccessorTest::RunTest(const FString& Parameters)
 	{
 		FComponentSelector Selector;
 		Selector.SetComponent(Data);
-		TestTrue("GetComponentFromSelector Failed", Screen->GetScreenComponentFromSelector<UDataScreenComponent>(Selector) == Data);
+		TestTrue("GetComponentFromSelector Failed", UUIPTStatics::GetScreenComponentFromSelector<UDataScreenComponent>(Screen, Selector) == Data);
 	}
 
 	// test what happens when a component does not have a screen as an outer
@@ -173,11 +167,10 @@ bool FInterfaceAccessorTest::RunTest(const FString& Parameters)
 
 		bSuppressLogs = true;
 
-		TestNull("ViewWithNoParent->GetComponent<UUICSView>()", ViewWithNoParent->GetScreenComponent<UViewScreenComponent>());
+		TestNull("ViewWithNoParent->GetComponent<UUICSView>()", UUIPTStatics::GetScreenComponent<UViewScreenComponent>(ViewWithNoParent));
 
 		bSuppressLogs = false;
 	}
-	PRAGMA_ENABLE_INTERNAL_WARNINGS
 
 	return true;
 }
