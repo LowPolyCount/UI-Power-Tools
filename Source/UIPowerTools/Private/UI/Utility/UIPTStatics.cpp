@@ -67,6 +67,17 @@ TScriptInterface<const IUICSScreenAccessor> UUIPTStatics::GetScreenAccessor(cons
 	return RetVal;
 }
 
+TScriptInterface<IUICSScreenAccessor> UUIPTStatics::GetScreenAccessor(UObject* PathToScreen)
+{
+	// We're using const-cast so that we can reuse the code from the const version of this function
+
+	// add const to the object so we call the const version of this function is called
+	TScriptInterface<const IUICSScreenAccessor> FoundScreen = GetScreenAccessor(const_cast<const UObject*>(PathToScreen));
+
+	// remove const as the passed in parameter PathToScreen is non-const. 
+	return TScriptInterface<IUICSScreenAccessor>((const_cast<UObject*>(FoundScreen.GetObject())));
+}
+
 
 UWidget* UUIPTStatics::GetDesiredFocusTargetFromViewComponents(const UObject* PathToScreen)
 {

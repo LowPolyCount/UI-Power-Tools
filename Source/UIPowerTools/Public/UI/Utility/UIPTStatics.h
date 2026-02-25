@@ -72,8 +72,15 @@ public:
 	// @PathToScreen - A Widget or Screen Component that has an Outer/Parent chain to or is a Screen that holds the Screen Components
 	static UWidget* GetDesiredFocusTargetFromViewComponents(const UObject* PathToScreen);
 
-protected:
+	// get the screen (IE, the implementor of IUICSScreenAccessor) that holds all of our Screen Components
+	// @PathToScreen - A Widget or Screen Component that has an Outer/Parent chain to or is a Screen that holds the Screen Components
 	static TScriptInterface<const IUICSScreenAccessor> GetScreenAccessor(const UObject* PathToScreen);
+
+	// non-const version of GetScreenAccessor
+	// get the screen (IE, the implementor of IUICSScreenAccessor) that holds all of our Screen Components
+	// @PathToScreen - A Widget or Screen Component that has an Outer/Parent chain to or is a Screen that holds the Screen Components
+
+	static TScriptInterface<IUICSScreenAccessor> GetScreenAccessor(UObject* PathToScreen);
 };
 
 
