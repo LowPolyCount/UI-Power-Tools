@@ -7,6 +7,7 @@
 #include "UI/Screens/UICS/DataScreenComponent.h"
 #include "Components/PanelWidget.h"
 #include "Blueprint/UserWidget.h"
+#include "UI/Utility/UIPTStatics.h"
 
 FCachedWidget::FCachedWidget(const TScriptInterface<IViewWidgetInterface>& InWidget)
 	: UserWidget(InWidget)
@@ -27,7 +28,7 @@ void UViewScreenComponent::Initialize()
 	OnFocusChange.AddDynamic(this, &UViewScreenComponent::HandleOnFocusChange);
 	OnHoverChange.AddDynamic(this, &UViewScreenComponent::HandleOnHoverChange);
 
-	SetLinkedDataComponent(GetScreenComponentFromSelector<UDataScreenComponent>(DataToListenTo));
+	SetLinkedDataComponent(UUIPTStatics::GetScreenComponentFromSelector<UDataScreenComponent>(this, DataToListenTo));
 }
 
 
@@ -36,7 +37,7 @@ void UViewScreenComponent::NativePreConstruct(bool bIsDesignTime)
 	Super::NativePreConstruct(bIsDesignTime);
 	if (PanelSelector.IsValid())
 	{
-		Panel = Cast<UPanelWidget>(PanelSelector.GetWidget(Cast<UWidget>(GetScreenAccessor().GetObject())));
+		Panel = Cast<UPanelWidget>(PanelSelector.GetWidget(Cast<UWidget>(UUIPTStatics::GetScreenAccessor(this).GetObject())));
 
 		// show preview of widgets in design view
 		if (bIsDesignTime)
@@ -99,7 +100,26 @@ void UViewScreenComponent::NativeDestruct()
 
 }
 
-// Add default functionality here for any IUICSView functions that are not pure virtual.
+UWidget* UViewScreenComponent::GetDesiredFocusTarget() const
+{
+	UWidget* RetVal = nullptr;
+	ensureMsgf(InitialFocus, TEXT("bInitialFocus is false for %s"), *this->GetName());
+	
+	for (TScriptInterface<IViewWidgetInterface> ViewWidget : GetAllViewWidgets())
+	{
+		if (UUserWidget* AsUWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
+		{
+			if (AsUWidget->IsFocusable())
+			{
+				RetVal = AsUWidget;
+				break;
+			}
+		}
+	}
+
+	return RetVal;
+}
+
 void UViewScreenComponent::SetLinkedDataComponent(UDataScreenComponent* InDataComponent)
 {
 	if (LinkedDataComponent)
@@ -307,7 +327,7 @@ TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetAndSetupEntryWid
 	if (RetVal)
 	{
 		ActiveViewWidgets.Emplace(RetVal);
-		ListenToWidgetDelegates(RetVal);
+		ViewWidgetSetup(RetVal);
 		AddToPanel(RetVal);
 
 		// we can't remove the entry from CachedWidgets until after AddToPanel() otherwise the slate widget will be destroyed
@@ -336,7 +356,7 @@ void UViewScreenComponent::RemoveViewWidget(TScriptInterface<IViewWidgetInterfac
 		{
 			Widget->Execute_Reset(Widget.GetObject());
 
-			RemoveWidgetDelegates(Widget);
+			ViewWidgetTeardown(Widget);
 
 			
 			if (bCacheWidgets)
@@ -352,10 +372,11 @@ void UViewScreenComponent::RemoveViewWidget(TScriptInterface<IViewWidgetInterfac
 	}
 }
 
-void UViewScreenComponent::ListenToWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget)
+void UViewScreenComponent::ViewWidgetSetup(TScriptInterface<IViewWidgetInterface> Widget)
 {
 	if (Widget)
 	{
+		Widget->SetOwningViewScreenComponent(this);
 		Widget->GetOnAction().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnAction);
 		Widget->GetOnSelectionChange().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnSelectionChange);
 		Widget->GetOnFocusChange().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnFocusChange);
@@ -363,10 +384,11 @@ void UViewScreenComponent::ListenToWidgetDelegates(TScriptInterface<IViewWidgetI
 	}
 }
 
-void UViewScreenComponent::RemoveWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget)
+void UViewScreenComponent::ViewWidgetTeardown(TScriptInterface<IViewWidgetInterface> Widget)
 {
 	if (Widget)
 	{
+		Widget->SetOwningViewScreenComponent(nullptr);
 		Widget->GetOnAction().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnAction);
 		Widget->GetOnSelectionChange().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnSelectionChange);
 		Widget->GetOnFocusChange().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnFocusChange);

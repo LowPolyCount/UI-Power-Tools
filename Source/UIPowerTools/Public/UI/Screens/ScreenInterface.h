@@ -19,6 +19,7 @@ class UScreenInterface : public UInterface
 };
 
 /**
+ *  IScreenInterface is DEPRECATED and may be remove in a future release. There is no way to tag a UInterface as deprecated
  * We use an interface to define screen functionality that the Screen Manager has access to. 
  * This is so that any UserWidget you are working with can be defined as a screen usable with the Screen Manager
  */
@@ -41,6 +42,7 @@ public:
 	// close this screen.
 	// note: If you override this, do everything needed before calling Super::Close() as that will
 	//			cause the ScreenManager to remove this screen from the viewport. 
+	UE_DEPRECATED(Any, "Is Deprecated. Use RemoveFromParent() Instead")
 	UFUNCTION(BlueprintCallable, Category = Screen, Meta=(DeprecatedFunction, DeprecationMessage="call RemoveFromParent() instead"))
 	virtual void Close();
 

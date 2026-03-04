@@ -14,4 +14,15 @@ void UEntryScreenComponent::SetEntry(UObject* Entry)
 	{
 		OnEntryChange.Broadcast(this, OldEntry, HeldEntry);
 	}
+
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_OnEntryChange))
+	{
+		struct {
+			UEntryScreenComponent* Component;
+			UObject* OldEntry;
+			UObject* NewEntry;
+		} Args = { this, OldEntry, HeldEntry };
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}
 }

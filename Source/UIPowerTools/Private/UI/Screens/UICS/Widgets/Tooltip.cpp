@@ -3,6 +3,7 @@
 
 #include "UI/Screens/UICS/Widgets/Tooltip.h"
 #include "UI/Screens/UICS/ViewScreenComponent.h"
+#include "UI/Utility/UIPTStatics.h"
 
 UTooltip::UTooltip()
 	:Super()
@@ -35,7 +36,7 @@ void UTooltip::StartListeningToView(const FViewComponentSelector& ViewSelector)
 {
 	if (ViewSelector.IsValid())
 	{
-		if (UViewScreenComponent* ViewComponent = GetScreenComponentFromSelector<UViewScreenComponent>(ViewSelector))
+		if (UViewScreenComponent* ViewComponent = UUIPTStatics::GetScreenComponentFromSelector<UViewScreenComponent>(this, ViewSelector))
 		{
 			ViewComponent->OnInputAction.AddUniqueDynamic(this, &UTooltip::HandleOnAction);
 			ViewComponent->OnFocusChange.AddUniqueDynamic(this, &UTooltip::HandleOnFocusChange);
@@ -49,7 +50,7 @@ void UTooltip::StopListeningToView(const FViewComponentSelector& ViewSelector)
 {
 	if (ViewSelector.IsValid())
 	{
-		if (UViewScreenComponent* ViewComponent = GetScreenComponentFromSelector<UViewScreenComponent>(ViewSelector))
+		if (UViewScreenComponent* ViewComponent = UUIPTStatics::GetScreenComponentFromSelector<UViewScreenComponent>(this, ViewSelector))
 		{
 			ViewComponent->OnInputAction.RemoveDynamic(this, &UTooltip::HandleOnAction);
 			ViewComponent->OnFocusChange.RemoveDynamic(this, &UTooltip::HandleOnFocusChange);

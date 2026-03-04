@@ -6,11 +6,11 @@
 #include "UI/Screens/UICS/ScreenComponent.h"
 #include "UI/Screens/UICS/ViewWidgetInterface.h"
 #include "UI/Screens/Tools/WidgetSelector.h"
+#include "UI/Screens/Tools/ComponentSelector.h"
 #include "ViewScreenComponent.generated.h"
 
 class UPanelWidget;
 class UDataScreenComponent;
-
 
 
 // a generic event coming from this component
@@ -72,10 +72,6 @@ class UIPOWERTOOLS_API UViewScreenComponent : public UScreenComponent
 	GENERATED_BODY()
 
 public:
-	// an input action has occurred on a widget
-	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent, meta = (DeprecatedProperty, DeprecationMessage = "OnAction is deprecated. Use OnInputAction instead"))
-	FViewActionComp OnAction;
-
 	// an input action has occurred on a widget
 	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
 	FViewActionComp OnInputAction;
@@ -183,6 +179,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
 	void ManuallySetData(const TArray<UObject*>& Entries);
 
+	// Get the first Widget that can be a Desired/Initial Focus Target
+	virtual UWidget* GetDesiredFocusTarget() const;
+
 protected:
 	// a widget has executed an input action (such as being clicked)
 	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)
@@ -218,8 +217,8 @@ protected:
 	void AddToPanel(TScriptInterface<IViewWidgetInterface>& Widget);
 	
 	void RemoveViewWidget(TScriptInterface<IViewWidgetInterface> Widget);
-	void ListenToWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget);
-	void RemoveWidgetDelegates(TScriptInterface<IViewWidgetInterface> Widget);
+	void ViewWidgetSetup(TScriptInterface<IViewWidgetInterface> Widget);
+	void ViewWidgetTeardown(TScriptInterface<IViewWidgetInterface> Widget);
 	void SetupPreConstructWidgets();
 	TScriptInterface<IViewWidgetInterface> DuplicateWidget(const TObjectPtr<UUserWidget>& Prototype);
 	virtual void PopulateWidgets(const TArray<UObject*>& Entries);
@@ -260,7 +259,7 @@ protected:
 	void Prototype_WidgetsPopulated(UViewScreenComponent* Component) {}
 #endif
 	// events that the user can bind to in editor
-	UPROPERTY(EditAnywhere, Meta=(DisplayName="Events"));
+	UPROPERTY(EditAnywhere, Category = ViewScreenComponent, Meta=(DisplayName="Events"));
 	FBindableViewActions BindableEvents;
 
 
@@ -272,4 +271,11 @@ protected:
 	TArray<FCachedWidget> CachedWidgets;
 	UPROPERTY(Transient)
 	TArray<TScriptInterface<IViewWidgetInterface>> ActiveViewWidgets;
+
+public:
+	// start deprecated items
+
+	// an input action has occurred on a widget
+	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent, meta = (DeprecatedProperty, DeprecationMessage = "OnAction is deprecated. Use OnInputAction instead"))
+	FViewActionComp OnAction;
 };

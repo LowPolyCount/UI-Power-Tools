@@ -13,9 +13,10 @@
 #include "UI/Screens/UICS/EntryScreenComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/Screens/UICS/ViewWidgetInterface.h"
-// @todo: including AutomationEditorCommon means that tests only build with edtior. Maybe FbxAutomationCommon can help?
+// @todo: including AutomationEditorCommon means that tests only build with editor. Maybe FbxAutomationCommon can help?
 #include "Tests/AutomationEditorCommon.h"
 #include "Components/HorizontalBox.h"
+#include "UI/Screens/Widgets/ViewCommonButtonBase.h"
 #include "UICSTestHarness.generated.h"
 
 class UPanelWidget;
@@ -71,11 +72,11 @@ public:
 };
 
 UCLASS(Hidden)
-class UViewWidgetHarness : public UUserWidget, public IViewWidgetInterface
+class UViewWidgetHarness : public UViewCommonButtonBase
 {
 	GENERATED_BODY()
 public:
-	VIEW_USERWIDGET_BOILERPLATE()
+	virtual void ExecuteTriggeredInput() override {Super::ExecuteTriggeredInput(); SetInputAction_Internal(); }
 };
 
 UCLASS(Hidden)
@@ -116,7 +117,7 @@ class UActionTestHarness: public UActionScreenComponentProvider
 	GENERATED_BODY()
 public:
 	virtual bool CanExecuteAction_Implementation(UActionScreenComponent* Component, UObject* Entry) override { return bCanTransact; }
-	virtual ETransactionResult ExecuteAction_Implementation(UActionScreenComponent* Component, UObject* Entry) override { return (bCanExecuteAction) ? ETransactionResult::Success : ETransactionResult::Failure; }
+	virtual FGameplayTag ExecuteAction_Implementation(UActionScreenComponent* Component, UObject* Entry) override { return (bCanExecuteAction) ? UICS_Action_Success : UICS_Action_Failure; }
 
 	bool bCanTransact = true;
 	bool bCanExecuteAction = true;
@@ -138,7 +139,7 @@ public:
 	UFUNCTION()
 	void HandleOnIsValid(UActionScreenComponent* Component, bool bIsValid);
 	UFUNCTION()
-	void HandleOnComplete(UActionScreenComponent* Component, ETransactionResult Result);
+	void HandleOnComplete(UActionScreenComponent* Component, const FGameplayTag& Result);
 };
 
 UCLASS(Hidden)

@@ -71,12 +71,6 @@ public:
 	// Remove All Screens 
 	void RemoveAllScreens();
 
-	// this only needs to be checked when first starting a game instance, such as with the Hud Actor
-	// this is because the subsystem can be created before the Viewport, so we need to wait on that before
-	// something can be added.
-	UFUNCTION(BlueprintCallable, Category = ScreenManager, Meta = (DeprecatedFunction))
-	bool IsReady() const;
-
 	// is the given screen instance on the stack?
 	UFUNCTION(BlueprintCallable, Category = ScreenManager)
 	bool IsScreenOnStack(UUserWidget* Screen) const;
@@ -117,4 +111,12 @@ protected:
 	FTimerHandle TimerHandle;
 
 	bool bRootAddedToViewport = false;
+
+public:
+	// begin deprecated functions
+
+	// viewport is always created before the screenmanagersubsystem, so no longer required. 
+	UE_DEPRECATED(Any, "Is Deprecated and can be safely removed")
+	UFUNCTION(BlueprintCallable, Category = ScreenManager, Meta = (DeprecatedFunction))
+	bool IsReady() const;
 };

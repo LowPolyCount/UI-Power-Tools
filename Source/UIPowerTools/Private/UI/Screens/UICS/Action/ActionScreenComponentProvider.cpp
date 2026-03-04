@@ -4,7 +4,7 @@
 #include "UI/Screens/UICS/Transaction/ActionScreenComponentProvider.h"
 #include "UI/Screens/UICS/Transaction/ActionScreenComponent.h"
 
-ETransactionResult UActionScreenComponentProvider::ExecuteAction_Implementation(UActionScreenComponent* Component, UObject* Entry)
+FGameplayTag UActionScreenComponentProvider::ExecuteAction_Implementation(UActionScreenComponent* Component, UObject* Entry)
  { 
-	return ETransactionResult::Success;
+	return UICS_Action_Success;
 }

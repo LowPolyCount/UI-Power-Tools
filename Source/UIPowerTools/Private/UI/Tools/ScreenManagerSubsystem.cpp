@@ -2,22 +2,32 @@
 
 
 #include "UI/Tools/ScreenManagerSubsystem.h"
+#include "UI/Tools/UIPowerToolsDeveloperSettings.h"
 #include "UI/Screens/ScreenManager.h"
 
 UScreenManagerSubsystem* UScreenManagerSubsystem::Get(const UWorld* World)
 {
-	return World->GetSubsystem<UScreenManagerSubsystem>();
-	//return Get();
+	return (World) ? World->GetSubsystem<UScreenManagerSubsystem>() : nullptr;
 }
-
-/*UScreenManagerSubsystem* UScreenManagerSubsystem::Get()
-{
-	return GEngine->GetEngineSubsystem<UScreenManagerSubsystem>();
-}*/
 
 UScreenManager* UScreenManagerSubsystem::GetScreenManager(const UWorld* World)
 { 
-	return Get(World)->GetScreenManager_Internal();
+	UScreenManager* RetVal = nullptr;
+	if (UScreenManagerSubsystem* SubSystem = Get(World))
+	{
+		RetVal = SubSystem->GetScreenManager_Internal();
+	}
+	return RetVal;
+}
+
+bool UScreenManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
+{ 
+	bool RetVal = true;
+	if (const UUIPowerToolsDeveloperSettings* Settings = GetDefault<UUIPowerToolsDeveloperSettings>())
+	{
+		RetVal = Settings->bEnableScreenManagerSubsystem;
+	}
+	return RetVal;
 }
 
 void UScreenManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)

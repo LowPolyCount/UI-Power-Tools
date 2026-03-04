@@ -2,45 +2,56 @@
 
 
 #include "UI/Screens/UICS/Transaction/ActionScreenComponent.h"
-#include "Templates/SubclassOf.h"
 #include "UI/Screens/UICS/Transaction/ActionScreenComponentProvider.h"
 #include "UI/Screens/UICS/ViewScreenComponent.h"
+#include "UI/Utility/UIPTStatics.h"
 #include "UIPowerTools.h"
+
+
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_CouldNotExecute, "UICS.Action.Could Not Execute", "ExecuteActionIfAble() was called and The Action provider's CanExecuteAction() returned false");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Success, "UICS.Action.Success", "Executed Action Successfully");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Failure, "UICS.Action.Failure", "Was not able to execute action");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Async, "UICS.Action.Async", "Action is waiting for an asynchronous callback");
 
 void UActionScreenComponent::Initialize()
 {
 	Super::Initialize();
 
-	ListenToViewAction(GetScreenComponentFromSelector<UViewScreenComponent>(ViewToListenTo));
+	ListenToViewScreenComponent(UUIPTStatics::GetScreenComponentFromSelector<UViewScreenComponent>(this, ViewToListenTo));
 }
 
 bool UActionScreenComponent::IsValidTransaction(UObject* Entry)
+{
+	return CanExecuteAction(Entry);
+}
+
+bool UActionScreenComponent::CanExecuteAction(UObject* Entry)
 {
 	bool RetVal = false;
 	if (ActionProvider)
 	{
 		RetVal = ActionProvider->CanExecuteAction(this, Entry);
 	}
-	OnIsValidResult.Broadcast(this, RetVal);
-	
-	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_OnIsValidResult))
-	{
-		struct {
-			UActionScreenComponent* Component;
-			bool bResult;
-		} Args = { this, RetVal };
-
-		ProcessFuncFromResolveMember(Func, &Args);
-	}
 
 	return RetVal;
 }
 
-ETransactionResult UActionScreenComponent::ExecuteAction(UObject* Entry, bool bPerformCheck)
+FGameplayTag UActionScreenComponent::ExecuteActionIfAble(UObject* Entry)
 {
-	ETransactionResult RetVal = ETransactionResult::Failure;
+	FGameplayTag RetVal = UICS_Action_CouldNotExecute;
 
-	if (ActionProvider && ((bPerformCheck) ? IsValidTransaction(Entry) : true))
+	if (ActionProvider && CanExecuteAction(Entry))
+	{
+		RetVal = ExecuteAction(Entry);
+	}
+	return RetVal;
+}
+
+FGameplayTag UActionScreenComponent::ExecuteAction(UObject* Entry)
+{
+	FGameplayTag RetVal = UICS_Action_Failure;
+
+	if (ActionProvider)
 	{
 		RetVal = ActionProvider->ExecuteAction(this, Entry);
 	}
@@ -51,7 +62,7 @@ ETransactionResult UActionScreenComponent::ExecuteAction(UObject* Entry, bool bP
 	{
 		struct {
 			UActionScreenComponent* Component;
-			ETransactionResult Result;
+			FGameplayTag Result;
 		} Args = { this, RetVal };
 
 		ProcessFuncFromResolveMember(Func, &Args);
@@ -62,6 +73,7 @@ ETransactionResult UActionScreenComponent::ExecuteAction(UObject* Entry, bool bP
 UObject* UActionScreenComponent::GetSlot(int32 Index) const
 {
 	UObject* RetVal = nullptr;
+	PRAGMA_DISABLE_INTERNAL_WARNINGS
 	if (IsSlotValid(Index))
 	{
 		RetVal = Slots[Index];
@@ -70,11 +82,13 @@ UObject* UActionScreenComponent::GetSlot(int32 Index) const
 	{
 		UE_LOG(LogUICS, Warning, TEXT("UUICSTransaction::GetSlot() Slot %i was not valid"), Index);
 	}
+	PRAGMA_ENABLE_INTERNAL_WARNINGS
 	return RetVal;
 }
 
 void UActionScreenComponent::RemoveSlot(int32 Index)
 {
+	PRAGMA_DISABLE_INTERNAL_WARNINGS
 	if (IsSlotValid(Index))
 	{
 		Slots.Remove(Index);
@@ -83,6 +97,7 @@ void UActionScreenComponent::RemoveSlot(int32 Index)
 	{
 		UE_LOG(LogUICS, Warning, TEXT("RemoveSlot Slot %i was not valid"), Index);
 	}
+	PRAGMA_ENABLE_INTERNAL_WARNINGS
 }
 
 void UActionScreenComponent::SetSlot(UObject* InEntry, int32 Index)
@@ -102,25 +117,95 @@ int32 UActionScreenComponent::NumSlots() const
 
 void UActionScreenComponent::ListenToViewAction(UViewScreenComponent* InView)
 {
+	ListenToViewScreenComponent(InView);
+}
+
+void UActionScreenComponent::SetActionTriggers(EActionTriggers InActionTriggers)
+{
+	UViewScreenComponent* CurrentView = ViewListeningTo;
+
+	// reset listeners
+	RemoveCurrentViewScreenComponent();
+	ActionTriggers = static_cast<int32>(InActionTriggers);
+	SetupListenersToViewScreenComponent(CurrentView);
+}
+
+void UActionScreenComponent::ListenToViewScreenComponent(UViewScreenComponent* InView)
+{
+	RemoveCurrentViewScreenComponent();
+	SetupListenersToViewScreenComponent(InView);
+}
+
+void UActionScreenComponent::RemoveCurrentViewScreenComponent()
+{
 	if (ViewListeningTo)
 	{
-		ViewListeningTo->OnInputAction.RemoveDynamic(this, &UActionScreenComponent::HandleOnAction);
+		if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Focus))
+		{
+			ViewListeningTo->OnFocusChange.RemoveDynamic(this, &UActionScreenComponent::HandleOnActionTriggerGain);
+		}
+		if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Hover))
+		{
+			ViewListeningTo->OnHoverChange.RemoveDynamic(this, &UActionScreenComponent::HandleOnActionTriggerGain);
+		}
+		if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Input))
+		{
+			ViewListeningTo->OnInputAction.RemoveDynamic(this, &UActionScreenComponent::HandleOnActionTrigger);
+		}
+		
+		ViewListeningTo = nullptr;
 	}
+}
 
-	ViewListeningTo = InView;
-
-	if (ViewListeningTo)
+void UActionScreenComponent::SetupListenersToViewScreenComponent(UViewScreenComponent* InView)
+{
+	if (!ViewListeningTo)
 	{
-		ViewListeningTo->OnInputAction.AddUniqueDynamic(this, &UActionScreenComponent::HandleOnAction);
+		if (InView)
+		{
+			ViewListeningTo = InView;
+
+			if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Focus))
+			{
+				ViewListeningTo->OnFocusChange.AddDynamic(this, &UActionScreenComponent::HandleOnActionTriggerGain);
+			}
+			if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Hover))
+			{
+				ViewListeningTo->OnHoverChange.AddDynamic(this, &UActionScreenComponent::HandleOnActionTriggerGain);
+			}
+			if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Input))
+			{
+				ViewListeningTo->OnInputAction.AddDynamic(this, &UActionScreenComponent::HandleOnActionTrigger);
+			}
+		}
+		else
+		{
+			// @todo: add logging
+		}
+	}
+	else
+	{
+		// @todo: add logging
 	}
 }
 
 void UActionScreenComponent::HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
 {
-	HandleOnInputAction(Component, Widget);
+	HandleOnActionTrigger(Component, Widget);
 }
 
-void UActionScreenComponent::HandleOnInputAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
+void UActionScreenComponent::HandleOnActionTrigger(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
 {
-	ExecuteAction(Widget->Execute_GetEntryData(Widget.GetObject()), true);
+	if (Widget)
+	{
+		ExecuteActionIfAble(Widget->Execute_GetEntryData(Widget.GetObject()));
+	}
+}
+
+void UActionScreenComponent::HandleOnActionTriggerGain(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained)
+{
+	if (bGained && Widget)
+	{
+		ExecuteActionIfAble(Widget->Execute_GetEntryData(Widget.GetObject()));
+	}
 }

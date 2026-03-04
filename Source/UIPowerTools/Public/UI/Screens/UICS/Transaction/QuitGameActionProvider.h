@@ -8,7 +8,7 @@
 #include "UI/Screens/UICS/Transaction/ActionScreenComponentProvider.h"
 #include "QuitGameActionProvider.generated.h"
 
-enum class ETransactionResult : uint8;
+enum class EActionResult : uint8;
 
 /**
  * An Action used by the Action Screen Component that will quit the game.
@@ -18,15 +18,13 @@ class UIPOWERTOOLS_API UQuitGameActionProvider : public UActionScreenComponentPr
 {
 	GENERATED_BODY()
 protected:
-	virtual ETransactionResult ExecuteAction_Implementation(UActionScreenComponent* Component, UObject* Entry) override;
+	virtual FGameplayTag ExecuteAction_Implementation(UActionScreenComponent* Component, UObject* Entry) override;
 
 	// Quit application or move to background?
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	//Type 
-	//TEnumAsByte<Type> QuitPreference = EQuitPreference::Type::Quit;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ActionProvider)
 	TEnumAsByte<EQuitPreference::Type> QuitPreference = EQuitPreference::Type::Quit;
 
 	// Ignore Platform Restrictions
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ActionProvider)
 	bool bIgnorePlatformRestrictions = false;
 };

@@ -2,6 +2,17 @@
 
 
 #include "UI/Screens/UICS/ViewWidgetInterface.h"
+#include "UI/Screens/UICS/ViewScreenComponent.h"
+
+void IViewWidgetInterface::SetOwningViewScreenComponent(UViewScreenComponent* InOwningComponent)
+{ 
+	ManagingViewScreenComponent = TWeakObjectPtr<UViewScreenComponent>(InOwningComponent);
+}
+
+UViewScreenComponent* IViewWidgetInterface::GetOwningViewScreenComponent_Implementation() const
+{
+	return (ManagingViewScreenComponent.IsValid()) ? ManagingViewScreenComponent.Pin().Get() : nullptr;
+}
 
 void IViewWidgetInterface::SetEntryData_Implementation(int32 InIndex, UObject* InEntry)
 {

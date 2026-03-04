@@ -3,7 +3,7 @@
 #include "UI/Screens/UICS/IUICSAccessor.h"
 #include "UI/Screens/UICS/ScreenComponentManager.h"
 #include "UI/Screens/UICS/ViewScreenComponent.h"
-#include "UIPowerTools.h"
+#include "UI/Utility/UIPTStatics.h"
 #include "UI/Screens/UICSScreen.h"
 
 UScreenComponent* IUICSAccessor::GetScreenComponent_BP(TSubclassOf<UScreenComponent> Type) const
@@ -54,10 +54,7 @@ TScriptInterface<IUICSScreenAccessor> IUICSAccessor::GetScreenAccessor() const
 	{
 		UObjectBaseUtility* Outer = AsObject->GetImplementingOuterObject(UUICSScreenAccessor::StaticClass());
 		RetVal = TScriptInterface<IUICSScreenAccessor>(Cast<UObject>(Outer));
-		if (!RetVal)
-		{
-			UE_LOG(LogUICS, Warning, TEXT("Could not get owning Screen from %s - GetComponent() functions will not work"), *AsObject->GetFName().ToString());
-		}
+		// sometimes RetVal can be false, such as in preconstruct
 	}
 
 	return RetVal;
@@ -157,23 +154,16 @@ UScreenComponent* IUICSScreenAccessor::GetScreenComponentFromGUID(const FGuid& S
 UWidget* IUICSScreenAccessor::GetDesiredFocusTargetFromViewComponents() const
 {
 	UWidget* RetVal = nullptr;
-	const TArray<UViewScreenComponent*> ViewComponents = IUICSAccessor::GetAllScreenComponents<UViewScreenComponent>();
+	TArray<UViewScreenComponent*> ViewComponents = UUIPTStatics::GetAllScreenComponents<UViewScreenComponent>(Cast<UObject>(this));
+
 	for (UViewScreenComponent* ViewComponent : ViewComponents)
 	{
-		if (ViewComponent->IsDesiredFocusTarget())
+		if (IsValid(ViewComponent) && ViewComponent->IsDesiredFocusTarget())
 		{
-			//@todo: Iterate through widgets and pick the first one that is Focusable
-			const TArray<TScriptInterface<IViewWidgetInterface>>& ViewWidgets = ViewComponent->GetAllViewWidgets();
-			for (TScriptInterface<IViewWidgetInterface> ViewWidget : ViewWidgets)
+			RetVal = ViewComponent->GetDesiredFocusTarget();
+			if (IsValid(RetVal))
 			{
-				if (UUserWidget* AsUWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
-				{
-					if (AsUWidget->IsFocusable())
-					{
-						RetVal = AsUWidget;
-						break;
-					}
-				}
+				break;
 			}
 		}
 	}
