@@ -2,9 +2,12 @@
 
 
 #include "UI/Utility/UIPTStatics.h"
+#include <Components/PanelWidget.h>
+#include <Blueprint/WidgetTree.h>
 #include "UI/Screens/UICS/ViewScreenComponent.h"
 #include "Components/Widget.h"
 #include "UI/Screens/UICS/IUICSAccessor.h"
+
 
 UScreenComponent* UUIPTStatics::GetScreenComponent_BP(const UObject* PathToScreen, TSubclassOf<UScreenComponent> Type)
 {
@@ -50,16 +53,60 @@ UScreenComponent* UUIPTStatics::GetScreenComponentFromSelector_BP(const UObject*
 TScriptInterface<const IUICSScreenAccessor> UUIPTStatics::GetScreenAccessor(const UObject* PathToScreen)
 {
 	TScriptInterface<const IUICSScreenAccessor> RetVal = nullptr;
-	if (PathToScreen)
+
+	// if we're a widget, it's more complicated to get to the screen because of WidgetTrees, etc. so GetImplementingOuterObject may not find the screen. 
+	if (const UWidget* PathAsWidget = Cast<UWidget>(PathToScreen))
 	{
-		if (const IUICSScreenAccessor* AsScreen = Cast<IUICSScreenAccessor>(PathToScreen))
+		// check if the given PathToScreen is the Screen
+		if (PathAsWidget->Implements<UUICSAccessor>())
 		{
-			RetVal = PathToScreen;
+			// while we should set RetVal here and then break, for this code, it's easier to return out instead. 
+			return PathAsWidget;
 		}
-		else
+
+		// this is a modified version of CommonUILibrary::FindParentWidgetOfType()
+		const UWidget* StartingWidget = PathAsWidget;
+		while (StartingWidget)
 		{
-			UObjectBaseUtility* Outer = PathToScreen->GetImplementingOuterObject(UUICSScreenAccessor::StaticClass());
-			RetVal = TScriptInterface<const IUICSScreenAccessor>(Cast<UObject>(Outer));
+			const UWidget* LocalRoot = StartingWidget;
+			const UWidget* LocalParent = LocalRoot->GetParent();
+			while (LocalParent)
+			{
+				if (LocalParent->Implements<UUICSAccessor>())
+				{
+					// while we should set RetVal and break, it's easier to return out here instead. 
+					return LocalParent;
+				}
+				LocalRoot = LocalParent;
+				LocalParent = LocalParent->GetParent();
+			}
+
+			UWidgetTree* WidgetTree = Cast<UWidgetTree>(LocalRoot->GetOuter());
+			if (WidgetTree == nullptr)
+			{
+				break;
+			}
+
+			StartingWidget = Cast<UUserWidget>(WidgetTree->GetOuter());
+			if (StartingWidget && StartingWidget->Implements<UUICSAccessor>())
+			{
+				return StartingWidget;
+			}
+		}
+	}
+	else // we're some other type of object (Like Screen Component) where can use GetImplementingOuterObject
+	{
+		if (PathToScreen)
+		{
+			if (const IUICSScreenAccessor* AsScreen = Cast<IUICSScreenAccessor>(PathToScreen))
+			{
+				RetVal = PathToScreen;
+			}
+			else
+			{
+				UObjectBaseUtility* Outer = PathToScreen->GetImplementingOuterObject(UUICSScreenAccessor::StaticClass());
+				RetVal = TScriptInterface<const IUICSScreenAccessor>(Cast<UObject>(Outer));
+			}
 		}
 	}
 
