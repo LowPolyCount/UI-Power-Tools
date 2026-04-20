@@ -134,13 +134,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
 	TArray<UUserWidget*> GetAllWidgets() const;
 
-	// get the view widget at index
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
-	UUserWidget* GetWidgetAt(int32 Index) const;
-
 	// get all view widgets being used
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
 	const TArray<TScriptInterface<IViewWidgetInterface>>& GetAllViewWidgets() const { return ActiveViewWidgets; }
+
+	// get the view widget at index
+	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UUserWidget* GetWidgetAt(int32 Index) const;
 
 	// get the view widget at index
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
@@ -261,7 +261,6 @@ protected:
 	// events that the user can bind to in editor
 	UPROPERTY(EditAnywhere, Category = ViewScreenComponent, Meta=(DisplayName="Events"));
 	FBindableViewActions BindableEvents;
-
 
 	UPROPERTY(Transient)
 	TObjectPtr<UPanelWidget> Panel;

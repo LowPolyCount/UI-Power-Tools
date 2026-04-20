@@ -22,7 +22,6 @@ void UViewScreenComponent::Initialize()
 {
 	Super::Initialize();
 
-
 	OnSelectionChange.AddDynamic(this, &UViewScreenComponent::HandleOnSelectedChange);
 	OnInputAction.AddDynamic(this, &UViewScreenComponent::HandleOnInputAction);
 	OnFocusChange.AddDynamic(this, &UViewScreenComponent::HandleOnFocusChange);
@@ -52,8 +51,8 @@ void UViewScreenComponent::SetupPreConstructWidgets()
 	if (Panel)
 	{
 		// PreConstruct can run multiple times while in design time. 
-		// Don't clear the panel so we preserve any widgets we didn't add
-		// but Remove existing View Widgets and recreate them in case properties have changed. 
+		// Don't clear the panel so we preserve any widgets the designer has added
+		// Instead, Remove existing View Widgets and recreate them in case properties have changed. 
 		for (TScriptInterface<IViewWidgetInterface> ViewWidget : ActiveViewWidgets)
 		{
 			if (UWidget* AsUWidget = Cast<UWidget>(ViewWidget.GetObject()))
@@ -92,7 +91,7 @@ void UViewScreenComponent::NativeDestruct()
 		RemoveViewWidget(ActiveViewWidgets[i]);
 	}
 
-	check(ActiveViewWidgets.Num() == 0);
+	//check(ActiveViewWidgets.Num() == 0);
 
 	CachedWidgets.Empty();
 
@@ -103,7 +102,7 @@ void UViewScreenComponent::NativeDestruct()
 UWidget* UViewScreenComponent::GetDesiredFocusTarget() const
 {
 	UWidget* RetVal = nullptr;
-	ensureMsgf(InitialFocus, TEXT("bInitialFocus is false for %s"), *this->GetName());
+	//ensureMsgf(InitialFocus, TEXT("bInitialFocus is false for %s"), *this->GetName());
 	
 	for (TScriptInterface<IViewWidgetInterface> ViewWidget : GetAllViewWidgets())
 	{
@@ -253,6 +252,12 @@ void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 {
 	// do we need to remove widgets to meet the new number of entries?
 	const int32 WidgetDifference = ActiveViewWidgets.Num() - Entries.Num();
+
+	// we know how many entries we need upfront, so reserve them.
+	ActiveViewWidgets.Reserve(Entries.Num());
+	CachedWidgets.Reserve(CachedWidgets.Num() + WidgetDifference);
+
+	// let's remove any unused widgets
 	if (WidgetDifference > 0)
 	{
 		for (int32 j = WidgetDifference, i = ActiveViewWidgets.Num() - 1; j > 0; --j, --i)
@@ -260,7 +265,7 @@ void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 			RemoveViewWidget(ActiveViewWidgets[i]);
 		}
 	}
-	else if (WidgetDifference < 0)
+	else if (WidgetDifference < 0)	// let's create any widgets that we will need
 	{
 		for (int32 i = WidgetDifference; i < 0; ++i)
 		{
@@ -268,6 +273,7 @@ void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 		}
 	}
 
+	// update data for our widgets
 	for (int32 i = 0; i < Entries.Num(); ++i)
 	{
 		if (ActiveViewWidgets.IsValidIndex(i))
@@ -279,8 +285,6 @@ void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 
 			ActiveViewWidgets[i]->Execute_Reset(ActiveViewWidgets[i].GetObject());
 			ActiveViewWidgets[i]->Execute_SetEntryData(ActiveViewWidgets[i].GetObject(), i, Entries[i]);
-
-
 		}
 		else
 		{
