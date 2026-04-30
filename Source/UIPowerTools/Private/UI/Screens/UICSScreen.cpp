@@ -18,7 +18,10 @@
 UUICSScreen::UUICSScreen(const FObjectInitializer& Initializer)
 	:Super(Initializer)
 {
-	ComponentManager = Initializer.CreateDefaultSubobject<UScreenComponentManager>(this, TEXT("ScreenComponentManager"));
+	//ComponentManager = Initializer.CreateDefaultSubobject<UScreenComponentManager>(this, TEXT("ScreenComponentManager"));
+	AddExtension(TSubclassOf<UScreenComponentManager>(UScreenComponentManager::StaticClass()));
+	ComponentManager = Cast<UScreenComponentManager>(GetExtension(TSubclassOf<UScreenComponentManager>(UScreenComponentManager::StaticClass())));
+	//Extensions.Add(ComponentManager);
 }
 
 UWidget* UUICSScreen::NativeGetDesiredFocusTarget() const

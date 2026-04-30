@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UI/Screens/UICS/ScreenComponentWorldContext.h"
+#include "Extensions/UserWidgetExtension.h"
 #include "ScreenComponentManager.generated.h"
 
 class UScreenComponent;
@@ -12,10 +13,11 @@ struct FGuid;
 
 // manages UICS Components on a screen
 UCLASS(CollapseCategories, Meta=(DisplayName = "UI Component System"))
-class UIPOWERTOOLS_API UScreenComponentManager : public UScreenComponentWorldContext
+class UIPOWERTOOLS_API UScreenComponentManager : public UUserWidgetExtension//public UScreenComponentWorldContext
 {
 	GENERATED_BODY()
 public:
+	UScreenComponentManager(const FObjectInitializer&);
 
 	void Add(UScreenComponent* Component);
 	UScreenComponent* GetComponent(TSubclassOf<UScreenComponent> Type) const;

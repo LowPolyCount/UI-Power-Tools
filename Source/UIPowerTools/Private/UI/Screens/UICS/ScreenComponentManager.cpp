@@ -5,6 +5,18 @@
 #include "Templates/SubclassOf.h"
 #include "UI/Screens/UICS/ScreenComponent.h"
 #include "UI/Screens/Tools/ComponentSelector.h"
+#include "Blueprint/UserWidget.h"
+
+
+UScreenComponentManager::UScreenComponentManager(const FObjectInitializer& ObjInitializer)
+	:Super(ObjInitializer)
+{
+	
+	//UUserWidget* Outer = GetTypedOuter<UUserWidget>();
+	//Outer->OnNativeDestruct;
+	//Outer->OnInitialized();
+	//Outer->Native
+}
 
 #if WITH_EDITOR
 UScreenComponent* UScreenComponentManager::GetComponentFromGUID(const FGuid& Selector) const
