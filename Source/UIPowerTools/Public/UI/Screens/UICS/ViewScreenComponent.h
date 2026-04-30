@@ -72,6 +72,13 @@ class UIPOWERTOOLS_API UViewScreenComponent : public UScreenComponent
 	GENERATED_BODY()
 
 public:
+	// UUserWidget
+	virtual void Initialize() override;
+	virtual void NativePreConstruct(bool bIsDesignTime) override;
+	virtual void NativeDestruct() override;
+	// End UUserWidget
+
+
 	// an input action has occurred on a widget
 	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
 	FViewActionComp OnInputAction;
@@ -89,13 +96,6 @@ public:
 	// Widgets have been created and populated
 	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
 	FViewComp OnWidgetsPopulated;
-
-	// UUserWidget
-	virtual void Initialize() override;
-	virtual void NativePreConstruct(bool bIsDesignTime) override;
-	virtual void NativeDestruct() override;
-	// End UUserWidget
-
 
 
 	// set the panel widget that our created widgets will attach to.
@@ -125,8 +125,6 @@ public:
 	// get the widget prototype used 
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
 	UUserWidget* GetWidgetPrototype() const {return ViewWidgetPrototype;}
-
-
 
 	// widgets
 
@@ -178,6 +176,14 @@ public:
 	// for if you want to give data to the view instead of through a data component
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
 	void ManuallySetData(const TArray<UObject*>& Entries);
+
+	// Set an ASC that is listening to our events
+	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	void SetLinkedActionScreenComponent(UActionScreenComponent* InASC);
+
+	// Get an ASC that is listening to our events.
+	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UActionScreenComponent* GetLinkedActionComponent() const {return LinkedASC;}
 
 	// Get the first Widget that can be a Desired/Initial Focus Target
 	virtual UWidget* GetDesiredFocusTarget() const;
@@ -262,14 +268,27 @@ protected:
 	UPROPERTY(EditAnywhere, Category = ViewScreenComponent, Meta=(DisplayName="Events"));
 	FBindableViewActions BindableEvents;
 
-	UPROPERTY(Transient)
-	TObjectPtr<UPanelWidget> Panel;
+	// Data Component that we are listening to 
 	UPROPERTY(Transient)
 	TObjectPtr<UDataScreenComponent> LinkedDataComponent;
+
+	// an ASC that is listening to our events
+	UPROPERTY(Transient)
+	TObjectPtr<UActionScreenComponent> LinkedASC;
+
+	// that panel we are attaching our widgets to.
+	UPROPERTY(Transient)
+	TObjectPtr<UPanelWidget> Panel;
+
+	// list of widgets that are cached so that their SWidgets are not destroyed and will be reused before new widgets are created.
 	UPROPERTY(Transient)
 	TArray<FCachedWidget> CachedWidgets;
+
+	// list of active widgets we are managing. 
 	UPROPERTY(Transient)
 	TArray<TScriptInterface<IViewWidgetInterface>> ActiveViewWidgets;
+
+
 
 public:
 	// start deprecated items

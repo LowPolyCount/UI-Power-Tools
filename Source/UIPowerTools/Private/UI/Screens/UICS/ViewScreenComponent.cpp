@@ -242,6 +242,11 @@ void UViewScreenComponent::ManuallySetData(const TArray<UObject*>& Entries)
 	HandleOnDataRetrieval(nullptr, Entries);
 }
 
+void UViewScreenComponent::SetLinkedActionScreenComponent(UActionScreenComponent* InASC)
+{
+	LinkedASC = InASC;
+}
+
 void UViewScreenComponent::HandleOnDataRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries)
 {
 	PopulateWidgets(Entries);

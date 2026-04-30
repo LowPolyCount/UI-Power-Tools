@@ -67,10 +67,25 @@ public:
 
 	// get the view screen component that is managing us
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
-	UViewScreenComponent* GetOwningScreenViewComponent() const;
+	UViewScreenComponent* GetOwningViewScreenComponent() const;
+
+	// if our owning view screen component has an action component linked to it, get that. 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	UActionScreenComponent* GetLinkedActionScreenComponent() const;
+
+	// do we have a valid ASC? 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	bool HasLinkedActionScreenComponent() const;
+
+	// Will query the Action Screen Component linked to this Widget's owning View Screen Component to see if this Widget's EntryData Can be executed upon. 
+	// @return Will return results of Action Screen Component's CanExecuteAction() 
+	// @return Will return true if the Owning ASC is invalid
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	bool CanExecuteAction();
 
 protected:
 	// list out events that are user facing
+
 
 	// Widget has just had it's entry data set
 	// @index - The index this widget is in the entry set
@@ -106,10 +121,13 @@ protected:
 	void SetHovered_Internal(bool bInHovered);
 	void SetSelected_Internal(bool bInSelected);
 	void SetInputAction_Internal();
+	bool HasLinkedActionScreenComponent_Implementation() const;
+	UActionScreenComponent* GetLinkedActionScreenComponent_Implementation() const;
+	bool CanExecuteAction_Implementation();
 
 	TStrongObjectPtr<UObject> Entry;	// the entry data
 	int32 Index = INDEX_NONE;			// what is the index of the widget in the view component array?
-	TWeakObjectPtr<UViewScreenComponent> ManagingViewScreenComponent; // View Component that is managing this widget
+	TWeakObjectPtr<UViewScreenComponent> OwningViewScreenComponent; // View Component that is managing this widget
 
 public:
 	// list out deprecated functions. 

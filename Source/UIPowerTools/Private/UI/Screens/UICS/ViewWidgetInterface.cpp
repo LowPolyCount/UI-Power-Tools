@@ -3,15 +3,43 @@
 
 #include "UI/Screens/UICS/ViewWidgetInterface.h"
 #include "UI/Screens/UICS/ViewScreenComponent.h"
+#include "UI/Screens/UICS/Transaction/ActionScreenComponent.h"
 
 void IViewWidgetInterface::SetOwningViewScreenComponent(UViewScreenComponent* InOwningComponent)
 { 
-	ManagingViewScreenComponent = TWeakObjectPtr<UViewScreenComponent>(InOwningComponent);
+	OwningViewScreenComponent = TWeakObjectPtr<UViewScreenComponent>(InOwningComponent);
 }
 
 UViewScreenComponent* IViewWidgetInterface::GetOwningViewScreenComponent_Implementation() const
 {
-	return (ManagingViewScreenComponent.IsValid()) ? ManagingViewScreenComponent.Pin().Get() : nullptr;
+	return (OwningViewScreenComponent.IsValid()) ? OwningViewScreenComponent.Pin().Get() : nullptr;
+}
+
+bool IViewWidgetInterface::HasLinkedActionScreenComponent_Implementation() const
+{
+	return GetOwningViewScreenComponent() != nullptr;
+}
+
+UActionScreenComponent* IViewWidgetInterface::GetLinkedActionScreenComponent_Implementation() const
+{
+	UActionScreenComponent* RetVal = nullptr;
+	if (UViewScreenComponent* VSC = GetOwningViewScreenComponent())
+	{
+		RetVal = VSC->GetLinkedActionComponent();
+	}
+
+	return RetVal;
+}
+
+bool IViewWidgetInterface::CanExecuteAction_Implementation()
+{
+	bool bRetVal = true;	// in the case of an invalid ASC, assume you can execute the action
+
+	if (UActionScreenComponent* ASC = GetLinkedActionScreenComponent())
+	{
+		ASC->CanExecuteAction(this->GetEntryData());
+	}
+	return bRetVal;
 }
 
 void IViewWidgetInterface::SetEntryData_Implementation(int32 InIndex, UObject* InEntry)

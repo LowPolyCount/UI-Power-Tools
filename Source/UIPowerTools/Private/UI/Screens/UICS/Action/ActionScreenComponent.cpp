@@ -177,6 +177,8 @@ void UActionScreenComponent::SetupListenersToViewScreenComponent(UViewScreenComp
 			{
 				ViewListeningTo->OnInputAction.AddDynamic(this, &UActionScreenComponent::HandleOnActionTrigger);
 			}
+
+			ViewListeningTo->SetLinkedActionScreenComponent(this);
 		}
 		else
 		{
