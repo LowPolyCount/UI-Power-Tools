@@ -260,7 +260,11 @@ void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 
 	// we know how many entries we need upfront, so reserve them.
 	ActiveViewWidgets.Reserve(Entries.Num());
-	CachedWidgets.Reserve(CachedWidgets.Num() + WidgetDifference);
+
+	if ((CachedWidgets.Num() + WidgetDifference) > 0)
+	{
+		CachedWidgets.Reserve(CachedWidgets.Num() + WidgetDifference);
+	}
 
 	// let's remove any unused widgets
 	if (WidgetDifference > 0)
