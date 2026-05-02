@@ -98,16 +98,16 @@ public:
 		IUICSScreenAccessor::Initialize();
 		return RetVal;
 	}*/
-	virtual bool Initialize();	// Initialize returns bool just to match UserWidget's definition of the function. the bool does not mean anything in this context
-	virtual void WidgetNativePreConstruct(bool bIsDesignTime);
-	virtual void NativeConstruct();
-	virtual void NativeDestruct();
-	// end function correspond
-
-
-	virtual UWidget* GetDesiredFocusTargetFromViewComponents() const;
+	bool Initialize();	// Initialize returns bool just to match UserWidget's definition of the function. the bool does not mean anything in this context
+	void WidgetNativePreConstruct(bool bIsDesignTime);
+	void NativeConstruct();
+	void NativeDestruct();
+	UWidget* GetDesiredFocusTargetFromViewComponents() const;
 #if WITH_EDITOR
+	void ValidateCompiledDefaults(class IWidgetCompilerLog& CompileLog) const;
+	// end function correspond
 	UScreenComponent* GetScreenComponentFromGUID(const FGuid& Selector) const;
+	
 #endif
 
 	// begin non-user facing functions
