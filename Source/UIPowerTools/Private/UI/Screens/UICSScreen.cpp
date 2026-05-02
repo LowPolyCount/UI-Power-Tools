@@ -55,3 +55,11 @@ void UUICSScreen::NativeDestruct()
 	IUICSScreenAccessor::NativeDestruct();
 	Super::NativeDestruct();
 }
+
+#if WITH_EDITOR
+void UUICSScreen::ValidateCompiledDefaults(class IWidgetCompilerLog& CompileLog) const
+{
+	IUICSScreenAccessor::ValidateCompiledDefaults(CompileLog);
+	Super::ValidateCompiledDefaults(CompileLog);
+}
+#endif //WITH_EDITOR

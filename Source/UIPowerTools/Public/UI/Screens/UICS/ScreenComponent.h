@@ -20,12 +20,12 @@ public:
 	virtual void ReleaseSlateResources(bool bReleaseChildren) {}
 	const FGuid& GetGuid() const;
 	const FName& GetComponentName() const {return ComponentName;}
-	
-
-#ifdef WITH_EDITORONLY_DATA
+#if WITH_EDITOR
+	virtual void ValidateCompiledDefaults(class IWidgetCompilerLog& CompileLog) const {}
+#endif //WITH_EDITOR
 	virtual FString GetDisplayName() const;
 	virtual FString GetDisplayNameVerbose() const;
-#endif
+
 
 protected:
 	// Utility Func to handle Member References for Screen Components because MRs are bound to the Screen which is the blueprint class

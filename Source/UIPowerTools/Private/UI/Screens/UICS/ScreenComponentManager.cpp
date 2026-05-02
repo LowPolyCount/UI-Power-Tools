@@ -21,6 +21,17 @@ UScreenComponent* UScreenComponentManager::GetComponentFromGUID(const FGuid& Sel
 
 	return RetVal;
 }
+
+void UScreenComponentManager::ValidateCompiledDefaults(class IWidgetCompilerLog& CompileLog) const
+{
+	for (UScreenComponent* Component : Components)
+	{
+		if (Component)
+		{
+			Component->ValidateCompiledDefaults(CompileLog);
+		}
+	}
+}
 #endif
 
 void UScreenComponentManager::Add(UScreenComponent* Component)
