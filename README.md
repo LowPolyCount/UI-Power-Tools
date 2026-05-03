@@ -40,6 +40,12 @@ UI Power Tools is considered stable meaning it can be used in production code.  
 ### Can I use MVVM with UICS?
 Yes, UICS doesn't specify how you set the visual elements of your widgets so you can use MVVM, blueprint, slate, or whatever method you want.
 
+### What if I find an issue? 
+Please [Make an Issue](https://codeberg.org/LowPolyCount/UI-Power-Tools/issues/new). You can use your github account to login to Codeberg. 
+
+### Where can I find help?
+[The Wiki](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki) has information that may help or you can ask in [The Discord Server](https://discord.gg/nBnvbf8TnU)
+
 ### What if I want to use this with an existing codebase?
 While We provide Base Classes that let you use this plugin "Out of the Box", we do let you override these classes with (hopefully) minimal effort. See [Overriding Provided Classes](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UIPT-Overriding-Provided-Classes)
 
