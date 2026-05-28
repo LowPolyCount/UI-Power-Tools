@@ -36,6 +36,8 @@ UI Power Tools is considered stable meaning it can be used in production code.  
 - Licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 # FAQ
+### Is there a talk where I can learn more about doing things with Widget Screen Components?
+Yes, A talk was given At UnrealFest 2025, see [How to Build UI at Scale: Lessons from Marvel’s 'Midnight Suns' | Unreal Fest Orlando 2025](https://www.youtube.com/watch?v=Pm2jswrHSck)
 
 ### Can I use MVVM with UICS?
 Yes, UICS doesn't specify how you set the visual elements of your widgets so you can use MVVM, blueprint, slate, or whatever method you want.
