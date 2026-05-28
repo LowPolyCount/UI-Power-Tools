@@ -4,7 +4,7 @@ UI Power Tools is a plugin for Unreal Engine to help you make User Interfaces
 
 ## Features
 ### User Interface Component System (UICS)
-UICS is similar to the [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) used in games, but made for UI and provides you helpful components to use with it such as:
+UICS is similar to the [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) used in games, but made for UI and provides you helpful components such as:
 * The [Data Component](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Data-Screen-Component) gives you a way to retrieve and filter data for your screen
 * The [View Component](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/View-Screen-Component) works with any panel and will gives you functions and events to know when a widget has changed focus, it's selection, etc. It can automatically create widgets for you from Data retrieved through a Data Component.
 * The [Action Component](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/Action-Screen-Component) will do something in response to a user action such as button press, hover, etc
