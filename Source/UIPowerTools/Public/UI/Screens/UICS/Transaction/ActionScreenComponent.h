@@ -13,41 +13,30 @@ class UActionScreenComponentProvider;
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FValidTransactionResult, UActionScreenComponent*, Component, bool, bResult);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FActionResult, UActionScreenComponent*, Component, bool, bResult, const FGameplayTag&, Result);
+
+// FTransactionResult is deprecated and will be removed
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTransactionResult, UActionScreenComponent*, Component, const FGameplayTag&, Result);
 
 //Gameplay tags that define what the outcome of an action was
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_ACTION_Default);			//Default Value
 UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_CouldNotExecute);	//ExecuteActionIfAble() was called and The Action provider's CanExecuteAction() returned false
-UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Success);			//Executed Action Successfully
-UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Failure);			//Was not able to execute action
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Success);			//ExecuteAction() was called and action was executed successfully
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Failure);			//ExecuteAction() Was called, but not able to execute
 UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Async);				//Action is waiting for an asynchronous callback
-
-// define what events from a View Screen Component will cause an action to trigger
-UENUM(BlueprintType, meta = (Bitflags))
-enum class EActionTriggers : uint8
-{
-	None = 0 UMETA(Hidden),
-	// widget has received hover 
-	Hover = 1 << 0,
-	// widget has received focus
-	Focus = 1 << 1,
-	// an input button on a widget was pressed
-	Input = 1 << 2,
-};
-ENUM_CLASS_FLAGS(EActionTriggers)
 
 // define all bindable events in a struct so that in editor, it will be it's own category
 USTRUCT()
 struct UIPOWERTOOLS_API FBindableActionEvents
 {
 	GENERATED_BODY()
-
 	// we called ExecuteAction() - what was the result?
-	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ActionScreenComponent.Binding_TransactionResult", DefaultBindingName="ExecuteResult", DisplayName = "OnExecuteResult"))
-	FMemberReference  Bind_OnExecuteResult;
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ActionScreenComponent.Binding_ActionExecuteResult", DefaultBindingName="ActionExecuteResult", DisplayName = "OnActionExecuteResult"))
+	FMemberReference  Bind_OnActionExecuteResult;
 };
 
-// Transaction Component collects all the information required to make a change to the system and executes it using a transactor class
-UCLASS()
+// Action Component collects all the information required to execute an "Action". Examples are, opening a screen or buying an item.
+UCLASS(AutoExpandCategories = Triggers)
 class UIPOWERTOOLS_API UActionScreenComponent : public UScreenComponent
 {
 	GENERATED_BODY()
@@ -56,22 +45,31 @@ protected:
 	void Initialize() override;
 
 public:
-
 	// result of ExecuteAction
 	UPROPERTY(BlueprintAssignable, Category = ActionScreenComponent)
-	FTransactionResult OnExecuteResult;
+	FActionResult OnActionExecuteResult;
+
 
 	// Given the Entry Data, can we execute the current action?
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	bool CanExecuteAction(UObject* Entry = nullptr);
 
+	//@note: Disabling until after 1.0 Release
+	// Returns additional information from Last Query performed (IE CanExecuteAction, ExecuteActionIfAble if it failed)
+	// that contains additional information and optional error message
+	//UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
+	//FActionQueryResultAndMessage GetInformationFromLastQuery(UObject* Entry = nullptr);
+
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
+	FGameplayTag GetLastExecuteResultTag() const;
+
 	// call CanExecuteAction() and if true, then call ExecuteAction(). If False, return CouldNotExecute
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
-	FGameplayTag ExecuteActionIfAble(UObject* Entry = nullptr);
+	bool ExecuteActionIfAble(UObject* Entry = nullptr);
 
 	// execute our action, without checking CanExecuteAction()
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
-	FGameplayTag ExecuteAction(UObject* Entry = nullptr);
+	bool ExecuteAction(UObject* Entry = nullptr);
 
 	// set the action provider
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
@@ -81,11 +79,33 @@ public:
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	UActionScreenComponentProvider* GetActionProvider() const {return ActionProvider;}
 
-	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
-	void SetActionTriggers(UPARAM(meta = (Bitmask, BitmaskEnum= EActionTriggers)) EActionTriggers InActionTriggers);
-
+	// listen to events from the given screen component
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	void ListenToViewScreenComponent(UViewScreenComponent* InView);
+
+	// Get if we will trigger on a Input Action Event from a widget with the Linked View Screen Component
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
+	bool GetTriggerOnInputAction() const { return bTriggerOnInputAction; }
+
+	// Get if we will trigger on a Hover Event from a widget with the Linked View Screen Component
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
+	bool GetTriggerOnHover() const { return bTriggerOnHover; }
+
+	// Get if we will trigger on a Gain Focus Event from a widget with the Linked View Screen Component
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
+	bool GetTriggerOnGainsFocus() const { return bTriggerOnGainsFocus; }
+
+	// Set if we will trigger on a Input Action Event from a widget with the Linked View Screen Component
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
+	void SetTriggerOnGainsFocus(bool bInTriggerOnGainsFocus);
+
+	// Set if we will trigger on a Hover Event from a widget with the Linked View Screen Component
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
+	void SetTriggerOnHover(bool bInTriggerOnHover);
+
+	// Set if we will trigger on a Gain Focus Event from a widget with the Linked View Screen Component
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
+	void SetTriggerOnInputAction(bool bInTriggerOnInputAction);
 
 protected:
 	UFUNCTION()
@@ -104,10 +124,20 @@ protected:
 	UPROPERTY(EditAnywhere, Category = ActionScreenComponent)
 	FViewComponentSelector ViewToListenTo;
 
-	// what events from the view screen component will trigger the action?
-	UPROPERTY(EditAnywhere, Category = ActionScreenComponent, meta = (Bitmask, BitmaskEnum = "/Script/UIPowerTools.EActionTriggers"))
-	int32 ActionTriggers = static_cast<int32>(EActionTriggers::Input);
-	//EActionTriggers ActionTriggers;
+	//@note: Tried using a Bitmask instead of individual booleans, but there is some type of issue in the editor where the value
+	//		is not being set correctly as of 7.4
+
+	// Trigger the action when an Input Action on a widget with the Linked View Screen Component happens.
+	UPROPERTY(EditAnywhere, Category=Triggers)
+	bool bTriggerOnInputAction = true;
+
+	// Trigger the action when a Hover Event on a widget with the Linked View Screen Component happens
+	UPROPERTY(EditAnywhere, Category=Triggers)
+	bool bTriggerOnHover = false;
+
+	// Trigger the action when a Gains Focus Event on a widget with the Linked View Screen Component happens
+	UPROPERTY(EditAnywhere, Category=Triggers)
+	bool bTriggerOnGainsFocus = false;
 
 	UPROPERTY(EditAnywhere, Category = ActionScreenComponent, Meta = (DisplayName = "Events"));
 	FBindableActionEvents BindableEvents;
@@ -117,14 +147,24 @@ protected:
 
 	// BEGIN FMember References that allow you to bind events to functions in editor
 #if WITH_EDITOR
+	UFUNCTION(BlueprintInternalUseOnly, Meta=(DeprecatedFunction, DeprecationMessage="Use Binding_ActionExecuteResult()"))
+	void Binding_TransactionResult(UActionScreenComponent* Component, const FGameplayTag& Result) {}
 	UFUNCTION(BlueprintInternalUseOnly)
 	void Binding_IsTransactionValid(UActionScreenComponent* Component, bool bResult) {}
+
 	UFUNCTION(BlueprintInternalUseOnly)
-	void Binding_TransactionResult(UActionScreenComponent* Component, const FGameplayTag& Result) {}
+	void Binding_ActionExecuteResult(UActionScreenComponent* Component, bool bDidExecuteSucceed, const FGameplayTag& Result) {}
 #endif // WITH_EDITOR
 	// END FMember References
 
+	
+
 public:
+	// result of ExecuteAction
+	UE_DEPRECATED(Any, "is deprecated. Use OnActionExecuteResult instead")
+	UPROPERTY(BlueprintAssignable, Category = ActionScreenComponent, Meta = (DeprecatedFunction, DeprecationMessage = "Use OnActionExecuteResult instead"))
+	FTransactionResult OnExecuteResult_DEPRECATED;
+
 	// begin deprecated functions
 	// 
 	// result of IsValidTransaction

@@ -23,21 +23,24 @@ bool FExecuteActionTest::RunTest(const FString& Parameters)
 	Transaction->bCanExecuteAction = false;
 
 	TestEqual("bCanTransact", ActionComponent->CanExecuteAction(NewObject<UObjectIntHarness>()), false);
-	TestTrue("bCanTransact", ActionComponent->ExecuteAction(NewObject<UObjectIntHarness>()).MatchesTagExact(UICS_Action_Failure));
+	TestFalse("bCanTransact", ActionComponent->ExecuteAction(NewObject<UObjectIntHarness>()));
+	TestTrue("bCanTransact", ActionComponent->GetLastExecuteResultTag().MatchesTagExact(UICS_Action_Failure));
 
 	Transaction->bCanTransact = true;
 	TestEqual("bCanExecuteTransaction", ActionComponent->CanExecuteAction(NewObject<UObjectIntHarness>()), true);
-	TestTrue("bCanExecuteTransaction", ActionComponent->ExecuteActionIfAble(NewObject<UObjectIntHarness>()).MatchesTagExact(UICS_Action_Failure));
+	TestFalse("bCanExecuteTransaction", ActionComponent->ExecuteActionIfAble(NewObject<UObjectIntHarness>()));
 
 	Transaction->bCanExecuteAction = true;
 	TestEqual("Can Execute", ActionComponent->CanExecuteAction(NewObject<UObjectIntHarness>()), true);
-	TestTrue("Can Execute", ActionComponent->ExecuteActionIfAble(NewObject<UObjectIntHarness>()).MatchesTagExact(UICS_Action_Success));
-	TestTrue("Can Execute", ActionComponent->ExecuteAction(NewObject<UObjectIntHarness>()).MatchesTagExact(UICS_Action_Success));
+	TestTrue("Can Execute", ActionComponent->ExecuteActionIfAble(NewObject<UObjectIntHarness>()));
+	TestTrue("Can Execute", ActionComponent->ExecuteAction(NewObject<UObjectIntHarness>()));
+	TestTrue("Can Execute", ActionComponent->GetLastExecuteResultTag().MatchesTagExact(UICS_Action_Success));
 
 	Transaction->bCanTransact = false;
 	TestEqual("Can't Transact", ActionComponent->CanExecuteAction(NewObject<UObjectIntHarness>()), false);
-	TestTrue("Can't Transact", ActionComponent->ExecuteActionIfAble(NewObject<UObjectIntHarness>()).MatchesTagExact(UICS_Action_Failure));
-	TestTrue("Can't Transact", ActionComponent->ExecuteAction(NewObject<UObjectIntHarness>()).MatchesTagExact(UICS_Action_Success));
+	TestFalse("Can't Transact", ActionComponent->ExecuteActionIfAble(NewObject<UObjectIntHarness>()));
+	TestFalse("Can't Transact", ActionComponent->ExecuteAction(NewObject<UObjectIntHarness>()));
+	TestTrue("Can't Transact", ActionComponent->GetLastExecuteResultTag().MatchesTagExact(UICS_Action_Failure));
 
 	return true;
 }

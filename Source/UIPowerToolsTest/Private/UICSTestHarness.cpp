@@ -91,7 +91,7 @@ void UActionHarness::Initialize()
 	PRAGMA_DISABLE_INTERNAL_WARNINGS
 	OnIsValidResult_DEPRECATED.AddDynamic(this, &UActionHarness::HandleOnIsValid);
 	PRAGMA_ENABLE_INTERNAL_WARNINGS
-	OnExecuteResult.AddDynamic(this, &UActionHarness::HandleOnComplete);
+	OnActionExecuteResult.AddDynamic(this, &UActionHarness::HandleOnComplete);
 }
 
 void UActionHarness::HandleOnIsValid(UActionScreenComponent* Component, bool bIsValid)
@@ -102,9 +102,9 @@ void UActionHarness::HandleOnIsValid(UActionScreenComponent* Component, bool bIs
 	}
 	
 }
-void UActionHarness::HandleOnComplete(UActionScreenComponent* Component, const FGameplayTag& Result)
+void UActionHarness::HandleOnComplete(UActionScreenComponent* Component, bool bExecuteResult, const FGameplayTag& Result)
 {
-	if(Result == UICS_Action_Success)
+	if(bExecuteResult == true || Result == UICS_Action_Success)
 	{ 
 		OnCompleteSuccess++;
 	}

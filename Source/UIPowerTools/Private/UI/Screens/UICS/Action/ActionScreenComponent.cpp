@@ -7,8 +7,8 @@
 #include "UI/Utility/UIPTStatics.h"
 #include "UIPowerTools.h"
 
-
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_CouldNotExecute, "UICS.Action.Could Not Execute", "ExecuteActionIfAble() was called and The Action provider's CanExecuteAction() returned false");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_ACTION_Default, "UICS.Action.Default", "Variable was not set");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_CouldNotExecute, "UICS.Action.CouldNotExecute", "ExecuteActionIfAble() was called and The Action provider's CanExecuteAction() returned false");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Success, "UICS.Action.Success", "Executed Action Successfully");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Failure, "UICS.Action.Failure", "Was not able to execute action");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Async, "UICS.Action.Async", "Action is waiting for an asynchronous callback");
@@ -17,6 +17,10 @@ void UActionScreenComponent::Initialize()
 {
 	Super::Initialize();
 
+	if (ActionProvider)
+	{
+		ActionProvider->Initialize(this);
+	}
 	ListenToViewScreenComponent(UUIPTStatics::GetScreenComponentFromSelector<UViewScreenComponent>(this, ViewToListenTo));
 }
 
@@ -25,21 +29,30 @@ bool UActionScreenComponent::IsValidTransaction(UObject* Entry)
 	return CanExecuteAction(Entry);
 }
 
+FGameplayTag UActionScreenComponent::GetLastExecuteResultTag() const
+{
+	FGameplayTag RetVal = UICS_ACTION_Default;
+	if (ActionProvider)
+	{
+		RetVal = ActionProvider->GetLastExecuteResultTag();
+	}
+	return RetVal;
+}
+
 bool UActionScreenComponent::CanExecuteAction(UObject* Entry)
 {
 	bool RetVal = false;
 	if (ActionProvider)
 	{
-		RetVal = ActionProvider->CanExecuteAction(this, Entry);
+		RetVal = ActionProvider->CanExecuteAction(Entry);
 	}
 
 	return RetVal;
 }
 
-FGameplayTag UActionScreenComponent::ExecuteActionIfAble(UObject* Entry)
+bool UActionScreenComponent::ExecuteActionIfAble(UObject* Entry)
 {
-	FGameplayTag RetVal = UICS_Action_CouldNotExecute;
-
+	bool RetVal = false;
 	if (ActionProvider && CanExecuteAction(Entry))
 	{
 		RetVal = ExecuteAction(Entry);
@@ -47,23 +60,28 @@ FGameplayTag UActionScreenComponent::ExecuteActionIfAble(UObject* Entry)
 	return RetVal;
 }
 
-FGameplayTag UActionScreenComponent::ExecuteAction(UObject* Entry)
+bool UActionScreenComponent::ExecuteAction(UObject* Entry)
 {
-	FGameplayTag RetVal = UICS_Action_Failure;
-
+	bool RetVal = false;
+	FGameplayTag ResultsTag = UICS_ACTION_Default;
 	if (ActionProvider)
 	{
-		RetVal = ActionProvider->ExecuteAction(this, Entry);
+		RetVal = ActionProvider->ExecuteAction(Entry);
+		ResultsTag = ActionProvider->GetLastExecuteResultTag();
 	}
 
-	OnExecuteResult.Broadcast(this, RetVal);
+	OnActionExecuteResult.Broadcast(this, RetVal, ResultsTag);
+	PRAGMA_DISABLE_INTERNAL_WARNINGS
+	OnExecuteResult_DEPRECATED.Broadcast(this, ResultsTag);
+	PRAGMA_ENABLE_INTERNAL_WARNINGS
 
-	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_OnExecuteResult))
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_OnActionExecuteResult))
 	{
 		struct {
 			UActionScreenComponent* Component;
-			FGameplayTag Result;
-		} Args = { this, RetVal };
+			bool bDidExecuteSucceed;
+			FGameplayTag ResultTag;
+		} Args = { this, RetVal, ResultsTag };
 
 		ProcessFuncFromResolveMember(Func, &Args);
 	}
@@ -120,13 +138,27 @@ void UActionScreenComponent::ListenToViewAction(UViewScreenComponent* InView)
 	ListenToViewScreenComponent(InView);
 }
 
-void UActionScreenComponent::SetActionTriggers(EActionTriggers InActionTriggers)
+void UActionScreenComponent::SetTriggerOnGainsFocus(bool bInTriggerOnGainsFocus) 
 {
 	UViewScreenComponent* CurrentView = ViewListeningTo;
-
-	// reset listeners
 	RemoveCurrentViewScreenComponent();
-	ActionTriggers = static_cast<int32>(InActionTriggers);
+	bTriggerOnGainsFocus = bInTriggerOnGainsFocus; 
+	SetupListenersToViewScreenComponent(CurrentView);
+}
+
+void UActionScreenComponent::SetTriggerOnHover(bool bInTriggerOnHover) 
+{
+	UViewScreenComponent* CurrentView = ViewListeningTo;
+	RemoveCurrentViewScreenComponent();
+	bTriggerOnHover = bInTriggerOnHover;
+	SetupListenersToViewScreenComponent(CurrentView);
+}
+
+void UActionScreenComponent::SetTriggerOnInputAction(bool bInTriggerOnInputAction) 
+{
+	UViewScreenComponent* CurrentView = ViewListeningTo;
+	RemoveCurrentViewScreenComponent();
+	bTriggerOnInputAction = bInTriggerOnInputAction; 
 	SetupListenersToViewScreenComponent(CurrentView);
 }
 
@@ -140,19 +172,20 @@ void UActionScreenComponent::RemoveCurrentViewScreenComponent()
 {
 	if (ViewListeningTo)
 	{
-		if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Focus))
+		if (bTriggerOnGainsFocus)
 		{
 			ViewListeningTo->OnFocusChange.RemoveDynamic(this, &UActionScreenComponent::HandleOnActionTriggerGain);
 		}
-		if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Hover))
+		if (bTriggerOnHover)
 		{
 			ViewListeningTo->OnHoverChange.RemoveDynamic(this, &UActionScreenComponent::HandleOnActionTriggerGain);
 		}
-		if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Input))
+		if (bTriggerOnInputAction)
 		{
 			ViewListeningTo->OnInputAction.RemoveDynamic(this, &UActionScreenComponent::HandleOnActionTrigger);
 		}
-		
+
+		ViewListeningTo->SetLinkedActionScreenComponent(nullptr);
 		ViewListeningTo = nullptr;
 	}
 }
@@ -165,15 +198,15 @@ void UActionScreenComponent::SetupListenersToViewScreenComponent(UViewScreenComp
 		{
 			ViewListeningTo = InView;
 
-			if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Focus))
+			if (bTriggerOnGainsFocus)
 			{
 				ViewListeningTo->OnFocusChange.AddDynamic(this, &UActionScreenComponent::HandleOnActionTriggerGain);
 			}
-			if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Hover))
+			if (bTriggerOnHover)
 			{
 				ViewListeningTo->OnHoverChange.AddDynamic(this, &UActionScreenComponent::HandleOnActionTriggerGain);
 			}
-			if (EnumHasAnyFlags(static_cast<EActionTriggers>(ActionTriggers), EActionTriggers::Input))
+			if (bTriggerOnInputAction)
 			{
 				ViewListeningTo->OnInputAction.AddDynamic(this, &UActionScreenComponent::HandleOnActionTrigger);
 			}
@@ -211,3 +244,16 @@ void UActionScreenComponent::HandleOnActionTriggerGain(UViewScreenComponent* Com
 		ExecuteActionIfAble(Widget->Execute_GetEntryData(Widget.GetObject()));
 	}
 }
+
+//@note: Disabling until after 1.0 Release
+/*FActionQueryResultAndMessage UActionScreenComponent::GetInformationFromLastQuery(UObject* Entry)
+{
+	FActionQueryResultAndMessage RetVal = LastResult;
+	if (const UActionScreenComponentProvider* AProvider = GetActionProvider())
+	{
+		RetVal.TextForQueryResult = AProvider->GetTextAssociatedWithTag(RetVal.ReturnTag);
+		
+	}
+
+	return RetVal;
+}*/

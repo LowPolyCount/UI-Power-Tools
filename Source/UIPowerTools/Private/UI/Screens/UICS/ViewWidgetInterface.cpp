@@ -151,3 +151,13 @@ void IViewWidgetInterface::SetInputAction_Internal()
 		ActionDelegate.Broadcast(Cast<UObject>(this));
 	}
 }
+
+FGameplayTag IViewWidgetInterface::GetLastExecuteResultTag_Implementation() const
+{
+	FGameplayTag RetVal = UICS_ACTION_Default;
+	if (UActionScreenComponent* ASC = GetLinkedActionScreenComponent())
+	{
+		RetVal = ASC->GetLastExecuteResultTag();
+	}
+	return RetVal;
+}

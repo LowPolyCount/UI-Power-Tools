@@ -81,7 +81,11 @@ public:
 	// @return Will return results of Action Screen Component's CanExecuteAction() 
 	// @return Will return true if the Owning ASC is invalid
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
-	bool CanExecuteAction();
+	bool CanExecuteActionComponent();
+
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	FGameplayTag GetLastExecuteResultTag() const;
 
 protected:
 	// list out events that are user facing
@@ -124,6 +128,7 @@ protected:
 	bool HasLinkedActionScreenComponent_Implementation() const;
 	UActionScreenComponent* GetLinkedActionScreenComponent_Implementation() const;
 	bool CanExecuteAction_Implementation();
+	FGameplayTag GetLastExecuteResultTag_Implementation() const;
 
 	TStrongObjectPtr<UObject> Entry;	// the entry data
 	int32 Index = INDEX_NONE;			// what is the index of the widget in the view component array?
