@@ -110,12 +110,6 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, Category = ViewWidget)
 	void OnInputAction();
 
-	// If there is a linked Action Component linked to the View Component that owns us, what was the result of calling Action's CanExecute() function?
-	// Example: ViewWidgets are displaying items a player can buy, Result would return if the player had enough money to buy the item this widget represents.
-	// @TODO: 
-	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget)
-	void OnActionExecuteResult(UActionScreenComponent* Component, bool bWasSuccess, const FGameplayTag& Result);
-
 	// these internal functions are broken out and made virtual in case an implementing class needs to override them. 
 	virtual UObject* GetEntry_Internal() const { return Entry.Get(); }
 	virtual void SetEntry_Internal(UObject* InEntry) { Entry = TStrongObjectPtr<UObject>(InEntry); }

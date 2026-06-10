@@ -7,22 +7,7 @@
 
 void IViewWidgetInterface::SetOwningViewScreenComponent(UViewScreenComponent* InOwningComponent)
 {
-	if (OwningViewScreenComponent.IsValid())
-	{
-		if (UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
-		{
-			ASC->OnActionExecuteResult.RemoveAll(Cast<UObject>(this));
-		}
-	}
 	OwningViewScreenComponent = TWeakObjectPtr<UViewScreenComponent>(InOwningComponent);
-
-	if (OwningViewScreenComponent.IsValid())
-	{
-		if (UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
-		{
-			ASC->OnActionExecuteResult.AddDynamic(this, &IViewWidgetInterface::OnActionExecuteResult);
-		}
-	}
 }
 
 UViewScreenComponent* IViewWidgetInterface::GetOwningViewScreenComponent_Implementation() const
