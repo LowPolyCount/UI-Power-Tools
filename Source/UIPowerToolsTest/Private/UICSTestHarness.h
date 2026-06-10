@@ -116,8 +116,8 @@ class UActionTestHarness: public UActionScreenComponentProvider
 {
 	GENERATED_BODY()
 public:
-	virtual bool CanExecuteActionInternal_Implementation(UObject* Entry) override { SetExecuteResultTag((bCanExecuteAction) ? UICS_Action_Success : UICS_Action_Failure); return bCanTransact; }
-	virtual bool ExecuteActionInternal_Implementation(UObject* Entry) override { SetExecuteResultTag((bCanExecuteAction) ? UICS_Action_Success : UICS_Action_Failure); return bCanExecuteAction; }
+	virtual bool CanExecuteActionInternal_Implementation(UObject* Entry) override { SetActionResult((bCanExecuteAction) ? UICS_Action_Success : UICS_Action_Failure); return bCanTransact; }
+	virtual bool ExecuteActionInternal_Implementation(UObject* Entry) override { SetActionResult((bCanExecuteAction) ? UICS_Action_Success : UICS_Action_Failure); return bCanExecuteAction; }
 
 	bool bCanTransact = true;
 	bool bCanExecuteAction = true;

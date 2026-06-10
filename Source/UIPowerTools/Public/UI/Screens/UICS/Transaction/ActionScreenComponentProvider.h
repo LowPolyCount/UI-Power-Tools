@@ -34,12 +34,12 @@ public:
 
 	//@note: Disabling until after 1.0 release
 	/*UFUNCTION(BlueprintCallable)
-	virtual FText GetTextAssociatedWithTag(const FGameplayTag& Tag) const;
+	virtual FString GetTextAssociatedWithLastActionResult() const;
 	*/
 	
 	// Get the tag that contains 
 	UFUNCTION(BlueprintCallable)
-	FGameplayTag GetLastExecuteResultTag() const {return LastExecuteResultTag;}
+	FGameplayTag GetLastActionResult() const {return LastActionResult;}
 
 protected:
 
@@ -58,7 +58,7 @@ protected:
 	bool ExecuteActionInternal(UObject* Entry);
 
 	UFUNCTION(BlueprintCallable, Meta=(BlueprintProtected))
-	void SetExecuteResultTag(const FGameplayTag Result) { LastExecuteResultTag = Result;}
+	void SetActionResult(const FGameplayTag Result) { LastActionResult = Result;}
 
 	virtual bool CanExecuteActionInternal_Implementation(UObject* Entry);
 	virtual bool ExecuteActionInternal_Implementation(UObject* Entry);
@@ -68,7 +68,7 @@ protected:
 	TObjectPtr<UActionScreenComponent> Owner;
 	
 	// a gameplay tag describing more exactly what happened during the last call made to CanExecuteAction() or ExecuteAction()
-	FGameplayTag LastExecuteResultTag;
+	FGameplayTag LastActionResult;
 
 	// contains a mapping between the result of a query and Human Readable Text that can be displayed. 
 	UPROPERTY(EditAnywhere)

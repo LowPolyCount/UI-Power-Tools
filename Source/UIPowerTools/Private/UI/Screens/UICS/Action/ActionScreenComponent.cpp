@@ -12,6 +12,9 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_CouldNotExecute, "UICS.Action.CouldNo
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Success, "UICS.Action.Success", "Executed Action Successfully");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Failure, "UICS.Action.Failure", "Was not able to execute action");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Async, "UICS.Action.Async", "Action is waiting for an asynchronous callback");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_ACTION_NoActionComponent, "UICS.Action.NoActionComponent", "IViewWidget's owning View Screen Component does not have an Action Screen Component linked to it.");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_ACTION_NoActionProvider, "UICS.Action.NoActionProvider", "The Action Screen Component does not have an action provider");
+
 
 void UActionScreenComponent::Initialize()
 {
@@ -29,12 +32,12 @@ bool UActionScreenComponent::IsValidTransaction(UObject* Entry)
 	return CanExecuteAction(Entry);
 }
 
-FGameplayTag UActionScreenComponent::GetLastExecuteResultTag() const
+FGameplayTag UActionScreenComponent::GetLastActionResult() const
 {
-	FGameplayTag RetVal = UICS_ACTION_Default;
+	FGameplayTag RetVal = UICS_ACTION_NoActionProvider;
 	if (ActionProvider)
 	{
-		RetVal = ActionProvider->GetLastExecuteResultTag();
+		RetVal = ActionProvider->GetLastActionResult();
 	}
 	return RetVal;
 }
@@ -63,11 +66,12 @@ bool UActionScreenComponent::ExecuteActionIfAble(UObject* Entry)
 bool UActionScreenComponent::ExecuteAction(UObject* Entry)
 {
 	bool RetVal = false;
-	FGameplayTag ResultsTag = UICS_ACTION_Default;
+	
+	FGameplayTag ResultsTag = UICS_ACTION_NoActionProvider;
 	if (ActionProvider)
 	{
 		RetVal = ActionProvider->ExecuteAction(Entry);
-		ResultsTag = ActionProvider->GetLastExecuteResultTag();
+		ResultsTag = ActionProvider->GetLastActionResult();
 	}
 
 	OnActionExecuteResult.Broadcast(this, RetVal, ResultsTag);
@@ -244,16 +248,3 @@ void UActionScreenComponent::HandleOnActionTriggerGain(UViewScreenComponent* Com
 		ExecuteActionIfAble(Widget->Execute_GetEntryData(Widget.GetObject()));
 	}
 }
-
-//@note: Disabling until after 1.0 Release
-/*FActionQueryResultAndMessage UActionScreenComponent::GetInformationFromLastQuery(UObject* Entry)
-{
-	FActionQueryResultAndMessage RetVal = LastResult;
-	if (const UActionScreenComponentProvider* AProvider = GetActionProvider())
-	{
-		RetVal.TextForQueryResult = AProvider->GetTextAssociatedWithTag(RetVal.ReturnTag);
-		
-	}
-
-	return RetVal;
-}*/

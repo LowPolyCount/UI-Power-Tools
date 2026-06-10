@@ -19,11 +19,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FActionResult, UActionScreenCompo
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTransactionResult, UActionScreenComponent*, Component, const FGameplayTag&, Result);
 
 //Gameplay tags that define what the outcome of an action was
-UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_ACTION_Default);			//Default Value
-UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_CouldNotExecute);	//ExecuteActionIfAble() was called and The Action provider's CanExecuteAction() returned false
-UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Success);			//ExecuteAction() was called and action was executed successfully
-UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Failure);			//ExecuteAction() Was called, but not able to execute
-UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Async);				//Action is waiting for an asynchronous callback
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_ACTION_Default);			// Default Value
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_CouldNotExecute);	// ExecuteActionIfAble() was called and The Action provider's CanExecuteAction() returned false
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Success);			// ExecuteAction() was called and action was executed successfully
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Async);				// Action is waiting for an asynchronous callback
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Failure);			// ExecuteAction() Was called, but not able to execute
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_ACTION_NoActionComponent);	// There is no Action Component linked to a View Component. (Can happen for IViewWidgets)
+UIPOWERTOOLS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_ACTION_NoActionProvider);	// There is no action provider
 
 // define all bindable events in a struct so that in editor, it will be it's own category
 USTRUCT()
@@ -54,14 +56,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	bool CanExecuteAction(UObject* Entry = nullptr);
 
-	//@note: Disabling until after 1.0 Release
-	// Returns additional information from Last Query performed (IE CanExecuteAction, ExecuteActionIfAble if it failed)
-	// that contains additional information and optional error message
-	//UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
-	//FActionQueryResultAndMessage GetInformationFromLastQuery(UObject* Entry = nullptr);
-
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
-	FGameplayTag GetLastExecuteResultTag() const;
+	FGameplayTag GetLastActionResult() const;
 
 	// call CanExecuteAction() and if true, then call ExecuteAction(). If False, return CouldNotExecute
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)

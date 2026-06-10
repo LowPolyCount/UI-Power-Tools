@@ -3,6 +3,7 @@
 #pragma once
 
 #include "UObject/Interface.h"
+#include "GameplayTagsClasses.h"
 #include "ViewWidgetInterface.generated.h"
 
 class UViewScreenComponent;
@@ -62,30 +63,33 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	void Reset();
 
-	// set a pointer to the view screen component that is managing us. 
+	// set a pointer to the view screen component that created us 
 	void SetOwningViewScreenComponent(UViewScreenComponent* InOwningComponent);
 
-	// get the view screen component that is managing us
+	// get the view screen component that created us
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	UViewScreenComponent* GetOwningViewScreenComponent() const;
 
-	// if our owning view screen component has an action component linked to it, get that. 
+	// get the Action Screen Component that is linked to the View Screen Component that created us
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	UActionScreenComponent* GetLinkedActionScreenComponent() const;
 
-	// do we have a valid ASC? 
+	// does the View Screen Component that owns us have a linked Action Screen Component?
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	bool HasLinkedActionScreenComponent() const;
 
-	// Will query the Action Screen Component linked to this Widget's owning View Screen Component to see if this Widget's EntryData Can be executed upon. 
+	// Will ask the Action Screen Component linked to the View Screen Component that owns us to see if this Widget's EntryData Can be executed upon. 
 	// @return Will return results of Action Screen Component's CanExecuteAction() 
-	// @return Will return true if the Owning ASC is invalid
+	// @return Will return false if the Owning ASC is invalid
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
-	bool CanExecuteActionComponent();
+	bool CanExecuteAction();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	bool ExecuteAction();
 
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
-	FGameplayTag GetLastExecuteResultTag() const;
+	FGameplayTag GetLastActionResult() const;
 
 protected:
 	// list out events that are user facing
@@ -106,10 +110,11 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, Category = ViewWidget)
 	void OnInputAction();
 
-	// If there is a linked Action Component linked to our widgt's View Component, what was the result of calling Action's CanExecute() function?
+	// If there is a linked Action Component linked to the View Component that owns us, what was the result of calling Action's CanExecute() function?
 	// Example: ViewWidgets are displaying items a player can buy, Result would return if the player had enough money to buy the item this widget represents.
+	// @TODO: 
 	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget)
-	void HandleOnActionExecuteResult(UActionScreenComponent* Component, const FGameplayTag& Result);
+	void OnActionExecuteResult(UActionScreenComponent* Component, bool bWasSuccess, const FGameplayTag& Result);
 
 	// these internal functions are broken out and made virtual in case an implementing class needs to override them. 
 	virtual UObject* GetEntry_Internal() const { return Entry.Get(); }
@@ -118,17 +123,18 @@ protected:
 	virtual UObject* GetEntryData_Implementation() const;
 	virtual int32 GetIndex_Implementation() const { return Index; }
 	virtual void Reset_Implementation();
+	bool CanExecuteAction_Implementation();
+	bool HasLinkedActionScreenComponent_Implementation() const;
 	UViewScreenComponent* GetOwningViewScreenComponent_Implementation() const;
+	UActionScreenComponent* GetLinkedActionScreenComponent_Implementation() const;
+	FGameplayTag GetLastActionResult_Implementation() const;
 
 	// these take the existing widget event calls, and translates them to a version where we will know who broadcast them. 
 	void SetFocus_Internal(bool bInFocused);
 	void SetHovered_Internal(bool bInHovered);
 	void SetSelected_Internal(bool bInSelected);
 	void SetInputAction_Internal();
-	bool HasLinkedActionScreenComponent_Implementation() const;
-	UActionScreenComponent* GetLinkedActionScreenComponent_Implementation() const;
-	bool CanExecuteAction_Implementation();
-	FGameplayTag GetLastExecuteResultTag_Implementation() const;
+
 
 	TStrongObjectPtr<UObject> Entry;	// the entry data
 	int32 Index = INDEX_NONE;			// what is the index of the widget in the view component array?

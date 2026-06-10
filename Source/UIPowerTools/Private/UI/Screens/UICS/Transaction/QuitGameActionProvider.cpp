@@ -11,7 +11,7 @@ bool UQuitGameActionProvider::ExecuteActionInternal_Implementation(UObject* Entr
 
 	UKismetSystemLibrary::QuitGame(this, OptionalPlayerController, QuitPreference, bIgnorePlatformRestrictions);
 
-	SetExecuteResultTag(UICS_Action_Success);
+	SetActionResult(UICS_Action_Success);
 	// always assume success
 	return true;
 }

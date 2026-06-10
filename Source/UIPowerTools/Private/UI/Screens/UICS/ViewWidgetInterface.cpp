@@ -6,8 +6,23 @@
 #include "UI/Screens/UICS/Transaction/ActionScreenComponent.h"
 
 void IViewWidgetInterface::SetOwningViewScreenComponent(UViewScreenComponent* InOwningComponent)
-{ 
+{
+	if (OwningViewScreenComponent.IsValid())
+	{
+		if (UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
+		{
+			ASC->OnActionExecuteResult.RemoveAll(Cast<UObject>(this));
+		}
+	}
 	OwningViewScreenComponent = TWeakObjectPtr<UViewScreenComponent>(InOwningComponent);
+
+	if (OwningViewScreenComponent.IsValid())
+	{
+		if (UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
+		{
+			ASC->OnActionExecuteResult.AddDynamic(this, &IViewWidgetInterface::OnActionExecuteResult);
+		}
+	}
 }
 
 UViewScreenComponent* IViewWidgetInterface::GetOwningViewScreenComponent_Implementation() const
@@ -17,13 +32,13 @@ UViewScreenComponent* IViewWidgetInterface::GetOwningViewScreenComponent_Impleme
 
 bool IViewWidgetInterface::HasLinkedActionScreenComponent_Implementation() const
 {
-	return GetOwningViewScreenComponent() != nullptr;
+	return Execute_GetOwningViewScreenComponent(Cast<UObject>(this)) != nullptr;
 }
 
 UActionScreenComponent* IViewWidgetInterface::GetLinkedActionScreenComponent_Implementation() const
 {
 	UActionScreenComponent* RetVal = nullptr;
-	if (UViewScreenComponent* VSC = GetOwningViewScreenComponent())
+	if (UViewScreenComponent* VSC = Execute_GetOwningViewScreenComponent(Cast<UObject>(this)))
 	{
 		RetVal = VSC->GetLinkedActionComponent();
 	}
@@ -33,11 +48,11 @@ UActionScreenComponent* IViewWidgetInterface::GetLinkedActionScreenComponent_Imp
 
 bool IViewWidgetInterface::CanExecuteAction_Implementation()
 {
-	bool bRetVal = true;	// in the case of an invalid ASC, assume you can execute the action
+	bool bRetVal = false;	// in the case of an invalid ASC, assume you can't execute the action
 
-	if (UActionScreenComponent* ASC = GetLinkedActionScreenComponent())
+	if (UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
 	{
-		ASC->CanExecuteAction(this->GetEntryData());
+		bRetVal = ASC->CanExecuteAction(this->Execute_GetEntryData(Cast<UObject>(this)));
 	}
 	return bRetVal;
 }
@@ -152,12 +167,12 @@ void IViewWidgetInterface::SetInputAction_Internal()
 	}
 }
 
-FGameplayTag IViewWidgetInterface::GetLastExecuteResultTag_Implementation() const
+FGameplayTag IViewWidgetInterface::GetLastActionResult_Implementation() const
 {
-	FGameplayTag RetVal = UICS_ACTION_Default;
-	if (UActionScreenComponent* ASC = GetLinkedActionScreenComponent())
+	FGameplayTag RetVal = UICS_ACTION_NoActionComponent;
+	if (UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
 	{
-		RetVal = ASC->GetLastExecuteResultTag();
+		RetVal = ASC->GetLastActionResult();
 	}
 	return RetVal;
 }
