@@ -32,18 +32,18 @@ bool UActionScreenComponentProvider::ExecuteActionInternal_Implementation(UObjec
 	return false;
 }
 
-//@note: Disabling until after 1.0 release
-/*FText UActionScreenComponentProvider::GetTextAssociatedWithTag(const FGameplayTag& Tag) const
+bool UActionScreenComponentProvider::HasTextAssociatedWithLastActionResultTag() const
 {
-	FText RetVal;
-	if (GetClass()->IsFunctionImplementedInScript(FName(L"BP_GetTextAssociatedWithTag")))
+	return ActionResultTagToText.Contains(GetLastActionResult());
+}
+
+FText UActionScreenComponentProvider::GetTextAssociatedWithLastActionResultTag() const
+{
+	FText RetVal = FText::GetEmpty();
+	if(HasTextAssociatedWithLastActionResultTag())
 	{
-		RetVal = BP_GetTextAssociatedWithTag(Tag);
-	}
-	else if(ResultTagToText.Contains(Tag))
-	{
-		RetVal = ResultTagToText[Tag];
+		RetVal = ActionResultTagToText[GetLastActionResult()];
 	}
 
 	return RetVal;
-}*/
+}

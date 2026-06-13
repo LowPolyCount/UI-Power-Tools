@@ -155,9 +155,35 @@ void IViewWidgetInterface::SetInputAction_Internal()
 FGameplayTag IViewWidgetInterface::GetLastActionResult_Implementation() const
 {
 	FGameplayTag RetVal = UICS_ACTION_NoActionComponent;
-	if (UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
+	if (const UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
 	{
 		RetVal = ASC->GetLastActionResult();
 	}
 	return RetVal;
+}
+
+bool IViewWidgetInterface::HasTextAssociatedWithLastActionResultTag_Implementation() const
+{
+	bool bRetVal = false;
+	if (const UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
+	{
+		bRetVal = ASC->HasTextAssociatedWithLastActionResultTag();
+	}
+	return bRetVal;
+}
+
+
+FText IViewWidgetInterface::GetTextAssociatedWithLastActionResultTag_Implementation() const
+{
+	FText RetVal;
+	if (const UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
+	{
+		RetVal = ASC->GetTextAssociatedWithLastActionResultTag();
+	}
+	return RetVal;
+}
+
+void IViewWidgetInterface::Release()
+{
+	Entry.Reset();
 }

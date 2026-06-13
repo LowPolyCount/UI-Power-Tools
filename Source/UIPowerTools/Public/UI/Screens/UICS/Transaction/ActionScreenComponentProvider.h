@@ -31,11 +31,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponentProvider)
 	virtual bool ExecuteAction(UObject* Entry);
 
+	// Do we have text associated with the current last action result tag?
+	UFUNCTION(BlueprintCallable)
+	bool HasTextAssociatedWithLastActionResultTag() const;
 
-	//@note: Disabling until after 1.0 release
-	/*UFUNCTION(BlueprintCallable)
-	virtual FString GetTextAssociatedWithLastActionResult() const;
-	*/
+	// returns the text associated with the last action result tag that was set when either CanExecuteAction() or ExecuteAction() were called.
+	// @return - Text from Map association.  Will be empty if no text is associated with the last action result tag. 
+	UFUNCTION(BlueprintCallable)
+	FText GetTextAssociatedWithLastActionResultTag() const;
+
 	
 	// Get the tag that contains 
 	UFUNCTION(BlueprintCallable)
@@ -57,20 +61,20 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = ActionScreenComponentProvider)
 	bool ExecuteActionInternal(UObject* Entry);
 
-	UFUNCTION(BlueprintCallable, Meta=(BlueprintProtected))
+	UFUNCTION(BlueprintCallable, Meta=(BlueprintProtected, GameplayTagFilter = "UICS.Action"))
 	void SetActionResult(const FGameplayTag Result) { LastActionResult = Result;}
 
 	virtual bool CanExecuteActionInternal_Implementation(UObject* Entry);
 	virtual bool ExecuteActionInternal_Implementation(UObject* Entry);
 
 	// the Action Component that is the owner of this provider
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UActionScreenComponent> Owner;
 	
 	// a gameplay tag describing more exactly what happened during the last call made to CanExecuteAction() or ExecuteAction()
 	FGameplayTag LastActionResult;
 
 	// contains a mapping between the result of a query and Human Readable Text that can be displayed. 
-	UPROPERTY(EditAnywhere)
-	TMap<FGameplayTag, FText> ResultTagToText;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TMap<FGameplayTag, FText> ActionResultTagToText;
 };

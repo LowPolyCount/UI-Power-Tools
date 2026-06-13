@@ -56,9 +56,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	bool CanExecuteAction(UObject* Entry = nullptr);
 
-	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
-	FGameplayTag GetLastActionResult() const;
-
 	// call CanExecuteAction() and if true, then call ExecuteAction(). If False, return CouldNotExecute
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	bool ExecuteActionIfAble(UObject* Entry = nullptr);
@@ -66,6 +63,15 @@ public:
 	// execute our action, without checking CanExecuteAction()
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	bool ExecuteAction(UObject* Entry = nullptr);
+
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
+	FGameplayTag GetLastActionResult() const;
+
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
+	bool HasTextAssociatedWithLastActionResultTag() const;
+
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
+	FText GetTextAssociatedWithLastActionResultTag() const;
 
 	// set the action provider
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)

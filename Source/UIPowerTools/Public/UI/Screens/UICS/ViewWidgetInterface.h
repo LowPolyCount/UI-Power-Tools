@@ -87,9 +87,21 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	bool ExecuteAction();
 
+	// Do we have text associated with the current last action result tag?
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	bool HasTextAssociatedWithLastActionResultTag() const;
+
+	// returns the text associated with the last action result tag that was set when either CanExecuteAction() or ExecuteAction() were called.
+	// @return - Text from Map association.  Will be empty if no text is associated with the last action result tag. 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	FText GetTextAssociatedWithLastActionResultTag() const;
+
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	FGameplayTag GetLastActionResult() const;
+
+	// only called by the owning View Screen Component
+	void Release();
 
 protected:
 	// list out events that are user facing
@@ -122,6 +134,8 @@ protected:
 	UViewScreenComponent* GetOwningViewScreenComponent_Implementation() const;
 	UActionScreenComponent* GetLinkedActionScreenComponent_Implementation() const;
 	FGameplayTag GetLastActionResult_Implementation() const;
+	bool HasTextAssociatedWithLastActionResultTag_Implementation() const;
+	FText GetTextAssociatedWithLastActionResultTag_Implementation() const;
 
 	// these take the existing widget event calls, and translates them to a version where we will know who broadcast them. 
 	void SetFocus_Internal(bool bInFocused);

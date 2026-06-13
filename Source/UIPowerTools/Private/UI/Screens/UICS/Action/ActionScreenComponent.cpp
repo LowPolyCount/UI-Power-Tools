@@ -248,3 +248,23 @@ void UActionScreenComponent::HandleOnActionTriggerGain(UViewScreenComponent* Com
 		ExecuteActionIfAble(Widget->Execute_GetEntryData(Widget.GetObject()));
 	}
 }
+
+bool UActionScreenComponent::HasTextAssociatedWithLastActionResultTag() const
+{
+	bool bRetVal = false;
+	if (const UActionScreenComponentProvider* ASP = GetActionProvider())
+	{
+		bRetVal = ASP->HasTextAssociatedWithLastActionResultTag();
+	}
+	return bRetVal;
+}
+
+FText UActionScreenComponent::GetTextAssociatedWithLastActionResultTag() const
+{
+	FText RetVal = FText::GetEmpty();
+	if (const UActionScreenComponentProvider* ASP =  GetActionProvider())
+	{
+		RetVal = ASP->GetTextAssociatedWithLastActionResultTag();
+	}
+	return RetVal;
+}
