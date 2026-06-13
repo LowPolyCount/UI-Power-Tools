@@ -90,10 +90,14 @@ void UViewScreenComponent::NativeDestruct()
 	{
 		RemoveViewWidget(ActiveViewWidgets[i]);
 	}
+	ActiveViewWidgets.Empty();
 
-	//check(ActiveViewWidgets.Num() == 0);
-
+	for (FCachedWidget& Widget : CachedWidgets)
+	{
+		Widget.UserWidget->Release();
+	}
 	CachedWidgets.Empty();
+	//check(ActiveViewWidgets.Num() == 0);
 
 	Super::NativeDestruct();
 
@@ -402,6 +406,7 @@ void UViewScreenComponent::ViewWidgetTeardown(TScriptInterface<IViewWidgetInterf
 	if (Widget)
 	{
 		Widget->SetOwningViewScreenComponent(nullptr);
+		Widget->Release();
 		Widget->GetOnAction().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnAction);
 		Widget->GetOnSelectionChange().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnSelectionChange);
 		Widget->GetOnFocusChange().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnFocusChange);
