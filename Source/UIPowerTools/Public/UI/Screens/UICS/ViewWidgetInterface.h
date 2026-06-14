@@ -78,12 +78,14 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	bool HasLinkedActionScreenComponent() const;
 
-	// Will ask the Action Screen Component linked to the View Screen Component that owns us to see if this Widget's EntryData Can be executed upon. 
+	// Will ask the Action Screen Component linked to the owning View Screen Component if this Widget's EntryData Can be executed upon. 
 	// @return Will return results of Action Screen Component's CanExecuteAction() 
 	// @return Will return false if the Owning ASC is invalid
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	bool CanExecuteAction();
 
+	// Will execute an action using the View Widget's EntryData on an Action Screen Component linked to the owning View Screen Component
+	// @Note: There are very few cases where a ViewWidget will need to call this. The Action Screen Component has triggers for a ViewWidget's Input, Hover, etc that should be used isntead. 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	bool ExecuteAction();
 
