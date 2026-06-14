@@ -144,6 +144,15 @@ void IUICSScreenAccessor::NativeDestruct()
 }
 
 #if WITH_EDITOR
+void IUICSScreenAccessor::ValidateCompiledDefaults(class IWidgetCompilerLog& CompileLog) const
+{
+	UScreenComponentManager* ComponentManager = GetComponentManager();
+	if (ComponentManager)
+	{
+		ComponentManager->ValidateCompiledDefaults(CompileLog);
+	}
+}
+
 UScreenComponent* IUICSScreenAccessor::GetScreenComponentFromGUID(const FGuid& Selector) const
 {
 	UScreenComponentManager* ComponentManager = GetComponentManager();

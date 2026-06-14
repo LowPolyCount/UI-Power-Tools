@@ -3,15 +3,43 @@
 
 #include "UI/Screens/UICS/ViewWidgetInterface.h"
 #include "UI/Screens/UICS/ViewScreenComponent.h"
+#include "UI/Screens/UICS/Transaction/ActionScreenComponent.h"
 
 void IViewWidgetInterface::SetOwningViewScreenComponent(UViewScreenComponent* InOwningComponent)
-{ 
-	ManagingViewScreenComponent = TWeakObjectPtr<UViewScreenComponent>(InOwningComponent);
+{
+	OwningViewScreenComponent = TWeakObjectPtr<UViewScreenComponent>(InOwningComponent);
 }
 
 UViewScreenComponent* IViewWidgetInterface::GetOwningViewScreenComponent_Implementation() const
 {
-	return (ManagingViewScreenComponent.IsValid()) ? ManagingViewScreenComponent.Pin().Get() : nullptr;
+	return (OwningViewScreenComponent.IsValid()) ? OwningViewScreenComponent.Pin().Get() : nullptr;
+}
+
+bool IViewWidgetInterface::HasLinkedActionScreenComponent_Implementation() const
+{
+	return Execute_GetOwningViewScreenComponent(Cast<UObject>(this)) != nullptr;
+}
+
+UActionScreenComponent* IViewWidgetInterface::GetLinkedActionScreenComponent_Implementation() const
+{
+	UActionScreenComponent* RetVal = nullptr;
+	if (UViewScreenComponent* VSC = Execute_GetOwningViewScreenComponent(Cast<UObject>(this)))
+	{
+		RetVal = VSC->GetLinkedActionComponent();
+	}
+
+	return RetVal;
+}
+
+bool IViewWidgetInterface::CanExecuteAction_Implementation()
+{
+	bool bRetVal = false;	// in the case of an invalid ASC, assume you can't execute the action
+
+	if (UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
+	{
+		bRetVal = ASC->CanExecuteAction(this->Execute_GetEntryData(Cast<UObject>(this)));
+	}
+	return bRetVal;
 }
 
 void IViewWidgetInterface::SetEntryData_Implementation(int32 InIndex, UObject* InEntry)
@@ -122,4 +150,40 @@ void IViewWidgetInterface::SetInputAction_Internal()
 	{
 		ActionDelegate.Broadcast(Cast<UObject>(this));
 	}
+}
+
+FGameplayTag IViewWidgetInterface::GetLastActionResult_Implementation() const
+{
+	FGameplayTag RetVal = UICS_ACTION_NoActionComponent;
+	if (const UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
+	{
+		RetVal = ASC->GetLastActionResult();
+	}
+	return RetVal;
+}
+
+bool IViewWidgetInterface::HasTextAssociatedWithLastActionResultTag_Implementation() const
+{
+	bool bRetVal = false;
+	if (const UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
+	{
+		bRetVal = ASC->HasTextAssociatedWithLastActionResultTag();
+	}
+	return bRetVal;
+}
+
+
+FText IViewWidgetInterface::GetTextAssociatedWithLastActionResultTag_Implementation() const
+{
+	FText RetVal;
+	if (const UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
+	{
+		RetVal = ASC->GetTextAssociatedWithLastActionResultTag();
+	}
+	return RetVal;
+}
+
+void IViewWidgetInterface::Release()
+{
+	Entry.Reset();
 }

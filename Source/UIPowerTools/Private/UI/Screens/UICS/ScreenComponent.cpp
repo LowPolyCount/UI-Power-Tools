@@ -42,7 +42,6 @@ void UScreenComponent::ProcessFuncFromResolveMember(UFunction* Func, void* Args)
 	}
 }
 
-#ifdef WITH_EDITORONLY_DATA
 FString UScreenComponent::GetDisplayName() const
 {
 	return ComponentName.ToString() + TEXT(" ") + GetClass()->GetFName().ToString();
@@ -52,4 +51,3 @@ FString UScreenComponent::GetDisplayNameVerbose() const
 {
 	return ComponentName.ToString() + TEXT(" ") + GetClass()->GetFName().ToString();
 }
-#endif

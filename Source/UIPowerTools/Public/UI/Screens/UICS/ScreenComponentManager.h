@@ -23,6 +23,7 @@ public:
 	UScreenComponent* GetComponentByName(const FName Name, TSubclassOf<UScreenComponent> Type) const;
 	UScreenComponent* GetComponentFromSelector(const FComponentSelector& Selector) const;
 #if WITH_EDITOR
+	virtual void ValidateCompiledDefaults(class IWidgetCompilerLog& CompileLog) const;
 	UScreenComponent* GetComponentFromGUID(const FGuid& Selector) const;
 #endif
 

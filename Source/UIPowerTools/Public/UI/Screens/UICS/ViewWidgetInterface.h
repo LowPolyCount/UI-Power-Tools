@@ -3,6 +3,7 @@
 #pragma once
 
 #include "UObject/Interface.h"
+#include "GameplayTagsClasses.h"
 #include "ViewWidgetInterface.generated.h"
 
 class UViewScreenComponent;
@@ -62,15 +63,49 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
 	void Reset();
 
-	// set a pointer to the view screen component that is managing us. 
+	// set a pointer to the view screen component that created us 
 	void SetOwningViewScreenComponent(UViewScreenComponent* InOwningComponent);
 
-	// get the view screen component that is managing us
+	// get the view screen component that created us
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
-	UViewScreenComponent* GetOwningScreenViewComponent() const;
+	UViewScreenComponent* GetOwningViewScreenComponent() const;
+
+	// get the Action Screen Component that is linked to the View Screen Component that created us
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	UActionScreenComponent* GetLinkedActionScreenComponent() const;
+
+	// does the View Screen Component that owns us have a linked Action Screen Component?
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	bool HasLinkedActionScreenComponent() const;
+
+	// Will ask the Action Screen Component linked to the View Screen Component that owns us to see if this Widget's EntryData Can be executed upon. 
+	// @return Will return results of Action Screen Component's CanExecuteAction() 
+	// @return Will return false if the Owning ASC is invalid
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	bool CanExecuteAction();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	bool ExecuteAction();
+
+	// Do we have text associated with the current last action result tag?
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	bool HasTextAssociatedWithLastActionResultTag() const;
+
+	// returns the text associated with the last action result tag that was set when either CanExecuteAction() or ExecuteAction() were called.
+	// @return - Text from Map association.  Will be empty if no text is associated with the last action result tag. 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	FText GetTextAssociatedWithLastActionResultTag() const;
+
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	FGameplayTag GetLastActionResult() const;
+
+	// only called by the owning View Screen Component
+	void Release();
 
 protected:
 	// list out events that are user facing
+
 
 	// Widget has just had it's entry data set
 	// @index - The index this widget is in the entry set
@@ -87,11 +122,6 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, Category = ViewWidget)
 	void OnInputAction();
 
-	// If there is a linked Action Component linked to our widgt's View Component, what was the result of calling Action's CanExecute() function?
-	// Example: ViewWidgets are displaying items a player can buy, Result would return if the player had enough money to buy the item this widget represents.
-	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget)
-	void HandleOnActionExecuteResult(UActionScreenComponent* Component, const FGameplayTag& Result);
-
 	// these internal functions are broken out and made virtual in case an implementing class needs to override them. 
 	virtual UObject* GetEntry_Internal() const { return Entry.Get(); }
 	virtual void SetEntry_Internal(UObject* InEntry) { Entry = TStrongObjectPtr<UObject>(InEntry); }
@@ -99,7 +129,13 @@ protected:
 	virtual UObject* GetEntryData_Implementation() const;
 	virtual int32 GetIndex_Implementation() const { return Index; }
 	virtual void Reset_Implementation();
+	bool CanExecuteAction_Implementation();
+	bool HasLinkedActionScreenComponent_Implementation() const;
 	UViewScreenComponent* GetOwningViewScreenComponent_Implementation() const;
+	UActionScreenComponent* GetLinkedActionScreenComponent_Implementation() const;
+	FGameplayTag GetLastActionResult_Implementation() const;
+	bool HasTextAssociatedWithLastActionResultTag_Implementation() const;
+	FText GetTextAssociatedWithLastActionResultTag_Implementation() const;
 
 	// these take the existing widget event calls, and translates them to a version where we will know who broadcast them. 
 	void SetFocus_Internal(bool bInFocused);
@@ -107,9 +143,10 @@ protected:
 	void SetSelected_Internal(bool bInSelected);
 	void SetInputAction_Internal();
 
+
 	TStrongObjectPtr<UObject> Entry;	// the entry data
 	int32 Index = INDEX_NONE;			// what is the index of the widget in the view component array?
-	TWeakObjectPtr<UViewScreenComponent> ManagingViewScreenComponent; // View Component that is managing this widget
+	TWeakObjectPtr<UViewScreenComponent> OwningViewScreenComponent; // View Component that is managing this widget
 
 public:
 	// list out deprecated functions. 
