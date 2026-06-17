@@ -29,7 +29,7 @@ class UIPOWERTOOLS_API UDataAssetRetriever : public UUIDataProvider
 	GENERATED_BODY()
 public:
 	UDataAssetRetriever(const FObjectInitializer& ObjectInitializer);
-	virtual void RetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries) override;
+	virtual void NativeRetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries) override;
 
 protected:
 	// You can Provide an existing Data Asset, or edit the data entries you want directly in the editor

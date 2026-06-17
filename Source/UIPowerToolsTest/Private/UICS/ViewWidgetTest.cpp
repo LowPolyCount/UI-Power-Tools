@@ -5,7 +5,7 @@
 #include "UICSTestHarness.h"
 #include "TestHelpers.h"
 #include "Components/HorizontalBox.h"
-#include "UI/Screens/Widgets/ViewUserWidget.h"
+#include "UI/Screens/UICS/Widgets/ViewUserWidget.h"
 #include "UI/Screens/UICSScreen.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewWidgetTest, "UIPowerTools.UICS.View.ViewWidget", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)

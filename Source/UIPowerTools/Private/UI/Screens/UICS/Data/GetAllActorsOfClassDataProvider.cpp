@@ -5,9 +5,9 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/Engine/World.h"
 
-void UGetAllActorsOfClassDataProvider::RetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
+void UGetAllActorsOfClassDataProvider::NativeRetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
 {
-	Super::RetrieveEntries(Component, RetrievedEntries);
+	Super::NativeRetrieveEntries(Component, RetrievedEntries);
 	TArray<AActor*> ActorArray;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ActorClass, ActorArray);
 

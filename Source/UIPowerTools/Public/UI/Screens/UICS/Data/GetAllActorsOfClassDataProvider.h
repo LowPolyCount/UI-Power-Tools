@@ -17,7 +17,7 @@ class UIPOWERTOOLS_API UGetAllActorsOfClassDataProvider : public UUIDataProvider
 {
 	GENERATED_BODY()
 public:
-	virtual void RetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries);
+	virtual void NativeRetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries);
 
 protected:
 	// the class that we will be retrieving all actors of

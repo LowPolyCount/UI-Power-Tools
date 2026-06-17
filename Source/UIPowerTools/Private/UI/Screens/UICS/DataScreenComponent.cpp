@@ -11,6 +11,11 @@ void UDataScreenComponent::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	if (DataProvider)
+	{
+		DataProvider->NativeConstruct();
+	}
+
 	if (bRetrieveOnConstruct)
 	{
 		RetrieveEntries();
@@ -20,6 +25,11 @@ void UDataScreenComponent::NativeConstruct()
 void UDataScreenComponent::NativeDestruct()
 {
 	EmptyEntries();
+
+	if (DataProvider)
+	{
+		DataProvider->NativeDestruct();
+	}
 
 	Super::NativeDestruct();
 }
@@ -47,9 +57,9 @@ const TArray<UObject*>& UDataScreenComponent::RetrieveEntries()
 	if (DataProvider)
 	{
 		//@todo: Move this to setup so that we have access to the data screen component earlier. 
-		DataProvider->Setup();
-		DataProvider->RetrieveEntries(this, RetrievedEntries);
-		DataProvider->Teardown();
+		DataProvider->NativeBeginRetrieveEntries();
+		DataProvider->NativeRetrieveEntries(this, RetrievedEntries);
+		DataProvider->NativeEndRetrieveEntries();
 	}
 	else
 	{
@@ -60,16 +70,16 @@ const TArray<UObject*>& UDataScreenComponent::RetrieveEntries()
 
 	for (UDataFilter* Filter : Filters)
 	{
-		Filter->Setup();
+		Filter->NativeBeginFilterEntries();
 		RetrievedEntries = Filter->FilterEntries(RetrievedEntries);
-		Filter->Teardown();
+		Filter->NativeEndFilterEntries();
 	}
 
 	for (UDataTransform* Transform : Transforms)
 	{
-		Transform->Setup();
-		Transform->TransformEntries(RetrievedEntries);
-		Transform->Teardown();
+		Transform->NativeBeginTransformEntries();
+		Transform->NativeTransformEntries(RetrievedEntries);
+		Transform->NativeEndTransformEntries();
 	}
 
 	OnDataRetrieval.Broadcast(this, RetrievedEntries);

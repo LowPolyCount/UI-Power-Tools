@@ -16,7 +16,7 @@
 // @todo: including AutomationEditorCommon means that tests only build with editor. Maybe FbxAutomationCommon can help?
 #include "Tests/AutomationEditorCommon.h"
 #include "Components/HorizontalBox.h"
-#include "UI/Screens/Widgets/ViewCommonButtonBase.h"
+#include "UI/Screens/UICS/Widgets/ViewCommonButtonBase.h"
 #include "UICSTestHarness.generated.h"
 
 class UPanelWidget;
@@ -34,7 +34,7 @@ class UDataRetrieverHarness : public UUIDataProvider
 {
 	GENERATED_BODY()
 public:
-	virtual void RetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries) override;
+	virtual void NativeRetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries) override;
 
 	static const int32 NumTestEntries = 3;
 	// in case we want to change the number of entries we create during testing
@@ -46,7 +46,7 @@ class UDataFilterAllHarness : public UDataFilter
 {
 	GENERATED_BODY()
 protected:
-	virtual bool ApplyFilter_Implementation(const UObject* Entry) override { return false; }
+	virtual bool NativeApplyFilter(const UObject* Entry) override { return false; }
 };
 
 UCLASS(Hidden)
@@ -54,7 +54,7 @@ class UDataTransformReverseHarness : public UDataTransform
 {
 	GENERATED_BODY()
 protected:
-	virtual void TransformEntries(TArray<UObject*>& InRetrievedEntries) override;
+	virtual void NativeTransformEntries(TArray<UObject*>& InRetrievedEntries) override;
 };
 
 UCLASS(Hidden)

@@ -5,7 +5,7 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/GameFramework/PlayerState.h"
 
-void UPlayerStateDataProvider::RetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
+void UPlayerStateDataProvider::NativeRetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
 {
 	const int32 NumPlayers = UGameplayStatics::GetNumPlayerStates(this);
 	

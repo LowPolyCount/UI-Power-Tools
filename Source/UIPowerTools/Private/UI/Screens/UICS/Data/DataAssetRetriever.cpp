@@ -9,8 +9,9 @@ UDataAssetRetriever::UDataAssetRetriever(const FObjectInitializer& ObjectInitial
 	DataAssetToUse = ObjectInitializer.CreateDefaultSubobject<UEntryDataAsset>(this, MakeUniqueObjectName(this, UEntryDataAsset::StaticClass()));
 }
 
-void UDataAssetRetriever::RetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
+void UDataAssetRetriever::NativeRetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
 {
+	Super::NativeRetrieveEntries(Component, RetrievedEntries);
 	if (DataAssetToUse)
 	{
 		for(UObject* AsObject : DataAssetToUse->Entries)

@@ -3,16 +3,25 @@
 
 #include "UI/Screens/UICS/Data/UIDataProvider.h"
 
-void UUIDataProvider::Setup()
+
+void UUIDataProvider::NativeConstruct()
 {
-	if (GetClass()->IsFunctionImplementedInScript(GET_FUNCTION_NAME_CHECKED(UUIDataProvider, BP_Setup)))
-	{
-		BP_Setup();
-	}
+	BP_Construct();
+}
+
+void UUIDataProvider::NativeDestruct()
+{
+	BP_Destruct();
+}
+
+
+void UUIDataProvider::NativeBeginRetrieveEntries()
+{
+	BP_BeginRetrieveEntries();
 }
 
 // retrieve entries and place them in the given TArray
-void UUIDataProvider::RetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
+void UUIDataProvider::NativeRetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
 {
 	if (GetClass()->IsFunctionImplementedInScript(GET_FUNCTION_NAME_CHECKED(UUIDataProvider, BP_RetrieveEntries)))
 	{
@@ -20,10 +29,7 @@ void UUIDataProvider::RetrieveEntries(UDataScreenComponent* Component, TArray<UO
 	}
 }
 
-void UUIDataProvider::Teardown()
-{ 
-	if (GetClass()->IsFunctionImplementedInScript(GET_FUNCTION_NAME_CHECKED(UUIDataProvider, BP_Teardown)))
-	{
-		BP_Teardown();
-	}
+void UUIDataProvider::NativeEndRetrieveEntries()
+{
+	BP_EndRetrieveEntries();
 }

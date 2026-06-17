@@ -12,5 +12,5 @@ class UIPOWERTOOLS_API UPlayerStateDataProvider : public UUIDataProvider
 {
 	GENERATED_BODY()
 
-	virtual void RetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries) override;
+	virtual void NativeRetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries) override;
 };

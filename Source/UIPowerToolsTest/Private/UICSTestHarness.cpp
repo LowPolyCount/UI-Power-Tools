@@ -3,7 +3,7 @@
 #include "UICSTestHarness.h"
 #include "Algo/Reverse.h"
 
-void UDataRetrieverHarness::RetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
+void UDataRetrieverHarness::NativeRetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
 {
 	// for this test, we're making entries that hold only a basic uobject
 	for (int32 i = 0; i < NumTestEntries; ++i)
@@ -26,7 +26,7 @@ void UDataHarness::HandleOnRetrieval(UDataScreenComponent* Component, const TArr
 	CountOnRetrieval++;
 }
 
-void UDataTransformReverseHarness::TransformEntries(TArray<UObject*>& InRetrievedEntries)
+void UDataTransformReverseHarness::NativeTransformEntries(TArray<UObject*>& InRetrievedEntries)
 {
 	Algo::Reverse(InRetrievedEntries);
 }
