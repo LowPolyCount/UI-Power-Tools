@@ -15,7 +15,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDataRetrieval, UDataScreenComponen
 
 // define all bindable events in a struct so that in editor, it will be it's own category
 USTRUCT()
-struct FBindableDataEvents
+struct UIPOWERTOOLS_API FBindableDataEvents
 {
 	GENERATED_BODY()
 

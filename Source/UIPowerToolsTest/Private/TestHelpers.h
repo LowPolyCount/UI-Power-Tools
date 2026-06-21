@@ -13,7 +13,7 @@ class UScreenComponent;
 // this file contains helpers for us to test our classes
 
 UCLASS(Hidden)
-class UScreenHarness : public UUICSScreen
+class UIPOWERTOOLSTEST_API UScreenHarness : public UUICSScreen
 {
 	GENERATED_BODY()
 public:

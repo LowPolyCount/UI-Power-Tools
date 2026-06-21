@@ -4,8 +4,6 @@
 #include "UI/Screens/UICS/InputScreenComponent.h"
 #include "InputMappingContext.h"
 
-#include "UI/Tools/UIPowerToolsDeveloperSettings.h"
-
 /*UInputScreenComponent::UInputScreenComponent()
 {
 	if (const UUIPowerToolsDeveloperSettings* DefaultSettings = GetDefault<UUIPowerToolsDeveloperSettings>())
