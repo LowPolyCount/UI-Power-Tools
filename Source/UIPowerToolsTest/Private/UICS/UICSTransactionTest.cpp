@@ -1,7 +1,7 @@
 // Copyright (c) Joel Gonzales
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
-#include "TestHelpers.h"
+#include "UICSTestHelpers.h"
 #include "UICSTestHarness.h"
 #include "Components/HorizontalBox.h"
 #include "Components/PanelWidget.h"

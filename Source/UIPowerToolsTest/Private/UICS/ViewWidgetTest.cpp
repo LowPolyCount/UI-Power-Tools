@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "UICSTestHarness.h"
-#include "TestHelpers.h"
+#include "UICSTestHelpers.h"
 #include "Components/HorizontalBox.h"
 #include "UI/Screens/UICS/Widgets/ViewUserWidget.h"
 #include "UI/Screens/UICSScreen.h"

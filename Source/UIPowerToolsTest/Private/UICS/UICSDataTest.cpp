@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
-#include "TestHelpers.h"
+#include "UICSTestHelpers.h"
 #include "UICSTestHarness.h"
 #include "UI/Screens/UICSScreen.h"
 

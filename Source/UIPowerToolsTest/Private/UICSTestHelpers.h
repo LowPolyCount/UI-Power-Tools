@@ -6,7 +6,7 @@
 #include "UI/Screens/UICSScreen.h"
 #include "UICS/UICSTestActivatableWidget.h"
 #include "UI/Screens/UICS/ScreenComponentManager.h"
-#include "TestHelpers.generated.h"
+#include "UICSTestHelpers.generated.h"
 
 class UScreenComponent;
 

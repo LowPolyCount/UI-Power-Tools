@@ -25,6 +25,7 @@ public class UIPowerToolsEd : ModuleRules
 			new string[]
 			{
 				"Core",
+				"UnrealEd",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -35,13 +36,13 @@ public class UIPowerToolsEd : ModuleRules
 			{
 				"CoreUObject",
 				"Engine",
-				"Slate",
 				"SlateCore",
+				"Slate",
 				"InputCore",
-                "UMG",
-                "UIPowerTools",
-                "CommonUI",
-                "EnhancedInput"
+				"CommonUI",
+				"GameplayTags",
+				"UMG",
+				"UIPowerTools",
 			}
 			);
 		

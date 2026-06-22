@@ -14,24 +14,17 @@ public class UIPowerTools : ModuleRules
 			new string[]
 			{
 				"Core",
-				"CoreUObject",
-				"CommonInput",
-				"CommonUI",
-				"DeveloperSettings",
-				"Engine",
-				"EnhancedInput",
-				"GameplayTags",
-				"Slate",
-				"SlateCore",
-				"UMG",
 			});
 			
 		
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-
-
+				"CoreUObject",
+				"Engine",
+				"CommonUI",
+				"GameplayTags",
+				"UMG",
 			});		
 	}
 }

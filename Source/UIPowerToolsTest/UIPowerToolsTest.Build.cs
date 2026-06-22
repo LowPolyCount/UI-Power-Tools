@@ -13,9 +13,6 @@ public class UIPowerToolsTest : ModuleRules
 			{
 				"Core",
 				"UnrealEd",
-				"CommonUI",
-				"EnhancedInput",
-				"GameplayTags",
 			});
 			
 		
@@ -23,8 +20,8 @@ public class UIPowerToolsTest : ModuleRules
 			{
 				"CoreUObject",
 				"Engine",
-				"Slate",
-				"SlateCore",
+				"CommonUI",
+				"GameplayTags",
 				"UMG",
 				"UIPowerTools",
 			});
