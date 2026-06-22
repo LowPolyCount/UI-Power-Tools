@@ -15,7 +15,7 @@
 	}
 }*/
 
-void UInputScreenComponent::NativeConstruct()
+/*void UInputScreenComponent::NativeConstruct()
 {
 	Super::NativeConstruct();
-}
+}*/

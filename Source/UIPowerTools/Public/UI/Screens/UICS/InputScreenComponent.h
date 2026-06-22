@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+// Disabling this until we're ready to look at Input
+/*#include "CoreMinimal.h"
 #include "UI/Screens/UICS/ScreenComponent.h"
 #include "Engine/EngineBaseTypes.h"
 #include "GameplayTagContainer.h"
@@ -11,10 +12,11 @@
 
 class APlayerController;
 class UInputMappingContext;
-class UInputAction;
+class UInputAction;*/
+
 
 // used to define Input Bindings
-USTRUCT(BlueprintType, Experimental)
+/*USTRUCT(BlueprintType, Experimental)
 struct FUIPTInputBinding
 {
 	GENERATED_BODY()
@@ -35,12 +37,12 @@ enum class EScreenInputMode : uint8
 	GameOnly,
 	// input from UI only
 	UIOnly,
-};
+};*/
 
 /**
  * controls options on how a screen handles Input
  */
-UCLASS(Experimental)
+/*UCLASS(Experimental)
 class UIPOWERTOOLS_API UInputScreenComponent : public UScreenComponent
 {
 	GENERATED_BODY()
@@ -101,4 +103,4 @@ protected:
 	// when changing input modes, is the input flushed?
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = InputScreenComponent)
 	bool bFlushInput = false;
-};
+};*/
