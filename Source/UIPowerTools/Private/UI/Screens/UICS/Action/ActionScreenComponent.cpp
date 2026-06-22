@@ -47,7 +47,7 @@ bool UActionScreenComponent::CanExecuteAction(UObject* Entry)
 	bool RetVal = false;
 	if (ActionProvider)
 	{
-		RetVal = ActionProvider->CanExecuteAction(Entry);
+		RetVal = ActionProvider->NativeCanExecuteAction(Entry);
 	}
 
 	return RetVal;
@@ -70,7 +70,7 @@ bool UActionScreenComponent::ExecuteAction(UObject* Entry)
 	FGameplayTag ResultsTag = UICS_ACTION_NoActionProvider;
 	if (ActionProvider)
 	{
-		RetVal = ActionProvider->ExecuteAction(Entry);
+		RetVal = ActionProvider->NativeExecuteAction(Entry);
 		ResultsTag = ActionProvider->GetLastActionResult();
 	}
 

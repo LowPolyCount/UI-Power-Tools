@@ -10,26 +10,36 @@ void UActionScreenComponentProvider::Initialize(UActionScreenComponent* InOwner)
 	Owner = InOwner;
 }
 
-bool UActionScreenComponentProvider::CanExecuteAction(UObject* Entry)
+bool UActionScreenComponentProvider::NativeCanExecuteAction(UObject* Entry)
 {
 	FGameplayTag LastTag = UICS_ACTION_Default;
-	return CanExecuteActionInternal(Entry);
+
+	bool bRetVal = false;
+	if (GetClass()->IsFunctionImplementedInScript(GET_FUNCTION_NAME_CHECKED(UActionScreenComponentProvider, BP_CanExecuteAction)))
+	{
+		bRetVal = BP_CanExecuteAction(Entry);
+	}
+	else
+	{
+		bRetVal = CanExecuteActionInternal(Entry);
+	}
+	return bRetVal;
 }
 
-bool UActionScreenComponentProvider::ExecuteAction(UObject* Entry)
+bool UActionScreenComponentProvider::NativeExecuteAction(UObject* Entry)
 { 
 	FGameplayTag LastTag = UICS_ACTION_Default;
-	return ExecuteActionInternal(Entry);
-}
 
-bool UActionScreenComponentProvider::CanExecuteActionInternal_Implementation(UObject* Entry)
-{
-	return false;
-}
-
-bool UActionScreenComponentProvider::ExecuteActionInternal_Implementation(UObject* Entry)
-{
-	return false;
+	bool bRetVal = false;
+	if (GetClass()->IsFunctionImplementedInScript(GET_FUNCTION_NAME_CHECKED(UActionScreenComponentProvider, BP_ExecuteAction)))
+	{
+		bRetVal = BP_ExecuteAction(Entry);
+	}
+	else
+	{
+		bRetVal = ExecuteActionInternal(Entry);
+	}
+	return bRetVal;
 }
 
 bool UActionScreenComponentProvider::HasTextAssociatedWithLastActionResultTag() const

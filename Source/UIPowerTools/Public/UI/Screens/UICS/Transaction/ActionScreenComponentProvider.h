@@ -22,14 +22,14 @@ public:
 	// @Entry - Data (usually) from the currently focused/selected widget 
 	// @Return - Can we execute this action with the parameters given?
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponentProvider)
-	virtual bool CanExecuteAction(UObject* Entry);
+	virtual bool NativeCanExecuteAction(UObject* Entry);
 
 	// execute the transaction
 	// @Component - the component calling the 
 	// @Entry - Data (usually) from the currently focused/selected widget 
 	// @Return - A Gameplay tag defining what the result was such as success, failure, etc. 
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponentProvider)
-	virtual bool ExecuteAction(UObject* Entry);
+	virtual bool NativeExecuteAction(UObject* Entry);
 
 	// Do we have text associated with the current last action result tag?
 	UFUNCTION(BlueprintCallable)
@@ -48,24 +48,21 @@ public:
 protected:
 
 	// Do we have all the information required to execute the transaction?
-	// @Component - the component calling the function
-	// @Entry - Data (usually) from the currently focused/selected widget 
-	// @Return - Can we execute this action with the parameters given?
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = ActionScreenComponentProvider)
-	bool CanExecuteActionInternal(UObject* Entry);
+	// @note - Implementor Should set LastActionResult as part of implementation
+	// @Entry - Data (usually) from a widget created by a View Screen Component linked to the owning Action Screen Component
+	// @Return bool - true if we can we execute this action with the parameters given
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = ActionScreenComponentProvider, Meta=(DisplayName="Can Execute Action"))
+	bool BP_CanExecuteAction(UObject* Entry);
 
 	// execute the transaction
-	// @Component - the component calling the 
-	// @Entry - Data (usually) from the currently focused/selected widget 
-	// @Return - A Gameplay tag defining what the result was such as success, failure, etc. 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = ActionScreenComponentProvider)
-	bool ExecuteActionInternal(UObject* Entry);
+	// @note - Implementor Should set LastActionResult as part of implementation
+	// @Entry - Data (usually) from a widget created by a View Screen Component linked to the owning Action Screen Component
+	// @Return - true if we executed the action successfully
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = ActionScreenComponentProvider, Meta = (DisplayName = "Execute Action"))
+	bool BP_ExecuteAction(UObject* Entry);
 
 	UFUNCTION(BlueprintCallable, Meta=(BlueprintProtected, GameplayTagFilter = "UICS.Action"))
 	void SetActionResult(const FGameplayTag Result) { LastActionResult = Result;}
-
-	virtual bool CanExecuteActionInternal_Implementation(UObject* Entry);
-	virtual bool ExecuteActionInternal_Implementation(UObject* Entry);
 
 	// the Action Component that is the owner of this provider
 	UPROPERTY(BlueprintReadOnly)
@@ -77,4 +74,25 @@ protected:
 	// contains a mapping between the result of a query and Human Readable Text that can be displayed. 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TMap<FGameplayTag, FText> ActionResultTagToText;
+
+public:
+
+	// Do we have all the information required to execute the transaction?
+	// @note - Implementor Should set LastActionResult as part of implementation
+	// @Entry - Data (usually) from a widget created by a View Screen Component linked to the owning Action Screen Component
+	// @Return bool - true if we can we execute this action with the parameters given
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = ActionScreenComponentProvider, Meta=(DeprecatedFunction, DeprecationMessage="Use CanExecuteAction"))
+	bool CanExecuteActionInternal(UObject* Entry);
+
+	// execute the transaction
+	// @note - Implementor Should set LastActionResult as part of implementation
+	// @Entry - Data (usually) from a widget created by a View Screen Component linked to the owning Action Screen Component
+	// @Return - true if we executed the action successfully
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = ActionScreenComponentProvider, Meta=(DeprecatedFunction, DeprecationMessage="Use ExecuteAction"))
+	bool ExecuteActionInternal(UObject* Entry);
+
+	UE_DEPRECATED(Any, "Is Deprecated. Override NativeExecuteAction() Instead")
+	virtual bool ExecuteActionInternal_Implementation(UObject* Entry) {return false;}
+	UE_DEPRECATED(Any, "Is Deprecated. Override NativeExecuteAction() Instead")
+	virtual bool CanExecuteActionInternal_Implementation(UObject* Entry) {return false;}
 };
