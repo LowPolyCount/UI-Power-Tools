@@ -1,0 +1,46 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "UICS",
+	"Description": "User Interface Component System",
+	"Category": "Other",
+	"CreatedBy": "Joel Gonzales (LowPolyCount)",
+	"CreatedByURL": "https://codeberg.org/LowPolyCount/UICS",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Plugins": [
+		{
+			"Name": "CommonUI",
+			"Enabled": true
+		}
+	],
+	"Modules": [
+		{
+			"Name": "UICS",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "UICSEd",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"TargetConfigurationDenyList": [
+				"Shipping",
+			]
+		},
+		{
+			"Name": "UICSTest",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"TargetConfigurationDenyList": [
+				"Shipping",
+			]
+		}
+	]
+}

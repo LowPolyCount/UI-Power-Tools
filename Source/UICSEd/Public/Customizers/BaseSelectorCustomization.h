@@ -1,0 +1,34 @@
+// Copyright (c) Joel Gonzales
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "IPropertyTypeCustomization.h"
+#include "UI/Screens/UICS/IUICSAccessor.h"
+
+class UScreen;
+
+// the base class to provide editor customization for selector properties
+class UICSED_API FBaseSelectorCustomization : public IPropertyTypeCustomization
+{
+public:
+	//~ Begin IPropertyTypeCustomization Interface
+	virtual void CustomizeHeader(TSharedRef<IPropertyHandle> PropertyHandle, FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& CustomizationUtils) override;
+	//~ End IPropertyTypeCustomization Interface
+
+
+protected:
+	void SetClassFilter(UClass* InClass);
+	const TSubclassOf<UObject>& GetClassFilter() const;
+
+	TScriptInterface<IUICSScreenAccessor> GetScreenAccessor() const;
+	
+	virtual bool FilterEntry(const UObject* Entry) const;
+
+	TSubclassOf<UObject> ClassFilter;
+	TSharedPtr<IPropertyHandle> PropertyToCustomize;
+	int32 SelectedIndex = INDEX_NONE;
+	// slate widgets
+	TSharedPtr<STextBlock> SelectedWidgetName;
+
+};
