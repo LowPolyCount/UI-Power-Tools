@@ -33,7 +33,7 @@ struct UICS_API FBindableActionEvents
 {
 	GENERATED_BODY()
 	// we called ExecuteAction() - what was the result?
-	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ActionScreenComponent.Binding_ActionExecuteResult", DefaultBindingName="ActionExecuteResult", DisplayName = "OnActionExecuteResult"))
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UICS.ActionScreenComponent.Binding_ActionExecuteResult", DefaultBindingName="ActionExecuteResult", DisplayName = "OnActionExecuteResult"))
 	FMemberReference  Bind_OnActionExecuteResult;
 };
 
@@ -141,11 +141,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category=Triggers)
 	bool bTriggerOnGainsFocus = false;
 
-	UPROPERTY(EditAnywhere, Category = ActionScreenComponent, Meta = (DisplayName = "Events"));
-	FBindableActionEvents BindableEvents;
-
 	UPROPERTY()
 	TObjectPtr<UViewScreenComponent> ViewListeningTo;
+
+	UPROPERTY(EditAnywhere, Category = ActionScreenComponent, Meta = (FullyExpand = true, DisplayName = "Events"));
+	FBindableActionEvents BindableEvents;
 
 	// BEGIN FMember References that allow you to bind events to functions in editor
 #if WITH_EDITOR

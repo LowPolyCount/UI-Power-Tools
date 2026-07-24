@@ -2,7 +2,12 @@
 
 
 #include "UI/Screens/UICS/Data/UIDataProvider.h"
+#include "UI/Screens/UICS/DataScreenComponent.h"
 
+void UUIDataProvider::Initialize(UDataScreenComponent* InOwningParent)
+{
+	ParentComponent = MakeWeakObjectPtr(InOwningParent);
+}
 
 void UUIDataProvider::NativeConstruct()
 {
@@ -12,6 +17,13 @@ void UUIDataProvider::NativeConstruct()
 void UUIDataProvider::NativeDestruct()
 {
 	BP_Destruct();
+}
+
+
+UDataScreenComponent* UUIDataProvider::GetParent() const
+{
+	TStrongObjectPtr<UDataScreenComponent> FoundObjectPinned = ParentComponent.Pin();
+	return FoundObjectPinned ? FoundObjectPinned.Get() : nullptr;
 }
 
 

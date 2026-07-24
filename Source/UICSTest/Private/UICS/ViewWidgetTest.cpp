@@ -8,7 +8,11 @@
 #include "UI/Screens/UICS/Widgets/ViewUserWidget.h"
 #include "UI/Screens/UICSScreen.h"
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewWidgetTest, "UIPowerTools.UICS.View.ViewWidget", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+// @TODO: some things to make the tests easier:
+// Get a game Instance using FActorTestSpawn - call Spawner.InitializeGameSubsystems() first.
+// can create a viewport client for these tests, set the viewport overlay widget for the viewport client. Create a new SOverlay, then call `SetViewportOverlayWidget`
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewWidgetTest, "UICS.Component.View.ViewWidget", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FViewWidgetTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();

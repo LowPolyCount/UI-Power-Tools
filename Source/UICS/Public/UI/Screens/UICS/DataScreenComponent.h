@@ -34,7 +34,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Meta = (FunctionReference, AllowFunctionLibraries, PrototypeFunction = "/Script/UIPowerTools.ViewScreenComponent.HandleOnDataRetrieval", DefaultBindingName = "TestDataRetrieval", DisplayName = "OnDataRetrieval"))
 	FDataRetrieval OnDataRetrieval;
 
-	virtual void Initialize() override { Super::Initialize(); }
+	virtual void Initialize() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual FString GetDisplayNameVerbose() const override;
@@ -67,25 +67,30 @@ public:
 	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	UObject* GetEntryAt(int32 Index) const;
 
+	// add an entry of data to the end of the array
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
+	void AddEntry(UObject* AddEntry) {RetrievedEntries.Add(AddEntry); }
+
 	// clear all retrieved entries
 	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
 	void EmptyEntries() { RetrievedEntries.Empty(); }
 
-	// Set the data retriever to use with a given instance
+	// Set the data provider with a given instance
 	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
-	void SetDataRetriever(UUIDataProvider* InData) { DataProvider = InData; }
+	void SetDataProvider(UUIDataProvider* InData) { DataProvider = InData; InitializeDataProvider();}
 
-	// Set the data retriever to use with a given classtype
+	// Set the data provder from a class. Will create an instance of the given class
 	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
-	void SetDataRetrieverFromClass(TSubclassOf<UUIDataProvider> InClass);
+	void SetDataProviderFromClass(TSubclassOf<UUIDataProvider> InClass);
 	
-	// get data retriever we're using
+	// get data provider we're using
 	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
-	UUIDataProvider* GetDataRetriever() const { return DataProvider; }
+	UUIDataProvider* GetDataProvider() const { return DataProvider; }
 
-	// Do we have a data retriever?
+	// Do we have a data provider?
 	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
-	bool HasDataRetriever() const { return DataProvider != nullptr; }
+	bool HasDataProvider() const { return DataProvider != nullptr; }
+
 
 	// data filters
 	// add a data filter
@@ -130,6 +135,9 @@ public:
 	const TArray<UDataTransform*>& GetAllTransforms() const { return Transforms; }
 
 protected:
+
+	void InitializeDataProvider();
+
 	// class that will retrieve our data
 	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Category = DataScreenComponent)
 	TObjectPtr<UUIDataProvider> DataProvider;
@@ -153,4 +161,28 @@ protected:
 
 	UPROPERTY()
 	TArray<UObject*> RetrievedEntries;
+
+public:
+
+	// deprecated functions 
+
+	// Set the data retriever to use with a given instance
+	UE_DEPRECATED(Any, "Use SetDataProvider() Instead")
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
+	void SetDataRetriever(UUIDataProvider* InData) { DataProvider = InData; }
+
+	// Set the data retriever to use with a given classtype
+	UE_DEPRECATED(Any, "Use SetDataProviderFromClass() Instead")
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
+	void SetDataRetrieverFromClass(TSubclassOf<UUIDataProvider> InClass);
+	
+	// get data retriever we're using
+	UE_DEPRECATED(Any, "Use GetDataProvider() Instead")
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
+	UUIDataProvider* GetDataRetriever() const { return DataProvider; }
+
+	// Do we have a data retriever?
+	UE_DEPRECATED(Any, "Use HasDataProvider() Instead")
+	UFUNCTION(BlueprintCallable, Category = DataScreenComponent)
+	bool HasDataRetriever() const { return DataProvider != nullptr; }
 };

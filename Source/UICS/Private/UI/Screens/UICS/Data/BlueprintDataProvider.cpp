@@ -2,6 +2,7 @@
 
 
 #include "UI/Screens/UICS/Data/BlueprintDataProvider.h"
+#include "UI/Screens/UICS/DataScreenComponent.h"
 #include "UI/Screens/UICS/IUICSAccessor.h"
 
 UFunction* UBlueprintDataProvider::ResolveMemberReference(const FMemberReference& Ref)
@@ -23,46 +24,58 @@ void UBlueprintDataProvider::ProcessFuncFromResolveMember(UFunction* Func, void*
 	}
 }
 
-// run before Retrieve Entries to handle any setup needed
 void UBlueprintDataProvider::NativeBeginRetrieveEntries()
 {
 	Super::NativeBeginRetrieveEntries();
-	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_Setup))
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_BeginRetrieveEntries))
 	{
-		struct {
+		struct FBlueprintDataProviderFunc {
+			UUIDataProvider* DataProvider;
+			UDataScreenComponent* ParentDataComponent;
 			
-		} Args = {  };
+		} Args = { this, GetParent()};
 
 		ProcessFuncFromResolveMember(Func, &Args);
 	}
 
 }
 
-void UBlueprintDataProvider::NativeRetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
+void UBlueprintDataProvider::NativeRetrieveEntries(UDataScreenComponent* ComponentParent, TArray<UObject*>& RetrievedEntries)
 {
-	Super::NativeRetrieveEntries(Component, RetrievedEntries);
+	Super::NativeRetrieveEntries(ComponentParent, RetrievedEntries);
 
 	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_RetrieveEntries))
 	{
-		struct {
-			UDataScreenComponent* Component;
-			TArray<UObject*>& RetrievedEntries;
-		} Args = { Component,  RetrievedEntries };
+		TArray<UObject*> Temp;
+		struct FBlueprintDataProviderFunc {
+			UUIDataProvider* DataProvider;
+			UDataScreenComponent* ParentDataComponent;
+			TArray<UObject*> RetrievedEntries;
+
+		} Args = { this, GetParent(), Temp};
 
 		ProcessFuncFromResolveMember(Func, &Args);
-	}
 
+		if(UDataScreenComponent* Parent = GetParent())
+		{
+			for (UObject* DataObj : Args.RetrievedEntries)
+			{
+				Parent->AddEntry(DataObj);
+			}
+		}
+	}
 }
 
 
 void UBlueprintDataProvider::NativeEndRetrieveEntries()
 {
 	Super::NativeEndRetrieveEntries();
-	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_TearDown))
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_EmdRetrieveEntries))
 	{
 		struct {
-
-		} Args = {  };
+			UUIDataProvider* DataProvider;
+			UDataScreenComponent* DataComponentParent;
+		} Args = { this, GetParent()};
 
 		ProcessFuncFromResolveMember(Func, &Args);
 	}

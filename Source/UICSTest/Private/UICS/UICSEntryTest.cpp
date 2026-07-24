@@ -6,7 +6,7 @@
 #include "UICSTestHarness.h"
 #include "UICSTestHelpers.h"
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FEntryTest, "UIPowerTools.UICS.Entry", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FEntryTest, "UICS.Component.Entry", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FEntryTest::RunTest(const FString& Parameters)
 {
 	UEntryHarness* EntryComponent = NewObject<UEntryHarness>();

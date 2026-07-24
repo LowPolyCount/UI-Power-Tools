@@ -7,6 +7,15 @@
 #include "UI/Screens/UICS/Data/DataTransform.h"
 #include "UI/Screens/UICS/Data/DataFilter.h"
 
+
+void UDataScreenComponent::Initialize()
+{
+	Super::Initialize();
+
+	InitializeDataProvider();
+}
+
+
 void UDataScreenComponent::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -45,9 +54,15 @@ FString UDataScreenComponent::GetDisplayNameVerbose() const
 
 void UDataScreenComponent::SetDataRetrieverFromClass(TSubclassOf<UUIDataProvider> InClass)
 {
+	SetDataProviderFromClass(InClass);
+}
+
+void UDataScreenComponent::SetDataProviderFromClass(TSubclassOf<UUIDataProvider> InClass)
+{
 	if (InClass)
 	{
 		DataProvider = NewObject<UUIDataProvider>(this, InClass);
+		InitializeDataProvider();
 	}
 }
 
@@ -169,4 +184,12 @@ UDataTransform* UDataScreenComponent::GetTransformAt(int32 Index)
 	}
 
 	return RetVal;
+}
+
+void UDataScreenComponent::InitializeDataProvider()
+{
+	if (DataProvider)
+	{
+		DataProvider->Initialize(this);
+	}
 }

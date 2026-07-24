@@ -14,12 +14,12 @@ UDataHarness* CreateDataHarness(UScreenHarness* Screen)
 	UDataHarness* RetVal = UICSTest::CreateComponent<UDataHarness>(Screen);
 	if (RetVal)
 	{
-		RetVal->SetDataRetrieverFromClass(TSubclassOf<UUIDataProvider>(UDataRetrieverHarness::StaticClass()));
+		RetVal->SetDataProviderFromClass(TSubclassOf<UUIDataProvider>(UDataRetrieverHarness::StaticClass()));
 	}
 	return RetVal;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDataTest, "UIPowerTools.UICS.Data", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDataTest, "UICS.Component.Data", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FDataTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
@@ -34,7 +34,7 @@ bool FDataTest::RunTest(const FString& Parameters)
 		TestNotNull("Data", Data);
 
 		bSuppressLogWarnings = true;
-		Data->SetDataRetriever(nullptr);
+		Data->SetDataProvider(nullptr);
 		Data->RetrieveEntries();
 		TestTrue("Data->GetEntryAt()", Data->GetEntryAt(0) == nullptr);
 		bSuppressLogWarnings = false;
@@ -93,7 +93,7 @@ bool FDataTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDataFilterTest, "UIPowerTools.UICS.Data.Filter", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDataFilterTest, "UICS.Component.Data.Filter", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FDataFilterTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
@@ -115,7 +115,7 @@ bool FDataFilterTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDataTransformTest, "UIPowerTools.UICS.Data.Transform", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDataTransformTest, "UICS.Component.Data.Transform", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FDataTransformTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();

@@ -14,6 +14,7 @@ class UICS_API UUIDataProvider : public UScreenComponentWorldContext
 {
 	GENERATED_BODY()
 public:	
+	void Initialize(UDataScreenComponent* InOwningParent);
 	// called when NativeConstruct happens on the Screen/Widget the component lives on
 	// @note: Useful when you need to setup listeners for data that may change. 
 	UFUNCTION(BlueprintImplementableEvent, Meta=(DisplayName="Construct"))
@@ -41,4 +42,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Meta=(DisplayName="End Retrieve Entries"))
 	void BP_EndRetrieveEntries();
 	virtual void NativeEndRetrieveEntries();
+
+	UFUNCTION(BlueprintCallable)
+	UDataScreenComponent* GetParent() const;
+
+protected:
+	TWeakObjectPtr<UDataScreenComponent> ParentComponent;
 };

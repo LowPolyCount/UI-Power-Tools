@@ -7,7 +7,7 @@
 #include "Components/HorizontalBox.h"
 #include "UI/Screens/UICSScreen.h"
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewTest,"UIPowerTools.UICS.View", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewTest,"UICS.Component.View", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FViewTest::RunTest(const FString& Parameters)
 {
 	UWorld* World = nullptr;
@@ -31,7 +31,7 @@ bool FViewTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewCreationTest,"UIPowerTools.UICS.View.WidgetCreation", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewCreationTest,"UICS.Component.View.WidgetCreation", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FViewCreationTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
@@ -110,7 +110,7 @@ bool FViewCreationTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewCachingTest, "UIPowerTools.UICS.View.WidgetCaching", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewCachingTest, "UICS.Component.View.WidgetCaching", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FViewCachingTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
@@ -168,7 +168,7 @@ bool FViewCachingTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMemoryStomp, "UIPowerTools.UICS.View.MemoryStomp", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMemoryStomp, "UICS.Component.View.MemoryStomp", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FMemoryStomp::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
@@ -187,7 +187,7 @@ bool FMemoryStomp::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewDesiredFocusTargetTest,"UIPowerTools.UICS.View.DesiredFocusTarget", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewDesiredFocusTargetTest,"UICS.Component.View.DesiredFocusTarget", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FViewDesiredFocusTargetTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();

@@ -11,7 +11,7 @@
 #include "UI/Utility/UIPTStatics.h"
 #include "UI/Screens/UICSScreen.h"
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAccessorTest, "UIPowerTools.UICS.Accessor", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAccessorTest, "UICS.Core.Accessor", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FAccessorTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
@@ -93,7 +93,7 @@ bool FAccessorTest::RunTest(const FString& Parameters)
 }
 
 // run the test again, but with someone other than screen implementing IUICSScreenAccessor
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FInterfaceAccessorTest, "UIPowerTools.UICS.InterfaceAccessor", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FInterfaceAccessorTest, "UICS.Core.InterfaceAccessor", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FInterfaceAccessorTest::RunTest(const FString& Parameters)
 {
 	UUICSTestActivatableWidgetHarness* Screen = NewObject<UUICSTestActivatableWidgetHarness>();
@@ -175,7 +175,7 @@ bool FInterfaceAccessorTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FStaticAccessorTest, "UIPowerTools.UICS.Static-Accessor", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FStaticAccessorTest, "UICS.Core.StaticAccessor", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FStaticAccessorTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();

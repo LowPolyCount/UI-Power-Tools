@@ -7,8 +7,15 @@
 
 void UActionScreenComponentProvider::Initialize(UActionScreenComponent* InOwner)
 {
-	Owner = InOwner;
+	ParentComponent = MakeWeakObjectPtr(InOwner);
 }
+
+UActionScreenComponent* UActionScreenComponentProvider::GetParent() const
+{
+	TStrongObjectPtr<UActionScreenComponent> FoundObjectPinned = ParentComponent.Pin();
+	return FoundObjectPinned ? FoundObjectPinned.Get() : nullptr;
+}
+
 
 bool UActionScreenComponentProvider::NativeCanExecuteAction(UObject* Entry)
 {
@@ -19,6 +26,7 @@ bool UActionScreenComponentProvider::NativeCanExecuteAction(UObject* Entry)
 	{
 		bRetVal = BP_CanExecuteAction(Entry);
 	}
+
 	else
 	{
 		bRetVal = CanExecuteActionInternal(Entry);

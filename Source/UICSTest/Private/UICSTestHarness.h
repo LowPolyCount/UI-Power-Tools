@@ -196,7 +196,7 @@ namespace UICSTest
 		View->SetWidgetPrototypeByClass(UViewWidgetHarness::StaticClass());
 		if (Data)
 		{
-			Data->SetDataRetrieverFromClass(TSubclassOf<UUIDataProvider>(UDataRetrieverHarness::StaticClass()));
+			Data->SetDataProviderFromClass(TSubclassOf<UUIDataProvider>(UDataRetrieverHarness::StaticClass()));
 			Data->RetrieveEntries();
 		}
 		return Panel;

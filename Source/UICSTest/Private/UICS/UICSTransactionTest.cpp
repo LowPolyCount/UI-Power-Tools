@@ -8,7 +8,7 @@
 #include "UI/Screens/UICSScreen.h"
 
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FExecuteActionTest, "UIPowerTools.UICS.Action", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FExecuteActionTest, "UICS.Component.Action", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FExecuteActionTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
@@ -45,7 +45,7 @@ bool FExecuteActionTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FSlotTest, "UIPowerTools.UICS.Action.Slot", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FSlotTest, "UICS.Component.Action.Slot", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FSlotTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
@@ -66,7 +66,7 @@ bool FSlotTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FListeningToViewAction, "UIPowerTools.UICS.Action.ListeningToViewAction", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FListeningToViewAction, "UICS.Component.Action.ListeningToViewAction", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FListeningToViewAction::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
@@ -95,7 +95,7 @@ bool FListeningToViewAction::RunTest(const FString& Parameters)
 }
 
 // test that error tags are generated when we don't have things like Action providers, Linked Action Components, etc.
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FGameplayTagErrors, "UIPowerTools.UICS.Action.GameplayTagErrors", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FGameplayTagErrors, "UICS.Component.Action.GameplayTagErrors", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FGameplayTagErrors::RunTest(const FString& Parameters)
 {
 

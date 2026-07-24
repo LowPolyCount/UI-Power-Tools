@@ -44,7 +44,7 @@ UScreenComponent* UScreenComponentManager::GetComponent(TSubclassOf<UScreenCompo
 	UScreenComponent* RetVal = nullptr;
 	for (UScreenComponent* Component : Components)
 	{
-		if (Component && Component->IsA(Type))
+		if (IsValid(Component) && Component->IsA(Type))
 		{
 			RetVal = Component;
 			break;
@@ -59,7 +59,7 @@ TArray<UScreenComponent*> UScreenComponentManager::GetAllComponents(TSubclassOf<
 	TArray<UScreenComponent*> RetVal;
 	for (UScreenComponent* Component : Components)
 	{
-		if (Component && Component->IsA(Type))
+		if (IsValid(Component) && Component->IsA(Type))
 		{
 			RetVal.Emplace(Component);
 		}
@@ -73,7 +73,7 @@ UScreenComponent* UScreenComponentManager::GetComponentByName(const FName Name, 
 	UScreenComponent* RetVal = nullptr;
 	for (UScreenComponent* Component : Components)
 	{
-		if (Component && Component->IsA(Type) && Component->GetComponentName() == Name)
+		if (IsValid(Component) && Component->IsA(Type) && Component->GetComponentName() == Name)
 		{
 			RetVal = Component;
 			break;
@@ -90,7 +90,7 @@ UScreenComponent* UScreenComponentManager::GetComponentFromSelector(const FCompo
 
 	for (UScreenComponent* Component : Components)
 	{
-		if (Component && Component->GetGuid() == SelectedGuid)
+		if (IsValid(Component) && Component->GetGuid() == SelectedGuid)
 		{
 			RetVal = Component;
 			break;
@@ -104,7 +104,7 @@ void UScreenComponentManager::Initialize()
 {
 	for (UScreenComponent* Component : Components)
 	{
-		if (Component)
+		if (IsValid(Component))
 		{
 			Component->Initialize();
 		}
@@ -115,7 +115,7 @@ void UScreenComponentManager::NativePreConstruct(bool bIsDesignTime)
 {
 	for (UScreenComponent* Component : Components)
 	{
-		if (Component)
+		if (IsValid(Component))
 		{
 			Component->NativePreConstruct(bIsDesignTime);
 		}
@@ -126,7 +126,7 @@ void UScreenComponentManager::NativeConstruct()
 {
 	for (UScreenComponent* Component : Components)
 	{
-		if (Component)
+		if (IsValid(Component))
 		{
 			Component->NativeConstruct();
 		}
@@ -137,7 +137,7 @@ void UScreenComponentManager::NativeDestruct()
 {
 	for (UScreenComponent* Component : Components)
 	{
-		if (Component)
+		if (IsValid(Component))
 		{
 			Component->NativeDestruct();
 		}

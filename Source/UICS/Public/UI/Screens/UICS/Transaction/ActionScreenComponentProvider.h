@@ -15,7 +15,7 @@ class UICS_API UActionScreenComponentProvider : public UScreenComponentWorldCont
 	GENERATED_BODY()
 public:
 	// initialize the provider. Should be called before any other functions. 
-	void Initialize(UActionScreenComponent* InOwner);
+	void Initialize(UActionScreenComponent* InParent);
 
 	// Determine if the data given can currently be executed by the Action Provider
 	// @Component - the component calling the function
@@ -45,6 +45,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FGameplayTag GetLastActionResult() const {return LastActionResult;}
 
+	// get the Action Component that is the owner of this provider
+	UFUNCTION(BlueprintCallable)
+	UActionScreenComponent* GetParent() const;
+
 protected:
 
 	// Do we have all the information required to execute the transaction?
@@ -64,16 +68,18 @@ protected:
 	UFUNCTION(BlueprintCallable, Meta=(BlueprintProtected, GameplayTagFilter = "UICS.Action"))
 	void SetActionResult(const FGameplayTag Result) { LastActionResult = Result;}
 
-	// the Action Component that is the owner of this provider
-	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<UActionScreenComponent> Owner;
-	
 	// a gameplay tag describing more exactly what happened during the last call made to CanExecuteAction() or ExecuteAction()
 	FGameplayTag LastActionResult;
 
 	// contains a mapping between the result of a query and Human Readable Text that can be displayed. 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TMap<FGameplayTag, FText> ActionResultTagToText;
+
+	// the Action Component that is the owner of this provider
+	UPROPERTY()
+	TWeakObjectPtr<UActionScreenComponent> ParentComponent;
+
+
 
 public:
 

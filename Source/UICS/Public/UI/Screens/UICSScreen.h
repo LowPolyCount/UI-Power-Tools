@@ -18,6 +18,7 @@ class UICS_API UUICSScreen : public UCommonActivatableWidget, public IUICSScreen
 {
 	GENERATED_BODY()
 public:
+
 	UUICSScreen(const FObjectInitializer& Initializer);
 	
 	// UUserWidget begin
