@@ -35,6 +35,10 @@ struct UICS_API FBindableActionEvents
 	// we called ExecuteAction() - what was the result?
 	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UICS.ActionScreenComponent.Binding_ActionExecuteResult", DefaultBindingName="ActionExecuteResult", DisplayName = "OnActionExecuteResult"))
 	FMemberReference  Bind_OnActionExecuteResult;
+
+	// get the action component
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ActionScreenComponent.Prototype_Get", DefaultBindingName="GetActionComponent"))
+	FMemberReference Get;
 };
 
 // Action Component collects all the information required to execute an "Action". Examples are, opening a screen or buying an item.
@@ -147,20 +151,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = ActionScreenComponent, Meta = (FullyExpand = true, DisplayName = "Events"));
 	FBindableActionEvents BindableEvents;
 
-	// BEGIN FMember References that allow you to bind events to functions in editor
-#if WITH_EDITOR
-	UFUNCTION(BlueprintInternalUseOnly, Meta=(DeprecatedFunction, DeprecationMessage="Use Binding_ActionExecuteResult()"))
-	void Binding_TransactionResult(UActionScreenComponent* Component, const FGameplayTag& Result) {}
-	UFUNCTION(BlueprintInternalUseOnly)
-	void Binding_IsTransactionValid(UActionScreenComponent* Component, bool bResult) {}
-
-	UFUNCTION(BlueprintInternalUseOnly)
-	void Binding_ActionExecuteResult(UActionScreenComponent* Component, bool bDidExecuteSucceed, const FGameplayTag& Result) {}
-#endif // WITH_EDITOR
-	// END FMember References
-
-	
-
 public:
 	// result of ExecuteAction
 	UE_DEPRECATED(Any, "is deprecated. Use OnActionExecuteResult instead")
@@ -225,7 +215,21 @@ private:
 	UPROPERTY()
 	TMap<int32, UObject*> Slots;
 
+	// BEGIN FMember References that allow you to bind events to functions in editor
+#if WITH_EDITOR
+	UFUNCTION(BlueprintInternalUseOnly, Meta=(DeprecatedFunction, DeprecationMessage="Use Binding_ActionExecuteResult()"))
+	void Binding_TransactionResult(UActionScreenComponent* Component, const FGameplayTag& Result) {}
+	UFUNCTION(BlueprintInternalUseOnly)
+	void Binding_IsTransactionValid(UActionScreenComponent* Component, bool bResult) {}
 
+	UFUNCTION(BlueprintInternalUseOnly)
+	void Binding_ActionExecuteResult(UActionScreenComponent* Component, bool bDidExecuteSucceed, const FGameplayTag& Result) {}
+
+	UFUNCTION(BlueprintInternalUseOnly)
+	 void Prototype_Get(UActionScreenComponent* ActionComponent) {}
+	
+#endif // WITH_EDITOR
+	// END FMember References
 };
 
 // deprecated

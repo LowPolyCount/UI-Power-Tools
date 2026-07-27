@@ -13,6 +13,15 @@ void UDataScreenComponent::Initialize()
 	Super::Initialize();
 
 	InitializeDataProvider();
+
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Get))
+	{
+		struct {
+			UDataScreenComponent* DataComponent;
+		} Args = { this };
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}
 }
 
 

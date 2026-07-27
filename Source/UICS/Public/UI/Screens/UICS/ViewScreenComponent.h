@@ -48,19 +48,23 @@ struct FBindableViewActions
 
 	// a widget has gained or lost selection
 	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.HandleWidgetOnSelectionChange", DefaultBindingName="SelectionChange", DisplayName = "OnSelectionChange"))
-	FMemberReference  Bind_SelectionChange;
+	FMemberReference Bind_SelectionChange;
 
 	// a widget has gained or lost focus
 	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.HandleOnFocusChange", DefaultBindingName="FocusChange", DisplayName = "OnFocusChange"))
-	FMemberReference  Bind_FocusChange;
+	FMemberReference Bind_FocusChange;
 
 	// a widget has gained or lost focus
 	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.HandleOnHoverChange", DefaultBindingName="HoverChange", DisplayName = "OnHoverChange"))
-	FMemberReference  Bind_HoverChange;
+	FMemberReference Bind_HoverChange;
 
 	// Widgets have been created and populated
 	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.Prototype_WidgetsPopulated", DefaultBindingName="WidgetsPopulated", DisplayName = "OnWidgetsPopulated"))
-	FMemberReference  Bind_WidgetsPopulated;
+	FMemberReference Bind_WidgetsPopulated;
+
+	// get the display component
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.Prototype_Get", DefaultBindingName="GetViewComponent"))
+	FMemberReference Get;
 };
 
 
@@ -258,12 +262,7 @@ protected:
 	// can only one widget can be selected at a time?
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent)
 	bool bSingleSelection = false;
-
-	// BEGIN FMember References that allow you to bind events to functions in editor
-#if WITH_EDITOR
-	UFUNCTION(BlueprintInternalUseOnly)
-	void Prototype_WidgetsPopulated(UViewScreenComponent* Component) {}
-#endif
+	
 	// events that the user can bind to in editor
 	UPROPERTY(EditAnywhere, Category = ViewScreenComponent, Meta=(DisplayName="Events"));
 	FBindableViewActions BindableEvents;
@@ -289,6 +288,14 @@ protected:
 	TArray<TScriptInterface<IViewWidgetInterface>> ActiveViewWidgets;
 
 
+	// BEGIN FMember References that allow you to bind events to functions in editor
+#if WITH_EDITOR
+	UFUNCTION(BlueprintInternalUseOnly)
+	void Prototype_WidgetsPopulated(UViewScreenComponent* Component) {}
+
+	UFUNCTION(BlueprintInternalUseOnly)
+	void Prototype_Get(UViewScreenComponent* DisplayComponent)  {}
+#endif
 
 public:
 	// start deprecated items

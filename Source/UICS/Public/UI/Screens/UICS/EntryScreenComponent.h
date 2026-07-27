@@ -16,6 +16,10 @@ struct UICS_API FBindableEntryEvents
 	// we called ExecuteAction() - what was the result?
 	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.EntryScreenComponent.Binding_OnEntryChange", DefaultBindingName="EntryChange", DisplayName = "OnEntryChange"))
 	FMemberReference  Bind_OnEntryChange;
+
+	// get the display component
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.EntryScreenComponent.Prototype_Get", DefaultBindingName="GetEntryComponent"))
+	FMemberReference Get;
 };
 
 // contains an entry (one piece of data) that can be held and accessed by other components
@@ -24,6 +28,8 @@ class UICS_API UEntryScreenComponent : public UScreenComponent
 {
 	GENERATED_BODY()
 public:
+	virtual void Initialize() override;
+	
 	// called when the entry we hold changes
 	UPROPERTY(BlueprintAssignable, Category=EntryScreenComponent)
 	FEntryDelegate OnEntryChange;
@@ -58,5 +64,8 @@ protected:
 #if WITH_EDITOR
 	UFUNCTION(BlueprintInternalUseOnly)
 	void Binding_OnEntryChange(UEntryScreenComponent* Component, UObject* OldEntry, UObject* NewEntry) {}
+
+	UFUNCTION(BlueprintInternalUseOnly)
+	void Prototype_Get(UEntryScreenComponent* EntryComponent) const {}
 #endif // WITH_EDITOR
 };

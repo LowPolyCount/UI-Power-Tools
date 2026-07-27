@@ -22,6 +22,11 @@ struct UICS_API FBindableDataEvents
 	// call when data retrieval has finished
 	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.HandleOnDataRetrieval", DefaultBindingName="DataRetrieval", DisplayName = "OnDataRetrieval"))
 	FMemberReference  Bind_OnDataRetrieval;
+
+	// get the data component
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.DataScreenComponent.Prototype_Get", DefaultBindingName="GetDataComponent"))
+	FMemberReference Get;
+
 };
 
 // responsible for managing & caching widgets to display entries
@@ -162,6 +167,11 @@ protected:
 	UPROPERTY()
 	TArray<UObject*> RetrievedEntries;
 
+	// BEGIN FMember References that allow you to bind events to functions in editor
+#if WITH_EDITOR
+	UFUNCTION(BlueprintInternalUseOnly)
+	void Prototype_Get(UDataScreenComponent* DataComponent) {}
+#endif // WITH_EDITOR
 public:
 
 	// deprecated functions 

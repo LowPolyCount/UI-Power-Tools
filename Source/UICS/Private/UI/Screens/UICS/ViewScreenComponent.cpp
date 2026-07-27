@@ -28,6 +28,15 @@ void UViewScreenComponent::Initialize()
 	OnHoverChange.AddDynamic(this, &UViewScreenComponent::HandleOnHoverChange);
 
 	SetLinkedDataComponent(UUIPTStatics::GetScreenComponentFromSelector<UDataScreenComponent>(this, DataToListenTo));
+
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Get))
+	{
+		struct {
+			UViewScreenComponent* DisplayComponent;
+		} Args = { this };
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}
 }
 
 

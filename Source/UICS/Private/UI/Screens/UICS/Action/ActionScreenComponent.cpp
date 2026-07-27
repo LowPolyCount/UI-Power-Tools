@@ -25,6 +25,15 @@ void UActionScreenComponent::Initialize()
 		ActionProvider->Initialize(this);
 	}
 	ListenToViewScreenComponent(UUIPTStatics::GetScreenComponentFromSelector<UViewScreenComponent>(this, ViewToListenTo));
+
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Get))
+	{
+		struct {
+			UActionScreenComponent* ActionComponent;
+		} Args = { this };
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}	
 }
 
 bool UActionScreenComponent::IsValidTransaction(UObject* Entry)

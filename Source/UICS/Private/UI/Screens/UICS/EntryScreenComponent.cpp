@@ -3,6 +3,19 @@
 
 #include "UI/Screens/UICS/EntryScreenComponent.h"
 
+void UEntryScreenComponent::Initialize()
+{
+	Super::Initialize();
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Get))
+	{
+		struct {
+			UEntryScreenComponent* EntryComponent;
+		} Args = { this};
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}	
+}
+
 void UEntryScreenComponent::SetEntry(UObject* Entry) 
 {
 	const bool bBroadcast = (bBroadcastOnAnyEntryChange) ? true : HeldEntry != Entry;
