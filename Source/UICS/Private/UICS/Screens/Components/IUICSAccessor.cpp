@@ -1,0 +1,180 @@
+// Copyright (c) Joel Gonzales
+
+#include "UICS/Screens/Components/IUICSAccessor.h"
+#include "UICS/Screens/Components/ScreenComponentManager.h"
+#include "UICS/Screens/Components/Display/ViewScreenComponent.h"
+#include "UICS/Utility/UIPTStatics.h"
+#include "UICS/Screens/UICSScreen.h"
+
+UScreenComponent* IUICSAccessor::GetScreenComponent_BP(TSubclassOf<UScreenComponent> Type) const
+{
+	UScreenComponent* RetVal = nullptr;
+	
+	if (TScriptInterface<IUICSScreenAccessor> Screen = GetScreenAccessor())
+	{
+		RetVal = Screen->GetScreenComponent_BP(Type);
+	}
+	return RetVal;
+}
+
+TArray<UScreenComponent*> IUICSAccessor::GetAllScreenComponents_BP(TSubclassOf<UScreenComponent> Type) const
+{
+	TArray<UScreenComponent*> RetVal;
+	if (TScriptInterface<IUICSScreenAccessor> Screen = GetScreenAccessor())
+	{
+		RetVal = Screen->GetAllScreenComponents_BP(Type);
+	}
+	return RetVal;
+}
+
+UScreenComponent* IUICSAccessor::GetScreenComponentByName_BP(const FName Name, TSubclassOf<UScreenComponent> Type) const
+{
+	UScreenComponent* RetVal = nullptr;
+	if (TScriptInterface<IUICSScreenAccessor> Screen = GetScreenAccessor())
+	{
+		RetVal = Screen->GetScreenComponentByName_BP(Name, Type);
+	}
+	return RetVal;
+}
+
+UScreenComponent* IUICSAccessor::GetScreenComponentFromSelector_BP(const FComponentSelector& Selector, TSubclassOf<UScreenComponent> Type) const
+{
+	UScreenComponent* RetVal = nullptr;
+	if (TScriptInterface<IUICSScreenAccessor> Screen = GetScreenAccessor())
+	{
+		RetVal = Screen->GetScreenComponentFromSelector_BP(Selector, Type);
+	}
+	return RetVal;
+}
+
+TScriptInterface<IUICSScreenAccessor> IUICSAccessor::GetScreenAccessor() const
+{
+	TScriptInterface<IUICSScreenAccessor> RetVal = nullptr;
+	if (const UObject* AsObject = Cast<UObject>(this))
+	{
+		UObjectBaseUtility* Outer = AsObject->GetImplementingOuterObject(UUICSScreenAccessor::StaticClass());
+		RetVal = TScriptInterface<IUICSScreenAccessor>(Cast<UObject>(Outer));
+		// sometimes RetVal can be false, such as in preconstruct
+	}
+
+	return RetVal;
+}
+
+UScreenComponent* IUICSScreenAccessor::GetScreenComponent_BP(TSubclassOf<UScreenComponent> Type) const
+{
+	UScreenComponent* RetVal = nullptr;
+	UScreenComponentManager* ComponentManager = GetComponentManager();
+	if (ComponentManager)
+	{
+		RetVal = ComponentManager->GetComponent(Type);
+	}
+	return RetVal;
+}
+
+TArray<UScreenComponent*> IUICSScreenAccessor::GetAllScreenComponents_BP(TSubclassOf<UScreenComponent> Type) const
+{
+	TArray<UScreenComponent*> RetVal;
+	UScreenComponentManager* ComponentManager = GetComponentManager();
+	if (ComponentManager)
+	{
+		RetVal = ComponentManager->GetAllComponents(Type);
+	}
+	return RetVal;
+}
+
+UScreenComponent* IUICSScreenAccessor::GetScreenComponentByName_BP(const FName Name, TSubclassOf<UScreenComponent> Type) const
+{
+	UScreenComponent* RetVal = nullptr;
+	UScreenComponentManager* ComponentManager = GetComponentManager();
+	if (ComponentManager)
+	{
+		RetVal = ComponentManager->GetComponentByName(Name, Type);
+	}
+	return RetVal;
+}
+
+UScreenComponent* IUICSScreenAccessor::GetScreenComponentFromSelector_BP(const FComponentSelector& Selector, TSubclassOf<UScreenComponent> Type) const
+{
+	UScreenComponent* RetVal = nullptr;
+	UScreenComponentManager* ComponentManager = GetComponentManager();
+	if (ComponentManager)
+	{
+		//@todo: Should we enforce Type here?
+		RetVal = ComponentManager->GetComponentFromSelector(Selector);
+	}
+	return RetVal;
+}
+
+bool IUICSScreenAccessor::Initialize()
+{
+	UScreenComponentManager* ComponentManager = GetComponentManager();
+	if (ComponentManager)
+	{
+		ComponentManager->Initialize();
+	}
+
+	return true;
+}
+
+void IUICSScreenAccessor::WidgetNativePreConstruct(bool bIsDesignTime)
+{
+	UScreenComponentManager* ComponentManager = GetComponentManager();
+	if (ComponentManager)
+	{
+		ComponentManager->NativePreConstruct(bIsDesignTime);
+	}
+}
+
+void IUICSScreenAccessor::NativeConstruct()
+{
+	UScreenComponentManager* ComponentManager = GetComponentManager();
+	if (ComponentManager)
+	{
+		ComponentManager->NativeConstruct();
+	}
+}
+
+void IUICSScreenAccessor::NativeDestruct()
+{
+	UScreenComponentManager* ComponentManager = GetComponentManager();
+	if (ComponentManager)
+	{
+		ComponentManager->NativeDestruct();
+	}
+}
+
+#if WITH_EDITOR
+void IUICSScreenAccessor::ValidateCompiledDefaults(class IWidgetCompilerLog& CompileLog) const
+{
+	UScreenComponentManager* ComponentManager = GetComponentManager();
+	if (ComponentManager)
+	{
+		ComponentManager->ValidateCompiledDefaults(CompileLog);
+	}
+}
+
+UScreenComponent* IUICSScreenAccessor::GetScreenComponentFromGUID(const FGuid& Selector) const
+{
+	UScreenComponentManager* ComponentManager = GetComponentManager();
+	return (ComponentManager) ? ComponentManager->GetComponentFromGUID(Selector) : nullptr;
+}
+#endif
+
+UWidget* IUICSScreenAccessor::GetDesiredFocusTargetFromViewComponents() const
+{
+	UWidget* RetVal = nullptr;
+	TArray<UViewScreenComponent*> ViewComponents = UUIPTStatics::GetAllScreenComponents<UViewScreenComponent>(Cast<UObject>(this));
+
+	for (UViewScreenComponent* ViewComponent : ViewComponents)
+	{
+		if (IsValid(ViewComponent) && ViewComponent->IsDesiredFocusTarget())
+		{
+			RetVal = ViewComponent->GetDesiredFocusTarget();
+			if (IsValid(RetVal))
+			{
+				break;
+			}
+		}
+	}
+	return RetVal;
+}

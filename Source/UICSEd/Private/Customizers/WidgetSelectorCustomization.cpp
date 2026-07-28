@@ -2,10 +2,10 @@
 
 
 #include "Customizers/WidgetSelectorCustomization.h"
-#include "UI/Screens/Tools/WidgetSelector.h"
+#include "UICS/Screens/Tools/WidgetSelector.h"
 #include "Components/Widget.h"
 #include "BLueprint/WidgetTree.h"
-#include "UI/Screens/UICSScreen.h"
+#include "UICS/Screens/UICSScreen.h"
 #include "PropertyHandle.h"
 #include "DetailWidgetRow.h"
 #include "Blueprint/WidgetBlueprintGeneratedClass.h"

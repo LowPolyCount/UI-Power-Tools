@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/Screens/UICSScreen.h"
+#include "UICS/Screens/UICSScreen.h"
 #include "UICS/UICSTestActivatableWidget.h"
-#include "UI/Screens/UICS/ScreenComponentManager.h"
+#include "UICS/Screens/Components/ScreenComponentManager.h"
 #include "UICSTestHelpers.generated.h"
 
 class UScreenComponent;

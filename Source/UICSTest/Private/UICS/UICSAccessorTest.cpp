@@ -4,12 +4,10 @@
 #include "Misc/AutomationTest.h"
 #include "UICSTestHelpers.h"
 #include "UICSTestHarness.h"
-#include "UI/Screens/UICS/IUICSAccessor.h"
-#include "UI/Screens/Tools/ComponentSelector.h"
-#include "UI/Screens/UICS/DataScreenComponent.h"
-#include "UI/Screens/UICS/ViewScreenComponent.h"
-#include "UI/Utility/UIPTStatics.h"
-#include "UI/Screens/UICSScreen.h"
+#include "UICS/Screens/Tools/ComponentSelector.h"
+#include "UICS/Screens/Components/Data/DataScreenComponent.h"
+#include "UICS/Screens/Components/Display/ViewScreenComponent.h"
+#include "UICS/Utility/UIPTStatics.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAccessorTest, "UICS.Core.Accessor", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FAccessorTest::RunTest(const FString& Parameters)

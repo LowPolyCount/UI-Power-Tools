@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "IPropertyTypeCustomization.h"
-#include "UI/Screens/UICS/IUICSAccessor.h"
+#include "UICS/Screens/Components/IUICSAccessor.h"
 
 class UScreen;
 

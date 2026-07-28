@@ -4,9 +4,7 @@
 #include "Misc/AutomationTest.h"
 #include "UICSTestHarness.h"
 #include "UICSTestHelpers.h"
-#include "Components/HorizontalBox.h"
-#include "UI/Screens/UICS/Widgets/ViewUserWidget.h"
-#include "UI/Screens/UICSScreen.h"
+#include "UICS/Screens/Components/Display/ViewUserWidget.h"
 
 // @TODO: some things to make the tests easier:
 // Get a game Instance using FActorTestSpawn - call Spawner.InitializeGameSubsystems() first.

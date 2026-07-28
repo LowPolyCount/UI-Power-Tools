@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
-#include "UI/Screens/UICS/IUICSAccessor.h"
-#include "UI/Screens/UICS/ScreenComponentManager.h"
+#include "UICS/Screens/Components/IUICSAccessor.h"
+#include "UICS/Screens/Components/ScreenComponentManager.h"
 #include "UICSTestActivatableWidget.generated.h"
 
 /**

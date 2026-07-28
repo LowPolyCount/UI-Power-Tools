@@ -3,9 +3,7 @@
 #include "Misc/AutomationTest.h"
 #include "UICSTestHelpers.h"
 #include "UICSTestHarness.h"
-#include "Components/HorizontalBox.h"
 #include "Components/PanelWidget.h"
-#include "UI/Screens/UICSScreen.h"
 
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FExecuteActionTest, "UICS.Component.Action", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)

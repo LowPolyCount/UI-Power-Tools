@@ -4,9 +4,6 @@
 #include "Misc/AutomationTest.h"
 #include "UICSTestHelpers.h"
 #include "UICSTestHarness.h"
-#include "UI/Screens/UICSScreen.h"
-
-
 
 
 UDataHarness* CreateDataHarness(UScreenHarness* Screen)

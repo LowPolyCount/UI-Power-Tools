@@ -4,7 +4,6 @@
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "UICSTestHarness.h"
-#include "UICSTestHelpers.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FEntryTest, "UICS.Component.Entry", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FEntryTest::RunTest(const FString& Parameters)

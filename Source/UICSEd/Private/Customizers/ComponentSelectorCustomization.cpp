@@ -1,9 +1,9 @@
 // Copyright (c) Joel Gonzales
 
 #include "Customizers/ComponentSelectorCustomization.h"
-#include "UI/Screens/UICS/ScreenComponent.h"
-#include "UI/Screens/Tools/ComponentSelector.h"
-#include "UI/Screens/UICSScreen.h"
+#include "UICS/Screens/Components/ScreenComponent.h"
+#include "UICS/Screens/Tools/ComponentSelector.h"
+#include "UICS/Screens/UICSScreen.h"
 #include "PropertyHandle.h"
 #include "DetailWidgetRow.h"
 #include "Blueprint/WidgetBlueprintGeneratedClass.h"

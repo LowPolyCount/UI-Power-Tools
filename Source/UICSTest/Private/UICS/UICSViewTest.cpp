@@ -4,8 +4,7 @@
 #include "Misc/AutomationTest.h"
 #include"UICSTestHarness.h"
 #include "UICSTestHelpers.h"
-#include "Components/HorizontalBox.h"
-#include "UI/Screens/UICSScreen.h"
+#include "UICS/Screens/UICSScreen.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewTest,"UICS.Component.View", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FViewTest::RunTest(const FString& Parameters)

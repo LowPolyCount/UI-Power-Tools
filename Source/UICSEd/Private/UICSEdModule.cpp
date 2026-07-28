@@ -4,8 +4,8 @@
 #include "PropertyEditorModule.h"
 #include "Customizers/WidgetSelectorCustomization.h"
 #include "Customizers/ComponentSelectorCustomization.h"
-#include "UI/Screens/Tools/WidgetSelector.h"
-#include "UI/Screens/Tools/ComponentSelector.h"
+#include "UICS/Screens/Tools/WidgetSelector.h"
+#include "UICS/Screens/Tools/ComponentSelector.h"
 #include "UObject/Class.h"
 
 #define LOCTEXT_NAMESPACE "UICSEdModule"

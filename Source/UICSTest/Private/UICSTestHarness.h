@@ -3,20 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/Screens/UICS/DataScreenComponent.h"
-#include "UI/Screens/UICS/Data/UIDataProvider.h"
-#include "UI/Screens/UICS/Data/DataFilter.h"
-#include "UI/Screens/UICS/Data/DataTransform.h"
-#include "UI/Screens/UICS/Transaction/ActionScreenComponentProvider.h"
-#include "UI/Screens/UICS/ViewScreenComponent.h"
-#include "UI/Screens/UICS/Transaction/ActionScreenComponent.h"
-#include "UI/Screens/UICS/EntryScreenComponent.h"
+#include "UICS/Screens/Components/Data/DataScreenComponent.h"
+#include "UICS/Screens/Components/Data/UIDataProvider.h"
+#include "UICS/Screens/Components/Data/DataFilter.h"
+#include "UICS/Screens/Components/Data/DataTransform.h"
+#include "UICS/Screens/Components/Action/ActionScreenComponentProvider.h"
+#include "UICS/Screens/Components/Display/ViewScreenComponent.h"
+#include "UICS/Screens/Components/Action/ActionScreenComponent.h"
+#include "UICS/Screens/Components/EntryScreenComponent.h"
 #include "Blueprint/UserWidget.h"
-#include "UI/Screens/UICS/ViewWidgetInterface.h"
+#include "UICS/Screens/Components/Display/ViewWidgetInterface.h"
 // @todo: including AutomationEditorCommon means that tests only build with editor. Maybe FbxAutomationCommon can help?
 #include "Tests/AutomationEditorCommon.h"
 #include "Components/HorizontalBox.h"
-#include "UI/Screens/UICS/Widgets/ViewCommonButtonBase.h"
+#include "UICS/Screens/Components/Display/ViewCommonButtonBase.h"
 #include "UICSTestHarness.generated.h"
 
 class UPanelWidget;
