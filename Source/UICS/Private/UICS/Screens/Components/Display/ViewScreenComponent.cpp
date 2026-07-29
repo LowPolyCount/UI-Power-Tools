@@ -7,6 +7,7 @@
 #include "UICS/Screens/Components/Data//DataScreenComponent.h"
 #include "Components/PanelWidget.h"
 #include "Blueprint/UserWidget.h"
+#include "CommonButtonBase.h"
 #include "UICS/Utility/UIPTStatics.h"
 
 FCachedWidget::FCachedWidget(const TScriptInterface<IViewWidgetInterface>& InWidget)
@@ -226,10 +227,13 @@ TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetFirstSelectedWid
 	//@todo: Hold on to selected widgets so iteration is not required
 	for (TScriptInterface<IViewWidgetInterface> Widget : ActiveViewWidgets)
 	{
-		if (Widget->Execute_IsSelected(Widget.GetObject()))
+		if (const UCommonButtonBase* AsButton = Cast<UCommonButtonBase>(Widget.GetObject()))
 		{
-			RetVal = Widget;
-			break;
+			if (AsButton->GetSelected())
+			{
+				RetVal = Widget;
+				break;
+			}
 		}
 	}
 
@@ -242,9 +246,12 @@ TArray<TScriptInterface<IViewWidgetInterface>> UViewScreenComponent::GetAllSelec
 	//@todo: Hold on to selected widgets so iteration is not required
 	for (TScriptInterface<IViewWidgetInterface> Widget : ActiveViewWidgets)
 	{
-		if (Widget->Execute_IsSelected(Widget.GetObject()))
+		if (const UCommonButtonBase* AsButton = Cast<UCommonButtonBase>(Widget.GetObject()))
 		{
-			RetVal.Emplace(Widget);
+			if (AsButton->GetSelected())
+			{
+				RetVal.Emplace(Widget);
+			}
 		}
 	}
 	return RetVal;
@@ -477,9 +484,16 @@ void UViewScreenComponent::HandleWidgetOnSelectionChange(TScriptInterface<IViewW
 	{
 		for (TScriptInterface<IViewWidgetInterface> ActiveWidget : ActiveViewWidgets)
 		{
-			if (ActiveWidget != Widget && ActiveWidget->Execute_IsSelected(ActiveWidget.GetObject()))
+			if (ActiveWidget != Widget)
 			{
-				ActiveWidget->Execute_SetSelected(ActiveWidget.GetObject(), false);
+				if (UCommonButtonBase* AsButton = Cast<UCommonButtonBase>(Widget.GetObject()))
+				{
+					if (AsButton->GetSelected())
+					{
+						//@todo: Add option here to set sound?
+						AsButton->SetIsSelected(false);		
+					}
+				}
 			}
 		}
 	}
