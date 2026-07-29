@@ -123,7 +123,7 @@ protected:
 	void SetupListenersToViewScreenComponent(UViewScreenComponent* InView);
 
 	// The action provider implements the action that you want to take place
-	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Category = ActionScreenComponent, Meta=(Displayname="Action"))
+	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Category = ActionScreenComponent)
 	TObjectPtr<UActionScreenComponentProvider> ActionProvider = nullptr;
 
 	// Will execute our action in response to the view screen component chosen
@@ -131,7 +131,7 @@ protected:
 	FViewComponentSelector ViewToListenTo;
 
 	//@note: Tried using a Bitmask instead of individual booleans, but there is some type of issue in the editor where the value
-	//		is not being set correctly as of 7.4
+	//		is not being set correctly as of 4.7
 
 	// Trigger the action when an Input Action on a widget with the Linked View Screen Component happens.
 	UPROPERTY(EditAnywhere, Category=Triggers)
