@@ -244,7 +244,7 @@ protected:
 	// define an instance / prototype of a widget class that implements IViewWidgetInterface that we will use to display our data with.
 	// This uses the prototype pattern, meaning that we will close this widget instance when we need to make widgets instead of Creating it from a class.
 	// This allows you set properties on this widget through the editor
-	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent, Meta=(ObjectMustImplement = "/Script/UIPowerTools.ViewWidgetInterface"))
+	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent, Meta=(ObjectMustImplement = "/Script/UIPowerTools.ViewWidgetInterface", DisplayName="View Widget To Use"))
 	TObjectPtr<UUserWidget> ViewWidgetPrototype;
 
 	// number of entries to show in design view
