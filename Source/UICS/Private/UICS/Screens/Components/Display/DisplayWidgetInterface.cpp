@@ -1,29 +1,29 @@
 // Copyright (c) Joel Gonzales
 
 
-#include "UICS/Screens/Components/Display/ViewWidgetInterface.h"
-#include "UICS/Screens/Components/Display/ViewScreenComponent.h"
+#include "UICS/Screens/Components/Display/DisplayWidgetInterface.h"
+#include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
 #include "UICS/Screens/Components/Action/ActionScreenComponent.h"
 
-void IViewWidgetInterface::SetOwningViewScreenComponent(UViewScreenComponent* InOwningComponent)
+void IDisplayWidgetInterface::SetOwningViewScreenComponent(UDisplayScreenComponent* InOwningComponent)
 {
-	OwningViewScreenComponent = TWeakObjectPtr<UViewScreenComponent>(InOwningComponent);
+	OwningViewScreenComponent = TWeakObjectPtr<UDisplayScreenComponent>(InOwningComponent);
 }
 
-UViewScreenComponent* IViewWidgetInterface::GetOwningViewScreenComponent_Implementation() const
+UDisplayScreenComponent* IDisplayWidgetInterface::GetOwningViewScreenComponent_Implementation() const
 {
 	return (OwningViewScreenComponent.IsValid()) ? OwningViewScreenComponent.Pin().Get() : nullptr;
 }
 
-bool IViewWidgetInterface::HasLinkedActionScreenComponent_Implementation() const
+bool IDisplayWidgetInterface::HasLinkedActionScreenComponent_Implementation() const
 {
 	return Execute_GetOwningViewScreenComponent(Cast<UObject>(this)) != nullptr;
 }
 
-UActionScreenComponent* IViewWidgetInterface::GetLinkedActionScreenComponent_Implementation() const
+UActionScreenComponent* IDisplayWidgetInterface::GetLinkedActionScreenComponent_Implementation() const
 {
 	UActionScreenComponent* RetVal = nullptr;
-	if (UViewScreenComponent* VSC = Execute_GetOwningViewScreenComponent(Cast<UObject>(this)))
+	if (UDisplayScreenComponent* VSC = Execute_GetOwningViewScreenComponent(Cast<UObject>(this)))
 	{
 		RetVal = VSC->GetLinkedActionComponent();
 	}
@@ -31,7 +31,7 @@ UActionScreenComponent* IViewWidgetInterface::GetLinkedActionScreenComponent_Imp
 	return RetVal;
 }
 
-bool IViewWidgetInterface::CanExecuteAction_Implementation()
+bool IDisplayWidgetInterface::CanExecuteAction_Implementation()
 {
 	bool bRetVal = false;	// in the case of an invalid ASC, assume you can't execute the action
 
@@ -42,7 +42,7 @@ bool IViewWidgetInterface::CanExecuteAction_Implementation()
 	return bRetVal;
 }
 
-void IViewWidgetInterface::SetEntryData_Implementation(int32 InIndex, UObject* InEntry)
+void IDisplayWidgetInterface::SetEntryData_Implementation(int32 InIndex, UObject* InEntry)
 {
 	UObject* ThisAsUObject = Cast<UObject>(this);
 	Index = InIndex;
@@ -51,12 +51,12 @@ void IViewWidgetInterface::SetEntryData_Implementation(int32 InIndex, UObject* I
 	Execute_Populate(ThisAsUObject, InEntry);
 }
 
-UObject* IViewWidgetInterface::GetEntryData_Implementation() const
+UObject* IDisplayWidgetInterface::GetEntryData_Implementation() const
 { 
 	return GetEntry_Internal();
 }
 
-void IViewWidgetInterface::Reset_Implementation()
+void IDisplayWidgetInterface::Reset_Implementation()
 {
 	Execute_OnReset(Cast<UObject>(this));
 
@@ -66,24 +66,24 @@ void IViewWidgetInterface::Reset_Implementation()
 }
 
 
-bool IViewWidgetInterface::IsFocused_Implementation() const
+bool IDisplayWidgetInterface::IsFocused_Implementation() const
 { 
 	return false; 
 }
 
-bool IViewWidgetInterface::IsSelected_Implementation() const
+bool IDisplayWidgetInterface::IsSelected_Implementation() const
 { 
 	return false; 
 }
 
-bool IViewWidgetInterface::IsHovered_Implementation() const
+bool IDisplayWidgetInterface::IsHovered_Implementation() const
 {
 	return false;
 }
 
 
 
-void IViewWidgetInterface::ForceInputAction_Implementation()
+void IDisplayWidgetInterface::ForceInputAction_Implementation()
 {
 	FViewAction& ActionDelegate = GetOnAction();
 	if (ActionDelegate.IsBound())
@@ -92,7 +92,7 @@ void IViewWidgetInterface::ForceInputAction_Implementation()
 	}
 }
 
-void IViewWidgetInterface::OnInputAction_Implementation()
+void IDisplayWidgetInterface::OnInputAction_Implementation()
 {
 	FViewAction& ActionDelegate = GetOnAction();
 	if (ActionDelegate.IsBound())
@@ -101,22 +101,22 @@ void IViewWidgetInterface::OnInputAction_Implementation()
 	}
 }
 
-void IViewWidgetInterface::SetHovered_Implementation(bool bInHovered)
+void IDisplayWidgetInterface::SetHovered_Implementation(bool bInHovered)
 {
 	SetHovered_Internal(bInHovered);
 }
 
-void IViewWidgetInterface::SetFocus_Implementation(bool bInFocused)
+void IDisplayWidgetInterface::SetFocus_Implementation(bool bInFocused)
 { 
 	SetFocus_Internal(bInFocused);
 }
 
-void IViewWidgetInterface::SetSelected_Implementation(bool bInSelected)
+void IDisplayWidgetInterface::SetSelected_Implementation(bool bInSelected)
 { 
 	SetSelected_Internal(bInSelected);
 }
 
-void IViewWidgetInterface::SetFocus_Internal(bool bInFocused)
+void IDisplayWidgetInterface::SetFocus_Internal(bool bInFocused)
 {
 	FViewEvent& FocusDelegate = GetOnFocusChange();
 	if (FocusDelegate.IsBound())
@@ -125,7 +125,7 @@ void IViewWidgetInterface::SetFocus_Internal(bool bInFocused)
 	}
 }
 
-void IViewWidgetInterface::SetHovered_Internal(bool bInHovered)
+void IDisplayWidgetInterface::SetHovered_Internal(bool bInHovered)
 {
 	FViewEvent& HoveredDelegate = GetOnHoverChange();
 	if (HoveredDelegate.IsBound())
@@ -134,7 +134,7 @@ void IViewWidgetInterface::SetHovered_Internal(bool bInHovered)
 	}
 }
 
-void IViewWidgetInterface::SetSelected_Internal(bool bInSelected)
+void IDisplayWidgetInterface::SetSelected_Internal(bool bInSelected)
 {
 	FViewEvent& SelectionDelegate = GetOnSelectionChange();
 	if (SelectionDelegate.IsBound())
@@ -143,7 +143,7 @@ void IViewWidgetInterface::SetSelected_Internal(bool bInSelected)
 	}
 }
 
-void IViewWidgetInterface::SetInputAction_Internal()
+void IDisplayWidgetInterface::SetInputAction_Internal()
 {
 	FViewAction& ActionDelegate = GetOnAction();
 	if (ActionDelegate.IsBound())
@@ -152,7 +152,7 @@ void IViewWidgetInterface::SetInputAction_Internal()
 	}
 }
 
-FGameplayTag IViewWidgetInterface::GetLastActionResult_Implementation() const
+FGameplayTag IDisplayWidgetInterface::GetLastActionResult_Implementation() const
 {
 	FGameplayTag RetVal = UICS_ACTION_NoActionComponent;
 	if (const UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
@@ -162,7 +162,7 @@ FGameplayTag IViewWidgetInterface::GetLastActionResult_Implementation() const
 	return RetVal;
 }
 
-bool IViewWidgetInterface::HasTextAssociatedWithLastActionResultTag_Implementation() const
+bool IDisplayWidgetInterface::HasTextAssociatedWithLastActionResultTag_Implementation() const
 {
 	bool bRetVal = false;
 	if (const UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
@@ -173,7 +173,7 @@ bool IViewWidgetInterface::HasTextAssociatedWithLastActionResultTag_Implementati
 }
 
 
-FText IViewWidgetInterface::GetTextAssociatedWithLastActionResultTag_Implementation() const
+FText IDisplayWidgetInterface::GetTextAssociatedWithLastActionResultTag_Implementation() const
 {
 	FText RetVal;
 	if (const UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
@@ -183,7 +183,7 @@ FText IViewWidgetInterface::GetTextAssociatedWithLastActionResultTag_Implementat
 	return RetVal;
 }
 
-void IViewWidgetInterface::Release()
+void IDisplayWidgetInterface::Release()
 {
 	Entry.Reset();
 }

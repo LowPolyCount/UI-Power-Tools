@@ -4,12 +4,12 @@
 
 #include "UObject/Interface.h"
 #include "GameplayTagsClasses.h"
-#include "ViewWidgetInterface.generated.h"
+#include "DisplayWidgetInterface.generated.h"
 
-class UViewScreenComponent;
+class UDisplayScreenComponent;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FViewAction, TScriptInterface<IViewWidgetInterface>, Widget);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FViewEvent, TScriptInterface<IViewWidgetInterface>, Widget, bool, bGained);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FViewAction, TScriptInterface<IDisplayWidgetInterface>, Widget);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FViewEvent, TScriptInterface<IDisplayWidgetInterface>, Widget, bool, bGained);
 
 
 // the purpose of this interface is to get around the issue with UWidget events where we don't know who broadcast a Widget Event. 
@@ -21,13 +21,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FViewEvent, TScriptInterface<IViewW
 // Cacheable - Instead of being destroyed when no longer used, it may be held for future use. 
 // Resetable - The OnReset event is called before we set it's data and when the widget is removed from it's parent, so that if the widget is being cached, you can remove listeners, pointers, etc. 
 UINTERFACE(BlueprintType)
-class UViewWidgetInterface : public UInterface
+class UDisplayWidgetInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
 
-class UICS_API IViewWidgetInterface
+class UICS_API IDisplayWidgetInterface
 {
 	GENERATED_BODY()
 
@@ -64,11 +64,11 @@ public:
 	void Reset();
 
 	// set a pointer to the view screen component that created us 
-	void SetOwningViewScreenComponent(UViewScreenComponent* InOwningComponent);
+	void SetOwningViewScreenComponent(UDisplayScreenComponent* InOwningComponent);
 
 	// get the view screen component that created us
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
-	UViewScreenComponent* GetOwningViewScreenComponent() const;
+	UDisplayScreenComponent* GetOwningViewScreenComponent() const;
 
 	// get the Action Screen Component that is linked to the View Screen Component that created us
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
@@ -133,7 +133,7 @@ protected:
 	virtual void Reset_Implementation();
 	bool CanExecuteAction_Implementation();
 	bool HasLinkedActionScreenComponent_Implementation() const;
-	UViewScreenComponent* GetOwningViewScreenComponent_Implementation() const;
+	UDisplayScreenComponent* GetOwningViewScreenComponent_Implementation() const;
 	UActionScreenComponent* GetLinkedActionScreenComponent_Implementation() const;
 	FGameplayTag GetLastActionResult_Implementation() const;
 	bool HasTextAssociatedWithLastActionResultTag_Implementation() const;
@@ -148,7 +148,7 @@ protected:
 
 	TStrongObjectPtr<UObject> Entry;	// the entry data
 	int32 Index = INDEX_NONE;			// what is the index of the widget in the view component array?
-	TWeakObjectPtr<UViewScreenComponent> OwningViewScreenComponent; // View Component that is managing this widget
+	TWeakObjectPtr<UDisplayScreenComponent> OwningViewScreenComponent; // View Component that is managing this widget
 
 public:
 	// list out deprecated functions. 
@@ -210,7 +210,7 @@ protected:
 
 };
 
-// these macros help define boilerplate code for UWidget classes that you want to implement IViewWidgetInterface
+// these macros help define boilerplate code for UWidget classes that you want to implement IDisplayWidgetInterface
 // This can be complicated because UUserWidget has different functions to define how it gets focus and hover differently than UButton
 // 
 // this defines what every implementation needs. 
@@ -256,7 +256,7 @@ virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override\
 	SetHovered_Internal(false);\
 }\
 
-// this macro defines boilerplate code for a class derived from CommonButtonBase that is required for implementing IViewWidgetInterface
+// this macro defines boilerplate code for a class derived from CommonButtonBase that is required for implementing IDisplayWidgetInterface
 
 #define VIEW_COMMONBUTTON_BOILERPLATE() \
 VIEW_USERWIDGET_BOILERPLATE() \

@@ -4,7 +4,7 @@
 #include "UICS/Screens/Components/Action/ActionScreenComponent.h"
 #include "UICSModule.h"
 #include "UICS/Screens/Components/Action/ActionScreenComponentProvider.h"
-#include "UICS/Screens/Components/Display/ViewScreenComponent.h"
+#include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
 #include "UICS/Utility/UIPTStatics.h"
 
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_ACTION_Default, "UICS.Action.Default", "Variable was not set");
@@ -24,7 +24,7 @@ void UActionScreenComponent::Initialize()
 	{
 		ActionProvider->Initialize(this);
 	}
-	ListenToViewScreenComponent(UUIPTStatics::GetScreenComponentFromSelector<UViewScreenComponent>(this, ViewToListenTo));
+	ListenToViewScreenComponent(UUIPTStatics::GetScreenComponentFromSelector<UDisplayScreenComponent>(this, ViewToListenTo));
 
 	if (UFunction* Func = ResolveMemberReference(BindableEvents.Get))
 	{
@@ -146,14 +146,14 @@ int32 UActionScreenComponent::NumSlots() const
 	return Slots.Num();
 }
 
-void UActionScreenComponent::ListenToViewAction(UViewScreenComponent* InView)
+void UActionScreenComponent::ListenToViewAction(UDisplayScreenComponent* InView)
 {
 	ListenToViewScreenComponent(InView);
 }
 
 void UActionScreenComponent::SetTriggerOnGainsFocus(bool bInTriggerOnGainsFocus) 
 {
-	UViewScreenComponent* CurrentView = ViewListeningTo;
+	UDisplayScreenComponent* CurrentView = ViewListeningTo;
 	RemoveCurrentViewScreenComponent();
 	bTriggerOnGainsFocus = bInTriggerOnGainsFocus; 
 	SetupListenersToViewScreenComponent(CurrentView);
@@ -161,7 +161,7 @@ void UActionScreenComponent::SetTriggerOnGainsFocus(bool bInTriggerOnGainsFocus)
 
 void UActionScreenComponent::SetTriggerOnHover(bool bInTriggerOnHover) 
 {
-	UViewScreenComponent* CurrentView = ViewListeningTo;
+	UDisplayScreenComponent* CurrentView = ViewListeningTo;
 	RemoveCurrentViewScreenComponent();
 	bTriggerOnHover = bInTriggerOnHover;
 	SetupListenersToViewScreenComponent(CurrentView);
@@ -169,13 +169,13 @@ void UActionScreenComponent::SetTriggerOnHover(bool bInTriggerOnHover)
 
 void UActionScreenComponent::SetTriggerOnInputAction(bool bInTriggerOnInputAction) 
 {
-	UViewScreenComponent* CurrentView = ViewListeningTo;
+	UDisplayScreenComponent* CurrentView = ViewListeningTo;
 	RemoveCurrentViewScreenComponent();
 	bTriggerOnInputAction = bInTriggerOnInputAction; 
 	SetupListenersToViewScreenComponent(CurrentView);
 }
 
-void UActionScreenComponent::ListenToViewScreenComponent(UViewScreenComponent* InView)
+void UActionScreenComponent::ListenToViewScreenComponent(UDisplayScreenComponent* InView)
 {
 	RemoveCurrentViewScreenComponent();
 	SetupListenersToViewScreenComponent(InView);
@@ -203,7 +203,7 @@ void UActionScreenComponent::RemoveCurrentViewScreenComponent()
 	}
 }
 
-void UActionScreenComponent::SetupListenersToViewScreenComponent(UViewScreenComponent* InView)
+void UActionScreenComponent::SetupListenersToViewScreenComponent(UDisplayScreenComponent* InView)
 {
 	if (!ViewListeningTo)
 	{
@@ -237,12 +237,12 @@ void UActionScreenComponent::SetupListenersToViewScreenComponent(UViewScreenComp
 	}
 }
 
-void UActionScreenComponent::HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
+void UActionScreenComponent::HandleOnAction(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget)
 {
 	HandleOnActionTrigger(Component, Widget);
 }
 
-void UActionScreenComponent::HandleOnActionTrigger(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
+void UActionScreenComponent::HandleOnActionTrigger(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget)
 {
 	if (Widget)
 	{
@@ -250,7 +250,7 @@ void UActionScreenComponent::HandleOnActionTrigger(UViewScreenComponent* Compone
 	}
 }
 
-void UActionScreenComponent::HandleOnActionTriggerGain(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained)
+void UActionScreenComponent::HandleOnActionTriggerGain(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained)
 {
 	if (bGained && Widget)
 	{

@@ -4,14 +4,14 @@
 #include "Misc/AutomationTest.h"
 #include "UICSTestHarness.h"
 #include "UICSTestHelpers.h"
-#include "UICS/Screens/Components/Display/ViewUserWidget.h"
+#include "UICS/Screens/Components/Display/DisplayUserWidget.h"
 
 // @TODO: some things to make the tests easier:
 // Get a game Instance using FActorTestSpawn - call Spawner.InitializeGameSubsystems() first.
 // can create a viewport client for these tests, set the viewport overlay widget for the viewport client. Create a new SOverlay, then call `SetViewportOverlayWidget`
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewWidgetTest, "UICS.Component.View.ViewWidget", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
-bool FViewWidgetTest::RunTest(const FString& Parameters)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDisplayWidgetTest, "UICS.Component.Display.DisplayWidget", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FDisplayWidgetTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
 	TestNotNull("Screen", Screen);
@@ -21,7 +21,7 @@ bool FViewWidgetTest::RunTest(const FString& Parameters)
 	TestNotNull("View", View);
 	TestNotNull("Data", Data);
 
-	TScriptInterface<IViewWidgetInterface> AsViewWidgetInterface(View->GetViewWidgetAt(0));
+	TScriptInterface<IDisplayWidgetInterface> AsViewWidgetInterface(View->GetViewWidgetAt(0));
 	TestNotNull("AsViewInterface", AsViewWidgetInterface.GetObject());
 
 	// focus test

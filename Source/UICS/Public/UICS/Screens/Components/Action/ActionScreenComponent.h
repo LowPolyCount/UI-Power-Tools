@@ -7,7 +7,7 @@
 #include "UICS/Screens/Tools/ComponentSelector.h"
 #include "ActionScreenComponent.generated.h"
 
-class UViewScreenComponent;
+class UDisplayScreenComponent;
 class UActionScreenComponentProvider;
 
 
@@ -87,7 +87,7 @@ public:
 
 	// listen to events from the given screen component
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
-	void ListenToViewScreenComponent(UViewScreenComponent* InView);
+	void ListenToViewScreenComponent(UDisplayScreenComponent* InView);
 
 	// Get if we will trigger on a Input Action Event from a widget with the Linked View Screen Component
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
@@ -115,12 +115,12 @@ public:
 
 protected:
 	UFUNCTION()
-	void HandleOnActionTrigger(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
+	void HandleOnActionTrigger(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget);
 	UFUNCTION()
-	void HandleOnActionTriggerGain(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained);
+	void HandleOnActionTriggerGain(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
 
 	void RemoveCurrentViewScreenComponent();
-	void SetupListenersToViewScreenComponent(UViewScreenComponent* InView);
+	void SetupListenersToViewScreenComponent(UDisplayScreenComponent* InView);
 
 	// The action provider implements the action that you want to take place
 	UPROPERTY(Instanced, EditAnywhere, BlueprintReadOnly, Category = ActionScreenComponent)
@@ -146,7 +146,7 @@ protected:
 	bool bTriggerOnGainsFocus = false;
 
 	UPROPERTY()
-	TObjectPtr<UViewScreenComponent> ViewListeningTo;
+	TObjectPtr<UDisplayScreenComponent> ViewListeningTo;
 
 	UPROPERTY(EditAnywhere, Category = ActionScreenComponent, Meta = (FullyExpand = true, DisplayName = "Events"));
 	FBindableActionEvents BindableEvents;
@@ -202,12 +202,12 @@ public:
 
 	UE_DEPRECATED(Any, "Is Deprecated. Use HandleOnInputAction() Instead")
 	UFUNCTION(Category = ActionScreenComponent, meta = (DeprecatedFunction, DeprecationMessage = "HandleOnAction is deprecated. Use HandleOnInputAction instead"))	
-	void HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
+	void HandleOnAction(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget);
 
 		// listen for input events from the given View
 	UE_DEPRECATED(Any, "Is Deprecated. Use ListenToViewScreenComponent() Instead")
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent, meta = (DeprecatedFunction, DeprecationMessage = "HandleOnAction is deprecated. Use ListenToViewScreenComponent instead"))
-	void ListenToViewAction(UViewScreenComponent* InView);
+	void ListenToViewAction(UDisplayScreenComponent* InView);
 
 private:
 

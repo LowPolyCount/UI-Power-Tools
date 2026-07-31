@@ -5,7 +5,7 @@
 #include "UICS/Screens/Components/ScreenComponent.h"
 #include "UICS/Screens/Components/Data/DataScreenComponent.h"
 #include "UICS/Screens/Components/EntryScreenComponent.h"
-#include "UICS/Screens/Components/Display/ViewScreenComponent.h"
+#include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
 #include "UICS/Screens/Components/Action/ActionScreenComponent.h"
 
 FComponentSelector::FComponentSelector()
@@ -40,7 +40,7 @@ FDataComponentSelector::FDataComponentSelector()
 
 FViewComponentSelector::FViewComponentSelector()
 #ifdef WITH_EDITORONLY_DATA
-	:Super(UViewScreenComponent::StaticClass())
+	:Super(UDisplayScreenComponent::StaticClass())
 #endif
 {
 }
