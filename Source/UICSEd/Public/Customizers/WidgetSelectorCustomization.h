@@ -26,7 +26,10 @@ namespace Customization
 
 		FName WidgetName;
 		TArray<FName> Path;
-		UClass* Class = nullptr;	// the class of the widget for filtering
+
+ 		UClass* Class = nullptr;	// the class of the widget for filtering
+		// used to help determine what class type this is in editor
+		FName WidgetClassName;
 		
 	};
 
