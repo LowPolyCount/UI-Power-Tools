@@ -212,7 +212,7 @@ void FWidgetSelectorCustomization::SaveWidget(TSharedRef<FWidgetNode> SelectedNo
 {
 	TSharedPtr<IPropertyHandle> WidgetName = PropertyToCustomize->GetChildHandle(GET_MEMBER_NAME_CHECKED(FWidgetSelector, WidgetName));
 	TSharedPtr<IPropertyHandle> WidgetPath = PropertyToCustomize->GetChildHandle(GET_MEMBER_NAME_CHECKED(FWidgetSelector, WidgetPath));
-
+	TSharedPtr<IPropertyHandle> WidgetClassName = PropertyToCustomize->GetChildHandle(GET_MEMBER_NAME_CHECKED(FWidgetSelector, WidgetClassName));
 
 	if (WidgetName && WidgetName->IsValidHandle())
 	{
@@ -234,6 +234,11 @@ void FWidgetSelectorCustomization::SaveWidget(TSharedRef<FWidgetNode> SelectedNo
 				ensure(IndexProperty->SetValue(SelectedNode->Path[i].ToString()) == FPropertyAccess::Success);
 			}
 		}
+	}
+
+	if (WidgetClassName && WidgetClassName->IsValidHandle())
+	{
+		ensure(WidgetClassName->SetValue(SelectedNode->Class->GetFName()) == FPropertyAccess::Success);
 	}
 }
 

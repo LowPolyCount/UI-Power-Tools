@@ -6,7 +6,7 @@
 #include "UICSTestHelpers.h"
 #include "UICS/Screens/UICSScreen.h"
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewTest,"UICS.Component.View", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewTest,"UICS.Component.Display", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FViewTest::RunTest(const FString& Parameters)
 {
 	UWorld* World = nullptr;
@@ -30,13 +30,13 @@ bool FViewTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewCreationTest,"UICS.Component.View.WidgetCreation", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewCreationTest,"UICS.Component.Display.WidgetCreation", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FViewCreationTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
 	TestNotNull("Screen", Screen);
 
-	// disabling these tests for now.  IViewWidgetInterface is changing, there isn't a good way to SetFocus(), etc. 
+	// disabling these tests for now.  IDisplayWidgetInterface is changing, there isn't a good way to SetFocus(), etc. 
 	/*
 	// test widget creation
 	{
@@ -48,9 +48,9 @@ bool FViewCreationTest::RunTest(const FString& Parameters)
 		UPanelWidget* Panel = UICSTest::SetupViewTest(View, Data);
 		TestEqual("View->CountOnRetrieval", View->CountOnRetrieval, 1);
 
-		TScriptInterface<IViewWidgetInterface> Widget0 = View->GetViewWidgetAt(0);
-		TScriptInterface<IViewWidgetInterface> Widget1 = View->GetViewWidgetAt(1);
-		TScriptInterface<IViewWidgetInterface> Widget2 = View->GetViewWidgetAt(2);
+		TScriptInterface<IDisplayWidgetInterface> Widget0 = View->GetViewWidgetAt(0);
+		TScriptInterface<IDisplayWidgetInterface> Widget1 = View->GetViewWidgetAt(1);
+		TScriptInterface<IDisplayWidgetInterface> Widget2 = View->GetViewWidgetAt(2);
 		TestNotNull("Widget0", Widget0.GetObject());
 		TestNotNull("Widget1", Widget1.GetObject());
 		TestNotNull("Widget2", Widget2.GetObject());
@@ -109,7 +109,7 @@ bool FViewCreationTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewCachingTest, "UICS.Component.View.WidgetCaching", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewCachingTest, "UICS.Component.Display.WidgetCaching", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FViewCachingTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
@@ -167,7 +167,7 @@ bool FViewCachingTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMemoryStomp, "UICS.Component.View.MemoryStomp", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FMemoryStomp, "UICS.Component.Display.MemoryStomp", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FMemoryStomp::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
@@ -186,7 +186,7 @@ bool FMemoryStomp::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewDesiredFocusTargetTest,"UICS.Component.View.DesiredFocusTarget", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FViewDesiredFocusTargetTest,"UICS.Component.Display.DesiredFocusTarget", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
 bool FViewDesiredFocusTargetTest::RunTest(const FString& Parameters)
 {
 	UScreenHarness* Screen = NewObject<UScreenHarness>();
@@ -210,7 +210,7 @@ bool FViewDesiredFocusTargetTest::RunTest(const FString& Parameters)
 		View2->ManuallySetData(UICSTest::GenerateEntries(3, View2));
 
 		// the widgets don't get created with Focusable set to true.  @todo: Find core issue here. 
-		for (TScriptInterface<IViewWidgetInterface> ViewWidget : View1->GetAllViewWidgets())
+		for (TScriptInterface<IDisplayWidgetInterface> ViewWidget : View1->GetAllViewWidgets())
 		{
 			if (UUserWidget* AsUWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
 			{
@@ -218,7 +218,7 @@ bool FViewDesiredFocusTargetTest::RunTest(const FString& Parameters)
 			}
 		}
 
-		for (TScriptInterface<IViewWidgetInterface> ViewWidget : View2->GetAllViewWidgets())
+		for (TScriptInterface<IDisplayWidgetInterface> ViewWidget : View2->GetAllViewWidgets())
 		{
 			if (UUserWidget* AsUWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
 			{
@@ -240,7 +240,7 @@ bool FViewDesiredFocusTargetTest::RunTest(const FString& Parameters)
 		// 
 		{
 			View2->SetIsDesiredFocusTarget(true);
-			TScriptInterface<IViewWidgetInterface> Widget0 = View2->GetViewWidgetAt(0);
+			TScriptInterface<IDisplayWidgetInterface> Widget0 = View2->GetViewWidgetAt(0);
 			UUserWidget* AsWidget = Cast<UUserWidget>(Widget0.GetObject());
 			AsWidget->SetIsFocusable(false);
 			TestEqual("First Focusable Widget in View Component", Screen->NativeGetDesiredFocusTarget(), Cast<UWidget>(View2->GetViewWidgetAt(1).GetObject()));

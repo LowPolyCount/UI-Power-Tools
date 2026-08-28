@@ -4,7 +4,7 @@
 #include "UICS/Screens/UICSScreen.h"
 #include "InputAction.h"
 #include "UICS/Screens/Components/ScreenComponentManager.h"
-#include "UICS/Screens/Components/Display/ViewScreenComponent.h"
+#include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
 
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"

@@ -4,7 +4,7 @@
 #include "UICS/Utility/UIPTStatics.h"
 #include <Components/PanelWidget.h>
 #include <Blueprint/WidgetTree.h>
-#include "UICS/Screens/Components/Display/ViewScreenComponent.h"
+#include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
 #include "Components/Widget.h"
 #include "UICS/Screens/Components/IUICSAccessor.h"
 
@@ -129,7 +129,7 @@ TScriptInterface<IUICSScreenAccessor> UUIPTStatics::GetScreenAccessor(UObject* P
 UWidget* UUIPTStatics::GetDesiredFocusTargetFromViewComponents(const UObject* PathToScreen)
 {
 	UWidget* RetVal = nullptr;
-	for (const UViewScreenComponent* ViewComponent : UUIPTStatics::GetAllScreenComponents<UViewScreenComponent>(PathToScreen))
+	for (const UDisplayScreenComponent* ViewComponent : UUIPTStatics::GetAllScreenComponents<UDisplayScreenComponent>(PathToScreen))
 	{
 		if (IsValid(ViewComponent) && ViewComponent->IsDesiredFocusTarget())
 		{

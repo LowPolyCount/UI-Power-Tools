@@ -50,6 +50,12 @@ public:
 	FName WidgetName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WidgetSelector)
 	TArray<FName> WidgetPath;
+//#if WITH_EDITORONLY_DATA
+	//UPROPERTY()
+	//TObjectPtr<UClass> WidgetClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WidgetSelector)
+	FName WidgetClassName;
+//#endif
 };
 
 // Select only Panel Widgets or derived

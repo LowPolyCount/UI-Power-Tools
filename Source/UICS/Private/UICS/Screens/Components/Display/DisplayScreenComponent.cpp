@@ -1,16 +1,17 @@
 // Copyright 2025 Joel Gonzales
 
 
-#include "UICS/Screens/Components/Display/ViewScreenComponent.h"
+#include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
 #include "UICSModule.h"
 #include "UObject/UObjectGlobals.h"
 #include "UICS/Screens/Components/Data//DataScreenComponent.h"
 #include "Components/PanelWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "CommonButtonBase.h"
+#include "Components/UniformGridPanel.h"
 #include "UICS/Utility/UIPTStatics.h"
 
-FCachedWidget::FCachedWidget(const TScriptInterface<IViewWidgetInterface>& InWidget)
+FCachedWidget::FCachedWidget(const TScriptInterface<IDisplayWidgetInterface>& InWidget)
 	: UserWidget(InWidget)
 { 
 	if (UUserWidget* AsUserWidget = Cast<UUserWidget>(UserWidget.GetObject()))
@@ -19,21 +20,21 @@ FCachedWidget::FCachedWidget(const TScriptInterface<IViewWidgetInterface>& InWid
 	}
 }
 
-void UViewScreenComponent::Initialize()
+void UDisplayScreenComponent::Initialize()
 {
 	Super::Initialize();
 
-	OnSelectionChange.AddDynamic(this, &UViewScreenComponent::HandleOnSelectedChange);
-	OnInputAction.AddDynamic(this, &UViewScreenComponent::HandleOnInputAction);
-	OnFocusChange.AddDynamic(this, &UViewScreenComponent::HandleOnFocusChange);
-	OnHoverChange.AddDynamic(this, &UViewScreenComponent::HandleOnHoverChange);
+	OnSelectionChange.AddDynamic(this, &UDisplayScreenComponent::HandleOnSelectedChange);
+	OnInputAction.AddDynamic(this, &UDisplayScreenComponent::HandleOnInputAction);
+	OnFocusChange.AddDynamic(this, &UDisplayScreenComponent::HandleOnFocusChange);
+	OnHoverChange.AddDynamic(this, &UDisplayScreenComponent::HandleOnHoverChange);
 
 	SetLinkedDataComponent(UUIPTStatics::GetScreenComponentFromSelector<UDataScreenComponent>(this, DataToListenTo));
 
 	if (UFunction* Func = ResolveMemberReference(BindableEvents.Get))
 	{
 		struct {
-			UViewScreenComponent* DisplayComponent;
+			UDisplayScreenComponent* DisplayComponent;
 		} Args = { this };
 
 		ProcessFuncFromResolveMember(Func, &Args);
@@ -41,7 +42,7 @@ void UViewScreenComponent::Initialize()
 }
 
 
-void UViewScreenComponent::NativePreConstruct(bool bIsDesignTime)
+void UDisplayScreenComponent::NativePreConstruct(bool bIsDesignTime)
 {
 	Super::NativePreConstruct(bIsDesignTime);
 	if (PanelSelector.IsValid())
@@ -56,14 +57,14 @@ void UViewScreenComponent::NativePreConstruct(bool bIsDesignTime)
 	}
 }
 
-void UViewScreenComponent::SetupPreConstructWidgets()
+void UDisplayScreenComponent::SetupPreConstructWidgets()
 {
 	if (Panel)
 	{
 		// PreConstruct can run multiple times while in design time. 
 		// Don't clear the panel so we preserve any widgets the designer has added
 		// Instead, Remove existing View Widgets and recreate them in case properties have changed. 
-		for (TScriptInterface<IViewWidgetInterface> ViewWidget : ActiveViewWidgets)
+		for (TScriptInterface<IDisplayWidgetInterface> ViewWidget : ActiveViewWidgets)
 		{
 			if (UWidget* AsUWidget = Cast<UWidget>(ViewWidget.GetObject()))
 			{
@@ -78,23 +79,25 @@ void UViewScreenComponent::SetupPreConstructWidgets()
 
 		for (int32 i = 0; i < DesignEntriesToShow; ++i)
 		{
-			TScriptInterface<IViewWidgetInterface> ViewWidget = DuplicateWidget(ViewWidgetPrototype);
-			AddToPanel(ViewWidget);
-			ActiveViewWidgets.Emplace(ViewWidget);
+			if (TScriptInterface<IDisplayWidgetInterface> ViewWidget = DuplicateWidget(ViewWidgetPrototype))
+			{
+				AddToPanel(ViewWidget);
+				ActiveViewWidgets.Emplace(ViewWidget);
+			}
 		}
 	}
 }
 
 // in it's own function to make sure we're consistent with how we duplicate
-TScriptInterface<IViewWidgetInterface> UViewScreenComponent::DuplicateWidget(const TObjectPtr<UUserWidget>& Prototype)
+TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::DuplicateWidget(const TObjectPtr<UUserWidget>& Prototype)
 {
-	TScriptInterface<IViewWidgetInterface> RetVal = DuplicateObject<UUserWidget>(ViewWidgetPrototype, this);
-	ensure(IsValid(RetVal.GetObject()));
+	TScriptInterface<IDisplayWidgetInterface> RetVal = DuplicateObject<UUserWidget>(ViewWidgetPrototype, this);
+	// we could ensure(RetVal) here, but PreConstruct() can call this func and that can happen during teardown. 
 	return RetVal;
 }
 
 
-void UViewScreenComponent::NativeDestruct()
+void UDisplayScreenComponent::NativeDestruct()
 {
 	for(int32 i= ActiveViewWidgets.Num()-1; i >= 0; --i)
 	{
@@ -113,12 +116,28 @@ void UViewScreenComponent::NativeDestruct()
 
 }
 
-UWidget* UViewScreenComponent::GetDesiredFocusTarget() const
+#if WITH_EDITOR
+void UDisplayScreenComponent::PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+	for (FProperty* Property : PropertyChangedEvent.PropertyChain)
+	{
+		if (Property->GetName() == GET_MEMBER_NAME_CHECKED(UDisplayScreenComponent, PanelSelector))
+		{
+			// @TODO: PanelSelector.WidgetClassName isn't coming through correctly so for now we're setting bPanelIsAGrid = true
+			//bPanelIsAGrid = (PanelSelector.WidgetClassName == UUniformGridPanel::StaticClass()->GetFName());
+			
+		}
+	}
+}
+#endif
+
+UWidget* UDisplayScreenComponent::GetDesiredFocusTarget() const
 {
 	UWidget* RetVal = nullptr;
 	//ensureMsgf(InitialFocus, TEXT("bInitialFocus is false for %s"), *this->GetName());
 	
-	for (TScriptInterface<IViewWidgetInterface> ViewWidget : GetAllViewWidgets())
+	for (TScriptInterface<IDisplayWidgetInterface> ViewWidget : GetAllViewWidgets())
 	{
 		if (UUserWidget* AsUWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
 		{
@@ -133,21 +152,21 @@ UWidget* UViewScreenComponent::GetDesiredFocusTarget() const
 	return RetVal;
 }
 
-void UViewScreenComponent::SetLinkedDataComponent(UDataScreenComponent* InDataComponent)
+void UDisplayScreenComponent::SetLinkedDataComponent(UDataScreenComponent* InDataComponent)
 {
 	if (LinkedDataComponent)
 	{
-		LinkedDataComponent->OnDataRetrieval.RemoveDynamic(this, &UViewScreenComponent::HandleOnDataRetrieval);
+		LinkedDataComponent->OnDataRetrieval.RemoveDynamic(this, &UDisplayScreenComponent::HandleOnDataRetrieval);
 	}
 
 	LinkedDataComponent = InDataComponent;
 	if (LinkedDataComponent)
 	{
-		LinkedDataComponent->OnDataRetrieval.AddDynamic(this, &UViewScreenComponent::HandleOnDataRetrieval);
+		LinkedDataComponent->OnDataRetrieval.AddDynamic(this, &UDisplayScreenComponent::HandleOnDataRetrieval);
 	}
 }
 
-void UViewScreenComponent::SetWidgetPrototype(UUserWidget* InWidgetPrototype)
+void UDisplayScreenComponent::SetWidgetPrototype(UUserWidget* InWidgetPrototype)
 {
 	ViewWidgetPrototype = InWidgetPrototype;
 	// flush system
@@ -160,7 +179,7 @@ void UViewScreenComponent::SetWidgetPrototype(UUserWidget* InWidgetPrototype)
 	CachedWidgets.Empty();
 }
 
-void UViewScreenComponent::SetWidgetPrototypeByClass(UClass* WidgetPrototypeClass)
+void UDisplayScreenComponent::SetWidgetPrototypeByClass(UClass* WidgetPrototypeClass)
 {
 	if(this->GetWorld())
 	{
@@ -172,9 +191,9 @@ void UViewScreenComponent::SetWidgetPrototypeByClass(UClass* WidgetPrototypeClas
 	}
 }
 
-TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetViewWidgetAt(int32 Index) const
+TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetViewWidgetAt(int32 Index) const
 { 
-	TScriptInterface<IViewWidgetInterface> RetVal;
+	TScriptInterface<IDisplayWidgetInterface> RetVal;
 
 	if(ActiveViewWidgets.IsValidIndex(Index))
 	{
@@ -188,10 +207,10 @@ TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetViewWidgetAt(int
 	return RetVal;
 }
 
-TArray<UUserWidget*> UViewScreenComponent::GetAllWidgets() const
+TArray<UUserWidget*> UDisplayScreenComponent::GetAllWidgets() const
 {
 	TArray<UUserWidget*> RetVal;
-	for (const TScriptInterface<IViewWidgetInterface>& AsViewWidget : ActiveViewWidgets)
+	for (const TScriptInterface<IDisplayWidgetInterface>& AsViewWidget : ActiveViewWidgets)
 	{
 		if (UUserWidget* AsUserWidget = Cast<UUserWidget>(AsViewWidget.GetObject()))
 		{
@@ -202,11 +221,11 @@ TArray<UUserWidget*> UViewScreenComponent::GetAllWidgets() const
 	return RetVal;
 }
 
-UUserWidget* UViewScreenComponent::GetWidgetAt(int32 Index) const
+UUserWidget* UDisplayScreenComponent::GetWidgetAt(int32 Index) const
 {
 	UUserWidget* RetVal = nullptr;
 
-	TScriptInterface<IViewWidgetInterface> ViewWidget = GetViewWidgetAt(Index);
+	TScriptInterface<IDisplayWidgetInterface> ViewWidget = GetViewWidgetAt(Index);
 
 	if (UUserWidget* AsUserWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
 	{
@@ -216,16 +235,16 @@ UUserWidget* UViewScreenComponent::GetWidgetAt(int32 Index) const
 	return RetVal;
 }
 
-bool UViewScreenComponent::IsSelectedWidget() const
+bool UDisplayScreenComponent::IsSelectedWidget() const
 {
 	return static_cast<bool>(GetFirstSelectedWidget());
 }
 
-TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetFirstSelectedWidget() const
+TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetFirstSelectedWidget() const
 {
-	TScriptInterface<IViewWidgetInterface> RetVal;
+	TScriptInterface<IDisplayWidgetInterface> RetVal;
 	//@todo: Hold on to selected widgets so iteration is not required
-	for (TScriptInterface<IViewWidgetInterface> Widget : ActiveViewWidgets)
+	for (TScriptInterface<IDisplayWidgetInterface> Widget : ActiveViewWidgets)
 	{
 		if (const UCommonButtonBase* AsButton = Cast<UCommonButtonBase>(Widget.GetObject()))
 		{
@@ -240,11 +259,11 @@ TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetFirstSelectedWid
 	return RetVal;
 }
 
-TArray<TScriptInterface<IViewWidgetInterface>> UViewScreenComponent::GetAllSelectedWidgets() const
+TArray<TScriptInterface<IDisplayWidgetInterface>> UDisplayScreenComponent::GetAllSelectedWidgets() const
 {
-	TArray<TScriptInterface<IViewWidgetInterface>> RetVal;
+	TArray<TScriptInterface<IDisplayWidgetInterface>> RetVal;
 	//@todo: Hold on to selected widgets so iteration is not required
-	for (TScriptInterface<IViewWidgetInterface> Widget : ActiveViewWidgets)
+	for (TScriptInterface<IDisplayWidgetInterface> Widget : ActiveViewWidgets)
 	{
 		if (const UCommonButtonBase* AsButton = Cast<UCommonButtonBase>(Widget.GetObject()))
 		{
@@ -257,23 +276,23 @@ TArray<TScriptInterface<IViewWidgetInterface>> UViewScreenComponent::GetAllSelec
 	return RetVal;
 }
 
-void UViewScreenComponent::ManuallySetData(const TArray<UObject*>& Entries)
+void UDisplayScreenComponent::ManuallySetData(const TArray<UObject*>& Entries)
 {
 	HandleOnDataRetrieval(nullptr, Entries);
 }
 
-void UViewScreenComponent::SetLinkedActionScreenComponent(UActionScreenComponent* InASC)
+void UDisplayScreenComponent::SetLinkedActionScreenComponent(UActionScreenComponent* InASC)
 {
 	LinkedASC = InASC;
 }
 
-void UViewScreenComponent::HandleOnDataRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries)
+void UDisplayScreenComponent::HandleOnDataRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries)
 {
 	PopulateWidgets(Entries);
 
 }
 
-void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
+void UDisplayScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 {
 	// do we need to remove widgets to meet the new number of entries?
 	const int32 WidgetDifference = ActiveViewWidgets.Num() - Entries.Num();
@@ -307,10 +326,11 @@ void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 	{
 		if (ActiveViewWidgets.IsValidIndex(i))
 		{
-			if (Panel)
+			
+			/*if (Panel)
 			{
 				AddToPanel(ActiveViewWidgets[i]);
-			}
+			}*/
 
 			ActiveViewWidgets[i]->Execute_Reset(ActiveViewWidgets[i].GetObject());
 			ActiveViewWidgets[i]->Execute_SetEntryData(ActiveViewWidgets[i].GetObject(), i, Entries[i]);
@@ -330,22 +350,22 @@ void UViewScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_WidgetsPopulated))
 	{
 		struct {
-			UViewScreenComponent* Component;
+			UDisplayScreenComponent* Component;
 		} Args = { this };
 
 		ProcessFuncFromResolveMember(Func, &Args);
 	}
 }
 
-TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetAndSetupEntryWidget()
+TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetAndSetupEntryWidget()
 {
-	TScriptInterface<IViewWidgetInterface> RetVal;
-	int32 FoundIndex = INDEX_NONE;
+	TScriptInterface<IDisplayWidgetInterface> RetVal;
+	int32 FoundCachedWidgetIndex = INDEX_NONE;	// if we use a cached widget, this was it's index in the array
 
 	if (CachedWidgets.Num() > 0 && bCacheWidgets)
 	{
-		FoundIndex = CachedWidgets.Num() - 1;
-		RetVal = CachedWidgets[FoundIndex].UserWidget;
+		FoundCachedWidgetIndex = CachedWidgets.Num() - 1;
+		RetVal = CachedWidgets[FoundCachedWidgetIndex].UserWidget;
 		
 	}
 	else if(ViewWidgetPrototype)
@@ -364,24 +384,31 @@ TScriptInterface<IViewWidgetInterface> UViewScreenComponent::GetAndSetupEntryWid
 		AddToPanel(RetVal);
 
 		// we can't remove the entry from CachedWidgets until after AddToPanel() otherwise the slate widget will be destroyed
-		if (FoundIndex != INDEX_NONE)
+		if (FoundCachedWidgetIndex != INDEX_NONE)
 		{
-			CachedWidgets.RemoveAt(FoundIndex);
+			CachedWidgets.RemoveAt(FoundCachedWidgetIndex);
 		}
 	}
 
 	return RetVal;
 }
 
-void UViewScreenComponent::AddToPanel(TScriptInterface<IViewWidgetInterface>& Widget)
+void UDisplayScreenComponent::AddToPanel(TScriptInterface<IDisplayWidgetInterface>& Widget)
 {
 	if (Panel)
 	{
-		Panel->AddChild(Cast<UUserWidget>(Widget.GetObject()));
+		if (UUniformGridPanel* AsGrid = Cast<UUniformGridPanel>(Panel))
+		{
+			AsGrid->AddChildToUniformGrid(Cast<UWidget>(Widget.GetObject()), GetNumWidgets() / ColumnsGridWillHave, GetNumWidgets() % ColumnsGridWillHave);
+		}
+		else
+		{
+			Panel->AddChild(Cast<UUserWidget>(Widget.GetObject()));
+		}
 	}
 }
 
-void UViewScreenComponent::RemoveViewWidget(TScriptInterface<IViewWidgetInterface> Widget)
+void UDisplayScreenComponent::RemoveViewWidget(TScriptInterface<IDisplayWidgetInterface> Widget)
 {
 	if (Widget)
 	{
@@ -405,32 +432,32 @@ void UViewScreenComponent::RemoveViewWidget(TScriptInterface<IViewWidgetInterfac
 	}
 }
 
-void UViewScreenComponent::ViewWidgetSetup(TScriptInterface<IViewWidgetInterface> Widget)
+void UDisplayScreenComponent::ViewWidgetSetup(TScriptInterface<IDisplayWidgetInterface> Widget)
 {
 	if (Widget)
 	{
 		Widget->SetOwningViewScreenComponent(this);
-		Widget->GetOnAction().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnAction);
-		Widget->GetOnSelectionChange().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnSelectionChange);
-		Widget->GetOnFocusChange().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnFocusChange);
-		Widget->GetOnHoverChange().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnHoverChange);
+		Widget->GetOnAction().AddUniqueDynamic(this, &UDisplayScreenComponent::HandleWidgetOnAction);
+		Widget->GetOnSelectionChange().AddUniqueDynamic(this, &UDisplayScreenComponent::HandleWidgetOnSelectionChange);
+		Widget->GetOnFocusChange().AddUniqueDynamic(this, &UDisplayScreenComponent::HandleWidgetOnFocusChange);
+		Widget->GetOnHoverChange().AddUniqueDynamic(this, &UDisplayScreenComponent::HandleWidgetOnHoverChange);
 	}
 }
 
-void UViewScreenComponent::ViewWidgetTeardown(TScriptInterface<IViewWidgetInterface> Widget)
+void UDisplayScreenComponent::ViewWidgetTeardown(TScriptInterface<IDisplayWidgetInterface> Widget)
 {
 	if (Widget)
 	{
 		Widget->SetOwningViewScreenComponent(nullptr);
 		Widget->Release();
-		Widget->GetOnAction().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnAction);
-		Widget->GetOnSelectionChange().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnSelectionChange);
-		Widget->GetOnFocusChange().RemoveDynamic(this, &UViewScreenComponent::HandleWidgetOnFocusChange);
-		Widget->GetOnHoverChange().AddUniqueDynamic(this, &UViewScreenComponent::HandleWidgetOnHoverChange);
+		Widget->GetOnAction().RemoveDynamic(this, &UDisplayScreenComponent::HandleWidgetOnAction);
+		Widget->GetOnSelectionChange().RemoveDynamic(this, &UDisplayScreenComponent::HandleWidgetOnSelectionChange);
+		Widget->GetOnFocusChange().RemoveDynamic(this, &UDisplayScreenComponent::HandleWidgetOnFocusChange);
+		Widget->GetOnHoverChange().AddUniqueDynamic(this, &UDisplayScreenComponent::HandleWidgetOnHoverChange);
 	}
 }
 
-void UViewScreenComponent::HandleWidgetOnAction(TScriptInterface<IViewWidgetInterface> Widget)
+void UDisplayScreenComponent::HandleWidgetOnAction(TScriptInterface<IDisplayWidgetInterface> Widget)
 {
 	OnAction.Broadcast(this, Widget);
 	OnInputAction.Broadcast(this, Widget);
@@ -438,23 +465,23 @@ void UViewScreenComponent::HandleWidgetOnAction(TScriptInterface<IViewWidgetInte
 	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_InputAction))
 	{
 		struct {
-			UViewScreenComponent* Component;
-			const TScriptInterface<IViewWidgetInterface>& Widget;
+			UDisplayScreenComponent* Component;
+			const TScriptInterface<IDisplayWidgetInterface>& Widget;
 		} Args = { this, Widget };
 
 		ProcessFuncFromResolveMember(Func, &Args);
 	}
 }
 
-void UViewScreenComponent::HandleWidgetOnFocusChange(TScriptInterface<IViewWidgetInterface> Widget, bool bGained)
+void UDisplayScreenComponent::HandleWidgetOnFocusChange(TScriptInterface<IDisplayWidgetInterface> Widget, bool bGained)
 {
 	OnFocusChange.Broadcast(this, Widget, bGained);
 
 	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_FocusChange))
 	{
 		struct {
-			UViewScreenComponent* Component;
-			const TScriptInterface<IViewWidgetInterface>& Widget;
+			UDisplayScreenComponent* Component;
+			const TScriptInterface<IDisplayWidgetInterface>& Widget;
 			bool bGained;
 		} Args = { this, Widget, bGained };
 
@@ -462,15 +489,15 @@ void UViewScreenComponent::HandleWidgetOnFocusChange(TScriptInterface<IViewWidge
 	}	
 }
 
-void UViewScreenComponent::HandleWidgetOnHoverChange(TScriptInterface<IViewWidgetInterface> Widget, bool bGained)
+void UDisplayScreenComponent::HandleWidgetOnHoverChange(TScriptInterface<IDisplayWidgetInterface> Widget, bool bGained)
 {
 	OnHoverChange.Broadcast(this, Widget, bGained);
 
 	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_HoverChange))
 	{
 		struct {
-			UViewScreenComponent* Component;
-			const TScriptInterface<IViewWidgetInterface>& Widget;
+			UDisplayScreenComponent* Component;
+			const TScriptInterface<IDisplayWidgetInterface>& Widget;
 			bool bGained;
 		} Args = { this, Widget, bGained };
 
@@ -478,11 +505,11 @@ void UViewScreenComponent::HandleWidgetOnHoverChange(TScriptInterface<IViewWidge
 	}
 }
 
-void UViewScreenComponent::HandleWidgetOnSelectionChange(TScriptInterface<IViewWidgetInterface> Widget, bool bGained)
+void UDisplayScreenComponent::HandleWidgetOnSelectionChange(TScriptInterface<IDisplayWidgetInterface> Widget, bool bGained)
 {
 	if (bSingleSelection && bGained)
 	{
-		for (TScriptInterface<IViewWidgetInterface> ActiveWidget : ActiveViewWidgets)
+		for (TScriptInterface<IDisplayWidgetInterface> ActiveWidget : ActiveViewWidgets)
 		{
 			if (ActiveWidget != Widget)
 			{
@@ -503,8 +530,8 @@ void UViewScreenComponent::HandleWidgetOnSelectionChange(TScriptInterface<IViewW
 	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_SelectionChange))
 	{
 		struct {
-			UViewScreenComponent* Component;
-			const TScriptInterface<IViewWidgetInterface>& Widget;
+			UDisplayScreenComponent* Component;
+			const TScriptInterface<IDisplayWidgetInterface>& Widget;
 			bool bGained;
 		} Args = { this, Widget, bGained };
 

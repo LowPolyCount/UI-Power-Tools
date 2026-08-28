@@ -2,7 +2,7 @@
 
 
 #include "UICS/Screens/Components/Widgets/Tooltip.h"
-#include "UICS/Screens/Components/Display/ViewScreenComponent.h"
+#include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
 #include "UICS/Utility/UIPTStatics.h"
 
 UTooltip::UTooltip()
@@ -36,7 +36,7 @@ void UTooltip::StartListeningToView(const FViewComponentSelector& ViewSelector)
 {
 	if (ViewSelector.IsValid())
 	{
-		if (UViewScreenComponent* ViewComponent = UUIPTStatics::GetScreenComponentFromSelector<UViewScreenComponent>(this, ViewSelector))
+		if (UDisplayScreenComponent* ViewComponent = UUIPTStatics::GetScreenComponentFromSelector<UDisplayScreenComponent>(this, ViewSelector))
 		{
 			ViewComponent->OnInputAction.AddUniqueDynamic(this, &UTooltip::HandleOnAction);
 			ViewComponent->OnFocusChange.AddUniqueDynamic(this, &UTooltip::HandleOnFocusChange);
@@ -50,7 +50,7 @@ void UTooltip::StopListeningToView(const FViewComponentSelector& ViewSelector)
 {
 	if (ViewSelector.IsValid())
 	{
-		if (UViewScreenComponent* ViewComponent = UUIPTStatics::GetScreenComponentFromSelector<UViewScreenComponent>(this, ViewSelector))
+		if (UDisplayScreenComponent* ViewComponent = UUIPTStatics::GetScreenComponentFromSelector<UDisplayScreenComponent>(this, ViewSelector))
 		{
 			ViewComponent->OnInputAction.RemoveDynamic(this, &UTooltip::HandleOnAction);
 			ViewComponent->OnFocusChange.RemoveDynamic(this, &UTooltip::HandleOnFocusChange);
@@ -60,17 +60,17 @@ void UTooltip::StopListeningToView(const FViewComponentSelector& ViewSelector)
 	}
 }
 
-void UTooltip::HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
+void UTooltip::HandleOnAction(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget)
 {
 	BP_HandleOnAction(Component, Widget);
 }
 
-void UTooltip::HandleOnSelectionChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained)
+void UTooltip::HandleOnSelectionChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained)
 {
 	BP_HandleOnSelectionChange(Component, Widget, bGained);
 }
 
-void UTooltip::HandleOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained)
+void UTooltip::HandleOnFocusChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained)
 {
 	if (bGained && bShowOnFocusGain)
 	{
@@ -84,7 +84,7 @@ void UTooltip::HandleOnFocusChange(UViewScreenComponent* Component, const TScrip
 	BP_HandleOnFocusChange(Component, Widget, bGained);
 }
 
-void UTooltip::HandleOnHoverChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained)
+void UTooltip::HandleOnHoverChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained)
 {
 	if (bGained && bShowOnHoverGain)
 	{
@@ -113,7 +113,7 @@ void UTooltip::Reset()
 	BP_Reset();
 }
 
-void UTooltip::ShowOrHideTooltip(const TScriptInterface<IViewWidgetInterface>& Widget, const bool bGained)
+void UTooltip::ShowOrHideTooltip(const TScriptInterface<IDisplayWidgetInterface>& Widget, const bool bGained)
 {
 	SetVisibility((bGained) ? ShowRule : HideRule);
 	if (bGained)

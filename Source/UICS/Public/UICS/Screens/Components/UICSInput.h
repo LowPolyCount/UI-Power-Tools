@@ -7,7 +7,7 @@
 #include "UICSInput.generated.h"
 
 // Handles Input for a screen.
-UCLASS(Experimental)
+UCLASS(Experimental, Hidden, Abstract)
 class UICS_API UUICSInput : public UScreenComponent
 {
 	GENERATED_BODY()

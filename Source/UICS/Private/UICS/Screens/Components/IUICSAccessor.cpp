@@ -2,7 +2,7 @@
 
 #include "UICS/Screens/Components/IUICSAccessor.h"
 #include "UICS/Screens/Components/ScreenComponentManager.h"
-#include "UICS/Screens/Components/Display/ViewScreenComponent.h"
+#include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
 #include "UICS/Utility/UIPTStatics.h"
 #include "UICS/Screens/UICSScreen.h"
 
@@ -163,9 +163,9 @@ UScreenComponent* IUICSScreenAccessor::GetScreenComponentFromGUID(const FGuid& S
 UWidget* IUICSScreenAccessor::GetDesiredFocusTargetFromViewComponents() const
 {
 	UWidget* RetVal = nullptr;
-	TArray<UViewScreenComponent*> ViewComponents = UUIPTStatics::GetAllScreenComponents<UViewScreenComponent>(Cast<UObject>(this));
+	TArray<UDisplayScreenComponent*> ViewComponents = UUIPTStatics::GetAllScreenComponents<UDisplayScreenComponent>(Cast<UObject>(this));
 
-	for (UViewScreenComponent* ViewComponent : ViewComponents)
+	for (UDisplayScreenComponent* ViewComponent : ViewComponents)
 	{
 		if (IsValid(ViewComponent) && ViewComponent->IsDesiredFocusTarget())
 		{

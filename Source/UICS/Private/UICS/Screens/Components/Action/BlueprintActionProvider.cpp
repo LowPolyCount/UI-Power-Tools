@@ -30,18 +30,17 @@ bool UBlueprintActionProvider::NativeCanExecuteAction(UObject* Entry)
 
 	if (UFunction* Func = ResolveMemberReference(BindableEvents.CanExecuteAction))
 	{
+		
 		struct FParams {
 			UActionScreenComponentProvider* CallingActionProvider;
 			UActionScreenComponent* ParentActionComponent;
 			UObject* Entry;
-			} Args = { this, GetParent(), Entry };
+			bool bRetVal;
+			} Args = { this, GetParent(), Entry, true };
 
 		ProcessFuncFromResolveMember(Func, &Args);
 
-		if (const FBoolProperty* AsBool = CastField<FBoolProperty>(Func->GetReturnProperty()))
-		{
-			bRetVal = AsBool->GetPropertyValue(Func);
-		}
+		bRetVal = Args.bRetVal;
 	}
 
 	return bRetVal;

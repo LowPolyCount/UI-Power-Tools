@@ -7,8 +7,8 @@
 #include "UICS/Screens/Tools/ComponentSelector.h"
 #include "Tooltip.generated.h"
 
-class UViewScreenComponent;
-class IViewWidgetInterface;
+class UDisplayScreenComponent;
+class IDisplayWidgetInterface;
 
 /**
  * Listens to provided Screen Components and can display detailed information about a hovered or focused entry
@@ -49,33 +49,33 @@ protected:
 	
 	// handle the case where the observed entry has an input action happen
 	UFUNCTION(BlueprintImplementableEvent, Category = Tooltip, Meta=(DisplayName="HandleOnAction"))
-	void BP_HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
+	void BP_HandleOnAction(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget);
 
 	// handle the case where the observed entry has it's selection property changed
 	UFUNCTION(BlueprintImplementableEvent, Category = Tooltip, Meta=(DisplayName="HandleOnSelectionChange"))
-	void BP_HandleOnSelectionChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained);
+	void BP_HandleOnSelectionChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
 
 	// handle the case where the observed entry has it's focus property changed
 	UFUNCTION(BlueprintImplementableEvent, Category = Tooltip, Meta=(DisplayName="HandleOnFocusChange"))
-	void BP_HandleOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained);
+	void BP_HandleOnFocusChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
 
 	// handle the case where the observed entry has it's hover property changed
 	UFUNCTION(BlueprintImplementableEvent, Category = Tooltip, Meta=(DisplayName="HandleOnHoverChange"))
-	void BP_HandleOnHoverChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained);
+	void BP_HandleOnHoverChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
 
 	UFUNCTION()
-	virtual void HandleOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
+	virtual void HandleOnAction(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget);
 	UFUNCTION()
-	virtual void HandleOnSelectionChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained);
+	virtual void HandleOnSelectionChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
 	UFUNCTION()
-	virtual void HandleOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained);
+	virtual void HandleOnFocusChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
 	UFUNCTION()
-	virtual void HandleOnHoverChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained);
+	virtual void HandleOnHoverChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
 
 	virtual void StartListeningToView(const FViewComponentSelector& View);
 	virtual void StopListeningToView(const FViewComponentSelector& View);
 
-	virtual void ShowOrHideTooltip(const TScriptInterface<IViewWidgetInterface>& Widget, const bool bGained);
+	virtual void ShowOrHideTooltip(const TScriptInterface<IDisplayWidgetInterface>& Widget, const bool bGained);
 	virtual void SetObservedEntryData(UObject* InData);
 
 	// the view screen components that we will listen to events from

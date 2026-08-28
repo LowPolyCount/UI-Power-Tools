@@ -8,15 +8,15 @@
 #include "UICS/Screens/Components/Data/DataFilter.h"
 #include "UICS/Screens/Components/Data/DataTransform.h"
 #include "UICS/Screens/Components/Action/ActionScreenComponentProvider.h"
-#include "UICS/Screens/Components/Display/ViewScreenComponent.h"
+#include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
 #include "UICS/Screens/Components/Action/ActionScreenComponent.h"
 #include "UICS/Screens/Components/EntryScreenComponent.h"
 #include "Blueprint/UserWidget.h"
-#include "UICS/Screens/Components/Display/ViewWidgetInterface.h"
+#include "UICS/Screens/Components/Display/DisplayWidgetInterface.h"
 // @todo: including AutomationEditorCommon means that tests only build with editor. Maybe FbxAutomationCommon can help?
 #include "Tests/AutomationEditorCommon.h"
 #include "Components/HorizontalBox.h"
-#include "UICS/Screens/Components/Display/ViewCommonButtonBase.h"
+#include "UICS/Screens/Components/Display/DisplayCommonButtonBase.h"
 #include "UICSTestHarness.generated.h"
 
 class UPanelWidget;
@@ -72,7 +72,7 @@ public:
 };
 
 UCLASS(Hidden)
-class UViewWidgetHarness : public UViewCommonButtonBase
+class UViewWidgetHarness : public UDisplayCommonButtonBase
 {
 	GENERATED_BODY()
 public:
@@ -80,25 +80,25 @@ public:
 };
 
 UCLASS(Hidden)
-class UViewHarness : public UViewScreenComponent
+class UViewHarness : public UDisplayScreenComponent
 {
 	GENERATED_BODY()
 public:
 	void SetFName(FName InName) { ComponentName = InName; }
 	virtual void Initialize() override;
 	void TestHandleOnDataRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries) { HandleOnDataRetrieval(Component, Entries); }
-	const TArray<TScriptInterface<IViewWidgetInterface>> GetAllCachedWidgets() { CachedWidgets; }
+	const TArray<TScriptInterface<IDisplayWidgetInterface>> GetAllCachedWidgets() { CachedWidgets; }
 	int32 GetNumCachedWidgets() const;
 	void SetCacheWidgets(bool bInCacheWidgets);
 	virtual void HandleOnDataRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries) override;
 	UFUNCTION()
-	void HandleTestOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget);
+	void HandleTestOnAction(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget);
 	UFUNCTION()
-	void HandleTestOnSelectedChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained);
+	void HandleTestOnSelectedChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
 	UFUNCTION()
-	void HandleTestOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained);
+	void HandleTestOnFocusChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
 	UFUNCTION()
-	void HandleTestOnWidgetsPopulated(UViewScreenComponent* Component);
+	void HandleTestOnWidgetsPopulated(UDisplayScreenComponent* Component);
 
 	int32 CountOnAction = 0;
 	int32 CountOnSelected = 0;
@@ -187,7 +187,7 @@ namespace UICSTest
 	}
 
 
-	static UPanelWidget* SetupViewTest(UViewScreenComponent* View, UDataScreenComponent* Data)
+	static UPanelWidget* SetupViewTest(UDisplayScreenComponent* View, UDataScreenComponent* Data)
 	{
 		UPanelWidget* Panel = NewObject<UHorizontalBox>(View);
 		Panel->TakeWidget();

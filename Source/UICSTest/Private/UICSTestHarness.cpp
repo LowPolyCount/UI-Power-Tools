@@ -63,24 +63,24 @@ void UViewHarness::HandleOnDataRetrieval(UDataScreenComponent* Component, const 
 	CountOnRetrieval++;
 }
 
-void UViewHarness::HandleTestOnAction(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget)
+void UViewHarness::HandleTestOnAction(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget)
 {
 	CountOnAction++;
 }
 
-void UViewHarness::HandleTestOnSelectedChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained)
+void UViewHarness::HandleTestOnSelectedChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained)
 {
 	CountOnSelected++;
 	(bGained) ? CountOnSelectionGained++ : CountOnSelectionLost++;
 }
 
-void UViewHarness::HandleTestOnFocusChange(UViewScreenComponent* Component, const TScriptInterface<IViewWidgetInterface>& Widget, bool bGained)
+void UViewHarness::HandleTestOnFocusChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained)
 {
 	CountOnFocusChanged++;
 	(bGained) ? CountOnFocusGained++ : CountOnFocusLost++;
 }
 
-void UViewHarness::HandleTestOnWidgetsPopulated(UViewScreenComponent* Component)
+void UViewHarness::HandleTestOnWidgetsPopulated(UDisplayScreenComponent* Component)
 {
 	CountOnWidgetsPopulated++;
 }
