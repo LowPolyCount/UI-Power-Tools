@@ -8,6 +8,7 @@
 #include "Components/PanelWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "CommonButtonBase.h"
+#include "Components/UniformGridPanel.h"
 #include "UICS/Utility/UIPTStatics.h"
 
 FCachedWidget::FCachedWidget(const TScriptInterface<IDisplayWidgetInterface>& InWidget)
@@ -78,9 +79,11 @@ void UDisplayScreenComponent::SetupPreConstructWidgets()
 
 		for (int32 i = 0; i < DesignEntriesToShow; ++i)
 		{
-			TScriptInterface<IDisplayWidgetInterface> ViewWidget = DuplicateWidget(ViewWidgetPrototype);
-			AddToPanel(ViewWidget);
-			ActiveViewWidgets.Emplace(ViewWidget);
+			if (TScriptInterface<IDisplayWidgetInterface> ViewWidget = DuplicateWidget(ViewWidgetPrototype))
+			{
+				AddToPanel(ViewWidget);
+				ActiveViewWidgets.Emplace(ViewWidget);
+			}
 		}
 	}
 }
@@ -89,7 +92,7 @@ void UDisplayScreenComponent::SetupPreConstructWidgets()
 TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::DuplicateWidget(const TObjectPtr<UUserWidget>& Prototype)
 {
 	TScriptInterface<IDisplayWidgetInterface> RetVal = DuplicateObject<UUserWidget>(ViewWidgetPrototype, this);
-	ensure(IsValid(RetVal.GetObject()));
+	// we could ensure(RetVal) here, but PreConstruct() can call this func and that can happen during teardown. 
 	return RetVal;
 }
 
@@ -112,6 +115,22 @@ void UDisplayScreenComponent::NativeDestruct()
 	Super::NativeDestruct();
 
 }
+
+#if WITH_EDITOR
+void UDisplayScreenComponent::PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+	for (FProperty* Property : PropertyChangedEvent.PropertyChain)
+	{
+		if (Property->GetName() == GET_MEMBER_NAME_CHECKED(UDisplayScreenComponent, PanelSelector))
+		{
+			// @TODO: PanelSelector.WidgetClassName isn't coming through correctly so for now we're setting bPanelIsAGrid = true
+			//bPanelIsAGrid = (PanelSelector.WidgetClassName == UUniformGridPanel::StaticClass()->GetFName());
+			
+		}
+	}
+}
+#endif
 
 UWidget* UDisplayScreenComponent::GetDesiredFocusTarget() const
 {
@@ -307,10 +326,11 @@ void UDisplayScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 	{
 		if (ActiveViewWidgets.IsValidIndex(i))
 		{
-			if (Panel)
+			
+			/*if (Panel)
 			{
 				AddToPanel(ActiveViewWidgets[i]);
-			}
+			}*/
 
 			ActiveViewWidgets[i]->Execute_Reset(ActiveViewWidgets[i].GetObject());
 			ActiveViewWidgets[i]->Execute_SetEntryData(ActiveViewWidgets[i].GetObject(), i, Entries[i]);
@@ -340,12 +360,12 @@ void UDisplayScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetAndSetupEntryWidget()
 {
 	TScriptInterface<IDisplayWidgetInterface> RetVal;
-	int32 FoundIndex = INDEX_NONE;
+	int32 FoundCachedWidgetIndex = INDEX_NONE;	// if we use a cached widget, this was it's index in the array
 
 	if (CachedWidgets.Num() > 0 && bCacheWidgets)
 	{
-		FoundIndex = CachedWidgets.Num() - 1;
-		RetVal = CachedWidgets[FoundIndex].UserWidget;
+		FoundCachedWidgetIndex = CachedWidgets.Num() - 1;
+		RetVal = CachedWidgets[FoundCachedWidgetIndex].UserWidget;
 		
 	}
 	else if(ViewWidgetPrototype)
@@ -364,9 +384,9 @@ TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetAndSetupEn
 		AddToPanel(RetVal);
 
 		// we can't remove the entry from CachedWidgets until after AddToPanel() otherwise the slate widget will be destroyed
-		if (FoundIndex != INDEX_NONE)
+		if (FoundCachedWidgetIndex != INDEX_NONE)
 		{
-			CachedWidgets.RemoveAt(FoundIndex);
+			CachedWidgets.RemoveAt(FoundCachedWidgetIndex);
 		}
 	}
 
@@ -377,7 +397,14 @@ void UDisplayScreenComponent::AddToPanel(TScriptInterface<IDisplayWidgetInterfac
 {
 	if (Panel)
 	{
-		Panel->AddChild(Cast<UUserWidget>(Widget.GetObject()));
+		if (UUniformGridPanel* AsGrid = Cast<UUniformGridPanel>(Panel))
+		{
+			AsGrid->AddChildToUniformGrid(Cast<UWidget>(Widget.GetObject()), GetNumWidgets() / ColumnsGridWillHave, GetNumWidgets() % ColumnsGridWillHave);
+		}
+		else
+		{
+			Panel->AddChild(Cast<UUserWidget>(Widget.GetObject()));
+		}
 	}
 }
 

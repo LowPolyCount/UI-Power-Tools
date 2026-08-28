@@ -80,6 +80,9 @@ public:
 	virtual void Initialize() override;
 	virtual void NativePreConstruct(bool bIsDesignTime) override;
 	virtual void NativeDestruct() override;
+#if WITH_EDITOR
+	virtual void PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent) override;
+#endif	
 	// End UUserWidget
 
 
@@ -136,6 +139,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
 	TArray<UUserWidget*> GetAllWidgets() const;
 
+	// how many widgets are there?
+	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	int32 GetNumWidgets() const {return ActiveViewWidgets.Num();}
+	
 	// get all view widgets being used
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
 	const TArray<TScriptInterface<IDisplayWidgetInterface>>& GetAllViewWidgets() const { return ActiveViewWidgets; }
@@ -169,6 +176,7 @@ public:
 	TArray<TScriptInterface<IDisplayWidgetInterface>> GetAllSelectedWidgets() const;
 
 	// options
+	
 	// set if only one widget can be selected at a time
 	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
 	void SetSingleSelection(bool bInSingleSelection) { bSingleSelection = bInSingleSelection;}
@@ -241,6 +249,17 @@ protected:
 	UPROPERTY(EditAnywhere, Category = ViewScreenComponent)
 	FWidgetSelector PanelSelector;
 
+	// when adding children to a grid, we fill the grid's columns first before going to the next row.
+	// define how many columns the grid should have. 
+	UPROPERTY(EditAnywhere, Category = ViewScreenComponent, meta=(EditCondition="bPanelIsAGrid", EditConditionHides))
+	int32 ColumnsGridWillHave = 2;
+
+#if WITH_EDITORONLY_DATA
+	//@TODO: bPanelIsAGrid is always true, need to fix it so that it is only true if the panel is a grid
+	UPROPERTY()
+	bool bPanelIsAGrid = true;
+#endif
+
 	// define an instance / prototype of a widget class that implements IDisplayWidgetInterface that we will use to display our data with.
 	// This uses the prototype pattern, meaning that we will close this widget instance when we need to make widgets instead of Creating it from a class.
 	// This allows you set properties on this widget through the editor
@@ -286,7 +305,6 @@ protected:
 	// list of active widgets we are managing. 
 	UPROPERTY(Transient)
 	TArray<TScriptInterface<IDisplayWidgetInterface>> ActiveViewWidgets;
-
 
 	// BEGIN FMember References that allow you to bind events to functions in editor
 #if WITH_EDITOR
