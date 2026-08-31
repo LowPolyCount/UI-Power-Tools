@@ -27,7 +27,7 @@ public:
 	UScreenComponent* GetComponentFromGUID(const FGuid& Selector) const;
 #endif
 
-	void Initialize();
+	void NativeInitialize();
 	void NativePreConstruct(bool bIsDesignTime);
 	void NativeConstruct();
 	void NativeDestruct();

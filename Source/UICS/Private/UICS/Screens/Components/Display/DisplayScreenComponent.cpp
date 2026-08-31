@@ -20,9 +20,9 @@ FCachedWidget::FCachedWidget(const TScriptInterface<IDisplayWidgetInterface>& In
 	}
 }
 
-void UDisplayScreenComponent::Initialize()
+void UDisplayScreenComponent::NativeInitialize()
 {
-	Super::Initialize();
+	Super::NativeInitialize();
 
 	OnSelectionChange.AddDynamic(this, &UDisplayScreenComponent::HandleOnSelectedChange);
 	OnInputAction.AddDynamic(this, &UDisplayScreenComponent::HandleOnInputAction);

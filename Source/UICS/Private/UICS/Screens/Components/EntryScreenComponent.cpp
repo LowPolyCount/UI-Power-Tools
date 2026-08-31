@@ -3,9 +3,9 @@
 
 #include "UICS/Screens/Components/EntryScreenComponent.h"
 
-void UEntryScreenComponent::Initialize()
+void UEntryScreenComponent::NativeInitialize()
 {
-	Super::Initialize();
+	Super::NativeInitialize();
 	if (UFunction* Func = ResolveMemberReference(BindableEvents.Get))
 	{
 		struct {

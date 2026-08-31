@@ -39,7 +39,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Meta = (FunctionReference, AllowFunctionLibraries, PrototypeFunction = "/Script/UIPowerTools.ViewScreenComponent.HandleOnDataRetrieval", DefaultBindingName = "TestDataRetrieval", DisplayName = "OnDataRetrieval"))
 	FDataRetrieval OnDataRetrieval;
 
-	virtual void Initialize() override;
+	virtual void NativeInitialize() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 	virtual FString GetDisplayNameVerbose() const override;

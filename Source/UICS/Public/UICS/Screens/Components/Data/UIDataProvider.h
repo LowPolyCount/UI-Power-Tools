@@ -14,7 +14,7 @@ class UICS_API UUIDataProvider : public UScreenComponentWorldContext
 {
 	GENERATED_BODY()
 public:	
-	void Initialize(UDataScreenComponent* InOwningParent);
+	void NativeInitialize(UDataScreenComponent* InOwningParent);
 	// called when NativeConstruct happens on the Screen/Widget the component lives on
 	// @note: Useful when you need to setup listeners for data that may change. 
 	UFUNCTION(BlueprintImplementableEvent, Meta=(DisplayName="Construct"))
