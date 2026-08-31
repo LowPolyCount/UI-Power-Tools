@@ -8,9 +8,9 @@
 #include "UICS/Screens/Components/Data/DataFilter.h"
 
 
-void UDataScreenComponent::Initialize()
+void UDataScreenComponent::NativeInitialize()
 {
-	Super::Initialize();
+	Super::NativeInitialize();
 
 	InitializeDataProvider();
 
@@ -199,6 +199,6 @@ void UDataScreenComponent::InitializeDataProvider()
 {
 	if (DataProvider)
 	{
-		DataProvider->Initialize(this);
+		DataProvider->NativeInitialize(this);
 	}
 }

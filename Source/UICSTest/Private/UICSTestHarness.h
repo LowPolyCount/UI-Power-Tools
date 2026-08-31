@@ -62,7 +62,7 @@ class UDataHarness : public UDataScreenComponent
 {
 	GENERATED_BODY()
 public:
-	virtual void Initialize() override;
+	virtual void NativeInitialize() override;
 	void SetFName(FName InName){ ComponentName = InName;}
 
 	UFUNCTION()
@@ -85,7 +85,7 @@ class UViewHarness : public UDisplayScreenComponent
 	GENERATED_BODY()
 public:
 	void SetFName(FName InName) { ComponentName = InName; }
-	virtual void Initialize() override;
+	virtual void NativeInitialize() override;
 	void TestHandleOnDataRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries) { HandleOnDataRetrieval(Component, Entries); }
 	const TArray<TScriptInterface<IDisplayWidgetInterface>> GetAllCachedWidgets() { CachedWidgets; }
 	int32 GetNumCachedWidgets() const;
@@ -131,7 +131,7 @@ class UActionHarness : public UActionScreenComponent
 	GENERATED_BODY()
 public:
 	void SetFName(FName InName) { ComponentName = InName; }
-	virtual void Initialize() override;
+	virtual void NativeInitialize() override;
 
 	int32 IsValidSuccess = 0;
 	int32 OnCompleteSuccess = 0;
@@ -148,7 +148,7 @@ class UEntryHarness : public UEntryScreenComponent
 	GENERATED_BODY()
 public:
 	void SetFName(FName InName) { ComponentName = InName; }
-	virtual void Initialize() override;
+	virtual void NativeInitialize() override;
 
 	int32 OnBroadcasts = 0;
 
@@ -164,7 +164,7 @@ namespace UICSTest
 		ComponentType* RetVal = NewObject<ComponentType>(Owner);
 		if (RetVal)
 		{
-			RetVal->Initialize();
+			RetVal->NativeInitialize();
 		}
 		return RetVal;
 	}

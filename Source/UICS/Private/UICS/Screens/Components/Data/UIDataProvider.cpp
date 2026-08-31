@@ -4,7 +4,7 @@
 #include "UICS/Screens/Components/Data/UIDataProvider.h"
 #include "UICS/Screens/Components/Data/DataScreenComponent.h"
 
-void UUIDataProvider::Initialize(UDataScreenComponent* InOwningParent)
+void UUIDataProvider::NativeInitialize(UDataScreenComponent* InOwningParent)
 {
 	ParentComponent = MakeWeakObjectPtr(InOwningParent);
 }

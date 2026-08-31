@@ -28,7 +28,7 @@ class UICS_API UEntryScreenComponent : public UScreenComponent
 {
 	GENERATED_BODY()
 public:
-	virtual void Initialize() override;
+	virtual void NativeInitialize() override;
 	
 	// called when the entry we hold changes
 	UPROPERTY(BlueprintAssignable, Category=EntryScreenComponent)

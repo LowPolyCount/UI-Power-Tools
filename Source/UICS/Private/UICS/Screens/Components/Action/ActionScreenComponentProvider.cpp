@@ -5,7 +5,7 @@
 #include "UICS/Screens/Components/Action/ActionScreenComponent.h"
 
 
-void UActionScreenComponentProvider::Initialize(UActionScreenComponent* InOwner)
+void UActionScreenComponentProvider::NativeInitialize(UActionScreenComponent* InOwner)
 {
 	ParentComponent = MakeWeakObjectPtr(InOwner);
 }

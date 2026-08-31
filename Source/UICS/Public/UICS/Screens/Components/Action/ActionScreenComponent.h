@@ -48,7 +48,7 @@ class UICS_API UActionScreenComponent : public UScreenComponent
 	GENERATED_BODY()
 protected:
 
-	void Initialize() override;
+	void NativeInitialize() override;
 
 public:
 	// result of ExecuteAction

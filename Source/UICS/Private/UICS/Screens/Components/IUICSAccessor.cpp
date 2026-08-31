@@ -110,7 +110,7 @@ bool IUICSScreenAccessor::Initialize()
 	UScreenComponentManager* ComponentManager = GetComponentManager();
 	if (ComponentManager)
 	{
-		ComponentManager->Initialize();
+		ComponentManager->NativeInitialize();
 	}
 
 	return true;

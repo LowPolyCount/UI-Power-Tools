@@ -13,6 +13,26 @@ UScreenComponent::UScreenComponent(const FObjectInitializer& Initializer)
 	ComponentName = MakeUniqueObjectName(this, Initializer.GetClass(), NAME_None, EUniqueObjectNameOptions::GloballyUnique);
 }
 
+void UScreenComponent::NativeInitialize() 
+{
+	Initialize();
+}
+
+void UScreenComponent::NativePreConstruct(bool bIsDesignTime)
+{
+	PreConstruct(bIsDesignTime);
+}
+
+void UScreenComponent::NativeConstruct() 
+{
+	Construct();
+}
+
+void UScreenComponent::NativeDestruct() 
+{
+	Destruct();
+}
+
 const FGuid& UScreenComponent::GetGuid() const
 {
 	if (!Guid.IsValid())

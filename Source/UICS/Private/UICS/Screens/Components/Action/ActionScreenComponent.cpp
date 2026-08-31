@@ -16,13 +16,13 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_ACTION_NoActionComponent, "UICS.Action.NoAct
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_ACTION_NoActionProvider, "UICS.Action.NoActionProvider", "The Action Screen Component does not have an action provider");
 
 
-void UActionScreenComponent::Initialize()
+void UActionScreenComponent::NativeInitialize()
 {
-	Super::Initialize();
+	Super::NativeInitialize();
 
 	if (ActionProvider)
 	{
-		ActionProvider->Initialize(this);
+		ActionProvider->NativeInitialize(this);
 	}
 	ListenToViewScreenComponent(UUIPTStatics::GetScreenComponentFromSelector<UDisplayScreenComponent>(this, ViewToListenTo));
 

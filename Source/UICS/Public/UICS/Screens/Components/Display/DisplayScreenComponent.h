@@ -77,7 +77,7 @@ class UICS_API UDisplayScreenComponent : public UScreenComponent
 
 public:
 	// UUserWidget
-	virtual void Initialize() override;
+	virtual void NativeInitialize() override;
 	virtual void NativePreConstruct(bool bIsDesignTime) override;
 	virtual void NativeDestruct() override;
 #if WITH_EDITOR

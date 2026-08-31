@@ -100,13 +100,13 @@ UScreenComponent* UScreenComponentManager::GetComponentFromSelector(const FCompo
 	return RetVal;
 }
 
-void UScreenComponentManager::Initialize()
+void UScreenComponentManager::NativeInitialize()
 {
 	for (UScreenComponent* Component : Components)
 	{
 		if (IsValid(Component))
 		{
-			Component->Initialize();
+			Component->NativeInitialize();
 		}
 	}
 }

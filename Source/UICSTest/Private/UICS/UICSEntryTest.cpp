@@ -9,7 +9,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FEntryTest, "UICS.Component.Entry", EAutomation
 bool FEntryTest::RunTest(const FString& Parameters)
 {
 	UEntryHarness* EntryComponent = NewObject<UEntryHarness>();
-	EntryComponent->Initialize();
+	EntryComponent->NativeInitialize();
 
 	{
 		EntryComponent->SetEntry(nullptr);

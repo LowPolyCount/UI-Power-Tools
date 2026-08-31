@@ -14,9 +14,9 @@ void UDataRetrieverHarness::NativeRetrieveEntries(UDataScreenComponent* Componen
 	}
 }
 
-void UDataHarness::Initialize()
+void UDataHarness::NativeInitialize()
 {
-	Super::Initialize();
+	Super::NativeInitialize();
 
 	OnDataRetrieval.AddDynamic(this, &UDataHarness::HandleOnRetrieval);
 }
@@ -31,9 +31,9 @@ void UDataTransformReverseHarness::NativeTransformEntries(TArray<UObject*>& InRe
 	Algo::Reverse(InRetrievedEntries);
 }
 
-void UViewHarness::Initialize()
+void UViewHarness::NativeInitialize()
 {
-	Super::Initialize();
+	Super::NativeInitialize();
 
 	OnInputAction.AddDynamic(this, &UViewHarness::HandleTestOnAction);
 	OnSelectionChange.AddDynamic(this, &UViewHarness::HandleTestOnSelectedChange);
@@ -85,9 +85,9 @@ void UViewHarness::HandleTestOnWidgetsPopulated(UDisplayScreenComponent* Compone
 	CountOnWidgetsPopulated++;
 }
 
-void UActionHarness::Initialize()
+void UActionHarness::NativeInitialize()
 {
-	Super::Initialize();
+	Super::NativeInitialize();
 	PRAGMA_DISABLE_INTERNAL_WARNINGS
 	OnIsValidResult_DEPRECATED.AddDynamic(this, &UActionHarness::HandleOnIsValid);
 	PRAGMA_ENABLE_INTERNAL_WARNINGS
@@ -110,9 +110,9 @@ void UActionHarness::HandleOnComplete(UActionScreenComponent* Component, bool bE
 	}
 }
 
-void UEntryHarness::Initialize()
+void UEntryHarness::NativeInitialize()
 {
-	Super::Initialize();
+	Super::NativeInitialize();
 	OnEntryChange.AddDynamic(this, &UEntryHarness::HandleOnEntryChange);
 }
 

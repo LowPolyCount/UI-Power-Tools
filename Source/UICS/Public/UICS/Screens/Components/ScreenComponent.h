@@ -13,10 +13,10 @@ class UICS_API UScreenComponent : public UScreenComponentWorldContext
 	GENERATED_BODY()
 public:
 	UScreenComponent(const FObjectInitializer& Initializer);
-	virtual void Initialize() {}
-	virtual void NativePreConstruct(bool bIsDesingTime) {}
-	virtual void NativeConstruct() {}
-	virtual void NativeDestruct() {}
+	virtual void NativeInitialize();
+	virtual void NativePreConstruct(bool bIsDesignTime);
+	virtual void NativeConstruct();
+	virtual void NativeDestruct();
 	virtual void ReleaseSlateResources(bool bReleaseChildren) {}
 	const FGuid& GetGuid() const;
 	const FName& GetComponentName() const {return ComponentName;}
@@ -28,6 +28,16 @@ public:
 
 
 protected:
+
+	UFUNCTION(BLueprintImplementableEvent)
+	void Initialize();
+	UFUNCTION(BLueprintImplementableEvent)
+	void PreConstruct(bool bIsDesignTime);
+	UFUNCTION(BLueprintImplementableEvent)
+	void Construct();
+	UFUNCTION(BLueprintImplementableEvent)
+	void Destruct();
+
 	// Utility Func to handle Member References for Screen Components because MRs are bound to the Screen which is the blueprint class
 	UFunction* ResolveMemberReference(const FMemberReference& Ref);
 

@@ -15,7 +15,7 @@ class UICS_API UActionScreenComponentProvider : public UScreenComponentWorldCont
 	GENERATED_BODY()
 public:
 	// initialize the provider. Should be called before any other functions. 
-	void Initialize(UActionScreenComponent* InParent);
+	void NativeInitialize(UActionScreenComponent* InParent);
 
 	// Determine if the data given can currently be executed by the Action Provider
 	// @Component - the component calling the function
