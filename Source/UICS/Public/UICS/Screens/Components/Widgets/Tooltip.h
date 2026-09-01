@@ -29,7 +29,7 @@ public:
 
 	// populate the tooltip with the given data
 	UFUNCTION(BlueprintCallable, Category = Tooltip)
-	void Populate(UObject* Data);
+	void Populate(const TScriptInterface<IDisplayWidgetInterface> Widget, UObject* Data);
 
 	// reset the tooltip
 	UFUNCTION(BlueprintCallable, Category = Tooltip)
@@ -39,7 +39,7 @@ protected:
 
 	// Populate the widget. The given EntryData can also be retrieved from ObservedEntryData
 	UFUNCTION(BlueprintImplementableEvent, Category = Tooltip, Meta=(DisplayName="Populate"))
-	void BP_Populate(UObject* EntryData);
+	void BP_Populate(const TScriptInterface<IDisplayWidgetInterface>& Widget, UObject* EntryData);
 
 	// Reset the tooltip
 	UFUNCTION(BlueprintImplementableEvent, Category = Tooltip, Meta = (DisplayName = "Reset"))

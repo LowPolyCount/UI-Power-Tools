@@ -98,14 +98,14 @@ void UTooltip::HandleOnHoverChange(UDisplayScreenComponent* Component, const TSc
 	BP_HandleOnHoverChange(Component, Widget, bGained);
 }
 
-void UTooltip::Populate(UObject* Data)
+void UTooltip::Populate(const TScriptInterface<IDisplayWidgetInterface> Widget, UObject* Data)
 {
 	if (ObservedEntryData)
 	{
 		Reset();
 	}
 	SetObservedEntryData(Data);
-	BP_Populate(Data);
+	BP_Populate(Widget, Data);
 }
 
 void UTooltip::Reset()
@@ -118,7 +118,7 @@ void UTooltip::ShowOrHideTooltip(const TScriptInterface<IDisplayWidgetInterface>
 	SetVisibility((bGained) ? ShowRule : HideRule);
 	if (bGained)
 	{
-		Populate(Widget->Execute_GetEntryData(Widget.GetObject()));
+		Populate(Widget, Widget->Execute_GetEntryData(Widget.GetObject()));
 	}
 	else
 	{
