@@ -15,8 +15,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FViewEvent, TScriptInterface<IDispl
 // the purpose of this interface is to get around the issue with UWidget events where we don't know who broadcast a Widget Event. 
 // Example: If you're an outside class listening to multiple Button's OnClick events, you don't know which button broadcast OnClick. 
 // ListView gets around this because it can create it's own SWidget where Slate will tell it which Widget was Clicked/Selected/Focused/etc. 
-// We don't have that luxury because View Screen Component needs to be compatible with all UPanels.
-// Widgets are required to implement this to be usable with a view component.  
+// We don't have that luxury because Display Screen Component needs to be compatible with all UPanels.
+// Widgets are required to implement this to be usable with a Display component.  
 // Widgets implementing this interface are:
 // Cacheable - Instead of being destroyed when no longer used, it may be held for future use. 
 // Resetable - The OnReset event is called before we set it's data and when the widget is removed from it's parent, so that if the widget is being cached, you can remove listeners, pointers, etc. 
@@ -33,7 +33,7 @@ class UICS_API IDisplayWidgetInterface
 
 public:
 	// these delegates need to be created in the implementing class so that they can be set as blueprint assignable
-	//@todo: Do they need to be exposed to the user?  They are mostly just used for the view component
+	//@todo: Do they need to be exposed to the user?  They are mostly just used for the Display component
 	virtual FViewAction& GetOnAction() = 0;
 	virtual FViewEvent& GetOnSelectionChange() = 0;
 	virtual FViewEvent& GetOnFocusChange() = 0;
@@ -43,66 +43,66 @@ public:
 protected:
 	// Called when our widget has received data and should set it's widgets (Images, textfields, etc) based on the contents of the data. 
 	// @EntryData - The data that has been received. Comes in as UObject so that we're compatabile with any type of data coming in. You should type it to what the actual class type is. 
-	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget)
+	UFUNCTION(BlueprintImplementableEvent, Category = DisplayWidget)
 	void Populate(UObject* EntryData);
 
 public:
-	// set the widget's entry data.  This is only callable in blueprint for edge cases where you may want to use a ViewWidget by itself and need to set it's data.  
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	// set the widget's entry data.  This is only callable in blueprint for edge cases where you may want to use a DisplayWidget by itself and need to set it's data.  
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget)
 	void SetEntryData(int32 InIndex, UObject* InEntry);
 
 	// get the current entry data
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget)
 	UObject* GetEntryData() const;
 
 	// get the widget's index on the panel that it is a child of
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget)
 	int32 GetIndex() const;
 
 	// reset the widget
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget)
 	void Reset();
 
-	// set a pointer to the view screen component that created us 
-	void SetOwningViewScreenComponent(UDisplayScreenComponent* InOwningComponent);
+	// set a pointer to the display screen component that created us 
+	void SetOwningDisplayScreenComponent(UDisplayScreenComponent* InOwningComponent);
 
-	// get the view screen component that created us
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
-	UDisplayScreenComponent* GetOwningViewScreenComponent() const;
+	// get the display screen component that created us
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget)
+	UDisplayScreenComponent* GetOwningDisplayScreenComponent() const;
 
 	// get the Action Screen Component that is linked to the View Screen Component that created us
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget)
 	UActionScreenComponent* GetLinkedActionScreenComponent() const;
 
-	// does the View Screen Component that owns us have a linked Action Screen Component?
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	// does the display Screen Component that owns us have a linked Action Screen Component?
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget)
 	bool HasLinkedActionScreenComponent() const;
 
-	// Will ask the Action Screen Component linked to the owning View Screen Component if this Widget's EntryData Can be executed upon. 
+	// Will ask the Action Screen Component linked to the owning Display Screen Component if this Widget's EntryData Can be executed upon. 
 	// @return Will return results of Action Screen Component's CanExecuteAction() 
 	// @return Will return false if the Owning ASC is invalid
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget)
 	bool CanExecuteAction();
 
-	// Will execute an action using the View Widget's EntryData on an Action Screen Component linked to the owning View Screen Component
-	// @Note: There are very few cases where a ViewWidget will need to call this. The Action Screen Component has triggers for a ViewWidget's Input, Hover, etc that should be used isntead. 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	// Will execute an action using the Display Widget's EntryData on an Action Screen Component linked to the owning Display Screen Component
+	// @Note: There are very few cases where a DisplayWidget will need to call this. The Action Screen Component has triggers for a DisplayWidget's Input, Hover, etc that should be used isntead. 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget)
 	bool ExecuteAction();
 
 	// Do we have text associated with the current last action result tag?
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget)
 	bool HasTextAssociatedWithLastActionResultTag() const;
 
 	// returns the text associated with the last action result tag that was set when either CanExecuteAction() or ExecuteAction() were called.
 	// @return - Text from Map association.  Will be empty if no text is associated with the last action result tag. 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget)
 	FText GetTextAssociatedWithLastActionResultTag() const;
 
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget)
 	FGameplayTag GetLastActionResult() const;
 
-	// only called by the owning View Screen Component
+	// only called by the owning Display Screen Component
 	void Release();
 
 protected:
@@ -113,15 +113,15 @@ protected:
 	// @index - The index this widget is in the entry set
 	// @entry - the entry data
 	// @todo - consider deprecating this function. 
-	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget)
+	UFUNCTION(BlueprintImplementableEvent, Category = DisplayWidget)
 	void OnEntryDataSet(int32 InIndex, const UObject* InEntry);
 
 	// Handle any actions required before we receive a new set of data to represent.
-	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget)
+	UFUNCTION(BlueprintImplementableEvent, Category = DisplayWidget)
 	void OnReset();
 
 	// event notifying that some type of input (Click, Button Press, etc) has happened on this widget
-	UFUNCTION(BlueprintNativeEvent, Category = ViewWidget)
+	UFUNCTION(BlueprintNativeEvent, Category = DisplayWidget)
 	void OnInputAction();
 
 	// these internal functions are broken out and made virtual in case an implementing class needs to override them. 
@@ -133,7 +133,7 @@ protected:
 	virtual void Reset_Implementation();
 	bool CanExecuteAction_Implementation();
 	bool HasLinkedActionScreenComponent_Implementation() const;
-	UDisplayScreenComponent* GetOwningViewScreenComponent_Implementation() const;
+	UDisplayScreenComponent* GetOwningDisplayScreenComponent_Implementation() const;
 	UActionScreenComponent* GetLinkedActionScreenComponent_Implementation() const;
 	FGameplayTag GetLastActionResult_Implementation() const;
 	bool HasTextAssociatedWithLastActionResultTag_Implementation() const;
@@ -148,53 +148,53 @@ protected:
 
 	TStrongObjectPtr<UObject> Entry;	// the entry data
 	int32 Index = INDEX_NONE;			// what is the index of the widget in the view component array?
-	TWeakObjectPtr<UDisplayScreenComponent> OwningViewScreenComponent; // View Component that is managing this widget
+	TWeakObjectPtr<UDisplayScreenComponent> OwningDisplayScreenComponent; // View Component that is managing this widget
 
 public:
 	// list out deprecated functions. 
 	// set the focus
 	UE_DEPRECATED(Any, "Is Deprecated. Use UWidget:: Instead")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget, Meta = (DeprecatedFunction, DeprecationMessage = "SetFocus() is deprecated. Use UWidget::SetuserFocus()"))
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "SetFocus() is deprecated. Use UWidget::SetuserFocus()"))
 	void SetFocus(bool bInFocused);
 	// set if we are hovered
 	UE_DEPRECATED(Any, "Is Deprecated. Try UUserWidget::OnMouseLeave()")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget, Meta = (DeprecatedFunction, DeprecationMessage = "SetHovered() is deprecated. Try UUserWidget::OnMouseLeave()"))
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "SetHovered() is deprecated. Try UUserWidget::OnMouseLeave()"))
 	void SetHovered(bool bInHovered);
 	// set if we are selected
 	UE_DEPRECATED(Any, "Is Deprecated.  Use UCommonButtonBase::GetIsSelected()")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget, Meta = (DeprecatedFunction, DeprecationMessage = "SetSelected() is deprecated. Use UCommonButtonBase::GetIsSelected()"))
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "SetSelected() is deprecated. Use UCommonButtonBase::GetIsSelected()"))
 	void SetSelected(bool bInSelected);
 
 	// Force an input action to happen
 	UE_DEPRECATED(Any, "Is Deprecated. UCommonButton::ExecuteTriggeredInput()")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget, Meta = (DeprecatedFunction, DeprecationMessage = "ForceInputAction() is deprecated. Use UCommonButton::ExecuteTriggeredInput()"))
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "ForceInputAction() is deprecated. Use UCommonButton::ExecuteTriggeredInput()"))
 	void ForceInputAction();
 	
 	// are we focused?
 	UE_DEPRECATED(Any, "Is Deprecated. Use UWidget::HasAnyUserFocus() instead")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget, Meta=(DeprecatedFunction, DeprecationMessage="IsFocused() is deprecated. Use UWidget::HasAnyUserFocus() instead"))
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta=(DeprecatedFunction, DeprecationMessage="IsFocused() is deprecated. Use UWidget::HasAnyUserFocus() instead"))
 	bool IsFocused() const;
 
 
 	// are we hovered?
 	UE_DEPRECATED(Any, "Is Deprecated. Use UWidget::IsHovered()")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget, Meta = (DeprecatedFunction, DeprecationMessage = "IsHovered() is deprecated. Use UWidget::IsHovered()"))
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "IsHovered() is deprecated. Use UWidget::IsHovered()"))
 	bool IsHovered() const;
 
 	// are we selected?
 	UE_DEPRECATED(Any, "Is Deprecated. Use UCommonButtonBase::GetIsSelected()")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ViewWidget, Meta = (DeprecatedFunction, DeprecationMessage = "IsSelected() is deprecated. Use UCommonButtonBase::GetIsSelected()"))
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "IsSelected() is deprecated. Use UCommonButtonBase::GetIsSelected()"))
 	bool IsSelected() const;
 
 protected:
 	// event notifying that the focus has changed
 	UE_DEPRECATED(Any, "Is Deprecated. Bind to UCommonButtonBase::OnReceivedFocus or UCommonButtonBase::OnLostFocus ")
-	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget, Meta = (DeprecatedFunction, DeprecationMessage = "OnFocusChanged() is deprecated. Bind to UCommonButtonBase::OnReceivedFocus or UCommonButtonBase::OnLostFocus "))
+	UFUNCTION(BlueprintImplementableEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "OnFocusChanged() is deprecated. Bind to UCommonButtonBase::OnReceivedFocus or UCommonButtonBase::OnLostFocus "))
 	void OnFocusChanged(bool bFocus);
 
 	// event notifying that the selection of the widget has changed
 	UE_DEPRECATED(Any, "Is Deprecated. Bind to UCommonButton::OnSelected/OnDeselected")
-	UFUNCTION(BlueprintImplementableEvent, Category = ViewWidget, Meta = (DeprecatedFunction, DeprecationMessage = "OnSelectionChanged() is deprecated. Bind to UCommonButton::OnSelected/OnDeselected"))
+	UFUNCTION(BlueprintImplementableEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "OnSelectionChanged() is deprecated. Bind to UCommonButton::OnSelected/OnDeselected"))
 	void OnSelectionChanged(bool bInSelected);
 
 
@@ -214,15 +214,15 @@ protected:
 // This can be complicated because UUserWidget has different functions to define how it gets focus and hover differently than UButton
 // 
 // this defines what every implementation needs. 
-#define VIEW_BASE_BOILERPLATE() \
+#define DISPLAY_BASE_BOILERPLATE() \
 public:\
-UPROPERTY(BlueprintAssignable, Category = ViewWidget)\
+UPROPERTY(BlueprintAssignable, Category = DisplayWidget)\
 FViewAction OnInputAction;\
-UPROPERTY(BlueprintAssignable, Category = ViewWidget)\
+UPROPERTY(BlueprintAssignable, Category = DisplayWidget)\
 FViewEvent OnSelectionChanged;\
-UPROPERTY(BlueprintAssignable, Category = ViewWidget)\
+UPROPERTY(BlueprintAssignable, Category = DisplayWidget)\
 FViewEvent OnFocusChanged;\
-UPROPERTY(BlueprintAssignable, Category = ViewWidget)\
+UPROPERTY(BlueprintAssignable, Category = DisplayWidget)\
 FViewEvent OnHoverChange;\
 virtual FViewAction& GetOnAction() { return OnInputAction; }\
 virtual FViewEvent& GetOnSelectionChange() { return OnSelectionChanged; }\
@@ -232,8 +232,8 @@ virtual FViewEvent& GetOnHoverChange() { return OnHoverChange; }\
 //
 // define boilerplate required for a UUserWidget
 // @note: a UserWidget doesn't have Action or Selection built in, so we don't need to define those. 
-#define VIEW_USERWIDGET_BOILERPLATE() \
-VIEW_BASE_BOILERPLATE() \
+#define DISPLAY_USERWIDGET_BOILERPLATE() \
+DISPLAY_BASE_BOILERPLATE() \
 virtual FReply NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent) override\
 {\
 	const FReply RetVal = Super::NativeOnFocusReceived(InGeometry, InFocusEvent);\
@@ -258,8 +258,8 @@ virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override\
 
 // this macro defines boilerplate code for a class derived from CommonButtonBase that is required for implementing IDisplayWidgetInterface
 
-#define VIEW_COMMONBUTTON_BOILERPLATE() \
-VIEW_USERWIDGET_BOILERPLATE() \
+#define DISPLAY_COMMONBUTTON_BOILERPLATE() \
+DISPLAY_USERWIDGET_BOILERPLATE() \
 virtual void NativeOnSelected(bool bBroadcast) override\
 {\
 	Super::NativeOnSelected(bBroadcast);\
@@ -283,5 +283,5 @@ virtual void NativeOnClicked() override\
 }\*/
 
 // keep old definitions for backwards compatibility
-#define VIEW_WIDGET_BOILERPLATE() VIEW_USERWIDGET_BOILERPLATE()
-#define VIEW_BUTTON_AND_WIDGET_BOILERPLATE() VIEW_COMMONBUTTON_BOILERPLATE 
+#define DISPLAY_WIDGET_BOILERPLATE() DISPLAY_USERWIDGET_BOILERPLATE()
+#define DISPLAY_BUTTON_AND_WIDGET_BOILERPLATE() DISPLAY_COMMONBUTTON_BOILERPLATE 

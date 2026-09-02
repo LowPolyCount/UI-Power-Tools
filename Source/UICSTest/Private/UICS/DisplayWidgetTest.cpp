@@ -21,8 +21,8 @@ bool FDisplayWidgetTest::RunTest(const FString& Parameters)
 	TestNotNull("View", View);
 	TestNotNull("Data", Data);
 
-	TScriptInterface<IDisplayWidgetInterface> AsViewWidgetInterface(View->GetViewWidgetAt(0));
-	TestNotNull("AsViewInterface", AsViewWidgetInterface.GetObject());
+	TScriptInterface<IDisplayWidgetInterface> AsDisplayWidgetInterface(View->GetViewWidgetAt(0));
+	TestNotNull("AsViewInterface", AsDisplayWidgetInterface.GetObject());
 
 	// focus test
 	// we'll get an error saying that the widget is not owned by a player, so it cannot be focused. Disabling for now. 
@@ -35,15 +35,15 @@ bool FDisplayWidgetTest::RunTest(const FString& Parameters)
 	{
 		TestNotNull("TestData", Data);
 
-		AsViewWidgetInterface->Execute_SetEntryData(AsViewWidgetInterface.GetObject(), 0, Data);
+		AsDisplayWidgetInterface->Execute_SetEntryData(AsDisplayWidgetInterface.GetObject(), 0, Data);
 
-		TestEqual("GetIndex", AsViewWidgetInterface->Execute_GetIndex(AsViewWidgetInterface.GetObject()), 0);
-		TestEqual("GetData", AsViewWidgetInterface->Execute_GetEntryData(AsViewWidgetInterface.GetObject()), Cast<UObject>(Data));
+		TestEqual("GetIndex", AsDisplayWidgetInterface->Execute_GetIndex(AsDisplayWidgetInterface.GetObject()), 0);
+		TestEqual("GetData", AsDisplayWidgetInterface->Execute_GetEntryData(AsDisplayWidgetInterface.GetObject()), Cast<UObject>(Data));
 
 		// reset test
-		AsViewWidgetInterface->Execute_Reset(AsViewWidgetInterface.GetObject());
-		TestEqual("GetIndex", AsViewWidgetInterface->Execute_GetIndex(AsViewWidgetInterface.GetObject()), INDEX_NONE);
-		TestNull("Reset", AsViewWidgetInterface->Execute_GetEntryData(AsViewWidgetInterface.GetObject()));
+		AsDisplayWidgetInterface->Execute_Reset(AsDisplayWidgetInterface.GetObject());
+		TestEqual("GetIndex", AsDisplayWidgetInterface->Execute_GetIndex(AsDisplayWidgetInterface.GetObject()), INDEX_NONE);
+		TestNull("Reset", AsDisplayWidgetInterface->Execute_GetEntryData(AsDisplayWidgetInterface.GetObject()));
 	}
 
 	return true;

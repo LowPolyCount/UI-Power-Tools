@@ -23,8 +23,8 @@ bool FViewTest::RunTest(const FString& Parameters)
 		UPanelWidget* Panel = UICSTest::SetupViewTest(View, Data);
 		//TSharedRef<SWidget> SWidget = Panel->TakeWidget();
 
-		TestTrue("View->GetAllViewWidgets()", View->GetAllViewWidgets().Num() == UDataRetrieverHarness::NumTestEntries);
-		TestTrue("View->GetAllViewWidgets()", Panel->GetAllChildren().Num() == UDataRetrieverHarness::NumTestEntries);
+		TestTrue("View->GetAllDisplayWidgets()", View->GetAllDisplayWidgets().Num() == UDataRetrieverHarness::NumTestEntries);
+		TestTrue("View->GetAllDisplayWidgets()", Panel->GetAllChildren().Num() == UDataRetrieverHarness::NumTestEntries);
 	}
 
 	return true;
@@ -127,40 +127,40 @@ bool FViewCachingTest::RunTest(const FString& Parameters)
 		View->SetCacheWidgets(false);
 
 		View->TestHandleOnDataRetrieval(nullptr, UICSTest::GenerateEntries(3, View));
-		TestEqual("View->GetAllViewWidgets()", View->GetAllViewWidgets().Num(), 3);
+		TestEqual("View->GetAllDisplayWidgets()", View->GetAllDisplayWidgets().Num(), 3);
 		TestEqual("View->GetAllCachedWidgets()", View->GetNumCachedWidgets(), 0);
 
 		View->TestHandleOnDataRetrieval(nullptr, UICSTest::GenerateEntries(0, View));
-		TestEqual("View->GetAllViewWidgets()", View->GetAllViewWidgets().Num(), 0);
+		TestEqual("View->GetAllDisplayWidgets()", View->GetAllDisplayWidgets().Num(), 0);
 		TestEqual("View->GetAllCachedWidgets()", View->GetNumCachedWidgets(), 0);
 
 		// test when caching is turned off
 		View->SetCacheWidgets(false);
 
-		TestEqual("View->GetAllViewWidgets()", View->GetAllViewWidgets().Num(), 0);
+		TestEqual("View->GetAllDisplayWidgets()", View->GetAllDisplayWidgets().Num(), 0);
 		TestEqual("View->GetAllCachedWidgets()", View->GetNumCachedWidgets(), 0);
 
 		View->TestHandleOnDataRetrieval(nullptr, UICSTest::GenerateEntries(3, View));
-		TestEqual("View->GetAllViewWidgets()", View->GetAllViewWidgets().Num(), 3);
+		TestEqual("View->GetAllDisplayWidgets()", View->GetAllDisplayWidgets().Num(), 3);
 		TestEqual("View->GetAllCachedWidgets()", View->GetNumCachedWidgets(), 0);
 
 		View->TestHandleOnDataRetrieval(nullptr, UICSTest::GenerateEntries(0, View));
-		TestEqual("View->GetAllViewWidgets()", View->GetAllViewWidgets().Num(), 0);
+		TestEqual("View->GetAllDisplayWidgets()", View->GetAllDisplayWidgets().Num(), 0);
 		TestEqual("View->GetAllCachedWidgets()", View->GetNumCachedWidgets(), 0);
 
 		// test when caching is turned on
 		View->SetCacheWidgets(true);
 
 		View->TestHandleOnDataRetrieval(nullptr, UICSTest::GenerateEntries(3, View));
-		TestEqual("View->GetAllViewWidgets()", View->GetAllViewWidgets().Num(), 3);
+		TestEqual("View->GetAllDisplayWidgets()", View->GetAllDisplayWidgets().Num(), 3);
 		TestEqual("View->GetAllCachedWidgets()", View->GetNumCachedWidgets(), 0);
 
 		View->TestHandleOnDataRetrieval(nullptr, UICSTest::GenerateEntries(1, View));
-		TestEqual("View->GetAllViewWidgets()", View->GetAllViewWidgets().Num(), 1);
+		TestEqual("View->GetAllDisplayWidgets()", View->GetAllDisplayWidgets().Num(), 1);
 		TestEqual("View->GetAllCachedWidgets()", View->GetNumCachedWidgets(), 2);
 
 		View->TestHandleOnDataRetrieval(nullptr, UICSTest::GenerateEntries(0, View));
-		TestEqual("View->GetAllViewWidgets()", View->GetAllViewWidgets().Num(), 0);
+		TestEqual("View->GetAllDisplayWidgets()", View->GetAllDisplayWidgets().Num(), 0);
 		TestEqual("View->GetAllCachedWidgets()", View->GetNumCachedWidgets(), 3);
 	}
 
@@ -210,7 +210,7 @@ bool FViewDesiredFocusTargetTest::RunTest(const FString& Parameters)
 		View2->ManuallySetData(UICSTest::GenerateEntries(3, View2));
 
 		// the widgets don't get created with Focusable set to true.  @todo: Find core issue here. 
-		for (TScriptInterface<IDisplayWidgetInterface> ViewWidget : View1->GetAllViewWidgets())
+		for (TScriptInterface<IDisplayWidgetInterface> ViewWidget : View1->GetAllDisplayWidgets())
 		{
 			if (UUserWidget* AsUWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
 			{
@@ -218,7 +218,7 @@ bool FViewDesiredFocusTargetTest::RunTest(const FString& Parameters)
 			}
 		}
 
-		for (TScriptInterface<IDisplayWidgetInterface> ViewWidget : View2->GetAllViewWidgets())
+		for (TScriptInterface<IDisplayWidgetInterface> ViewWidget : View2->GetAllDisplayWidgets())
 		{
 			if (UUserWidget* AsUWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
 			{

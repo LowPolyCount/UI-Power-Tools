@@ -14,5 +14,5 @@ class UICS_API UDisplayCommonButtonBase : public UCommonButtonBase, public IDisp
 	GENERATED_BODY()
 
 public:
-	VIEW_COMMONBUTTON_BOILERPLATE();
+	DISPLAY_COMMONBUTTON_BOILERPLATE();
 };
