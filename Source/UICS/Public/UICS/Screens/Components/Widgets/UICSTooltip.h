@@ -14,11 +14,11 @@ class IDisplayWidgetInterface;
  * Listens to provided Screen Components and can display detailed information about a hovered or focused entry
  */
 UCLASS()
-class UICS_API UTooltip : public UCommonActivatableWidget
+class UICS_API UUICSTooltip : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 protected:
-	UTooltip();
+	UUICSTooltip();
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 
