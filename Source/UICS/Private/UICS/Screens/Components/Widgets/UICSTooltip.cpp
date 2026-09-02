@@ -1,7 +1,7 @@
 // Copyright 2025 Joel Gonzales
 
 
-#include "UICS/Screens/Components/Widgets/Tooltip.h"
+#include "UICS/Screens/Components/Widgets/UICSTooltip.h"
 #include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
 #include "UICS/Utility/UIPTStatics.h"
 

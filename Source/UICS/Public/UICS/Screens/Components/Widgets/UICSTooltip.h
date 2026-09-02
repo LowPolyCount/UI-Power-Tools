@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
 #include "UICS/Screens/Tools/ComponentSelector.h"
-#include "Tooltip.generated.h"
+#include "UICSTooltip.generated.h"
 
 class UDisplayScreenComponent;
 class IDisplayWidgetInterface;
