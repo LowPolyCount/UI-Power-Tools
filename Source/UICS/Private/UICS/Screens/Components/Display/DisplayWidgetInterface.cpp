@@ -48,7 +48,7 @@ void IDisplayWidgetInterface::SetEntryData_Implementation(int32 InIndex, UObject
 	Index = InIndex;
 	SetEntry_Internal(InEntry);
 	Execute_OnEntryDataSet(ThisAsUObject, Index, GetEntry_Internal());
-	Execute_Populate(ThisAsUObject, InEntry);
+	Execute_Populate(ThisAsUObject, Execute_GetOwningDisplayScreenComponent(ThisAsUObject), InEntry);
 }
 
 UObject* IDisplayWidgetInterface::GetEntryData_Implementation() const

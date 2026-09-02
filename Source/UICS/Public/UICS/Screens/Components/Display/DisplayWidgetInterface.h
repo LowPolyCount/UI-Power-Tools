@@ -44,7 +44,7 @@ protected:
 	// Called when our widget has received data and should set it's widgets (Images, textfields, etc) based on the contents of the data. 
 	// @EntryData - The data that has been received. Comes in as UObject so that we're compatabile with any type of data coming in. You should type it to what the actual class type is. 
 	UFUNCTION(BlueprintImplementableEvent, Category = DisplayWidget)
-	void Populate(UObject* EntryData);
+	void Populate(UDisplayScreenComponent* ScreenComponent, UObject* EntryData);
 
 public:
 	// set the widget's entry data.  This is only callable in blueprint for edge cases where you may want to use a DisplayWidget by itself and need to set it's data.  
