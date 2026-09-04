@@ -24,7 +24,7 @@ UICS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_CouldNotExecute);	// Execute
 UICS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Success);			// ExecuteAction() was called and action was executed successfully
 UICS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Async);				// Action is waiting for an asynchronous callback
 UICS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Failure);			// ExecuteAction() Was called, but not able to execute
-UICS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_ACTION_NoActionComponent);	// There is no Action Component linked to a View Component. (Can happen for IViewWidgets)
+UICS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_ACTION_NoActionComponent);	// There is no Action Component linked to a View Component. (Can happen for IDisplayidgets)
 UICS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_ACTION_NoActionProvider);	// There is no action provider
 
 // define all bindable events in a struct so that in editor, it will be it's own category

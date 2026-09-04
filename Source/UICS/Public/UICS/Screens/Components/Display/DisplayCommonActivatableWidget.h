@@ -15,6 +15,6 @@ class UICS_API UDisplayCommonActivatableWidget : public UCommonActivatableWidget
 	GENERATED_BODY()
 
 public:
-	VIEW_USERWIDGET_BOILERPLATE()
+	DISPLAY_USERWIDGET_BOILERPLATE()
 
 };

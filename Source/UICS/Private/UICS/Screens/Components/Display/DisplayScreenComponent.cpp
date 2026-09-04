@@ -64,9 +64,9 @@ void UDisplayScreenComponent::SetupPreConstructWidgets()
 		// PreConstruct can run multiple times while in design time. 
 		// Don't clear the panel so we preserve any widgets the designer has added
 		// Instead, Remove existing View Widgets and recreate them in case properties have changed. 
-		for (TScriptInterface<IDisplayWidgetInterface> ViewWidget : ActiveViewWidgets)
+		for (TScriptInterface<IDisplayWidgetInterface> Displayidget : ActiveDisplayWidgets)
 		{
-			if (UWidget* AsUWidget = Cast<UWidget>(ViewWidget.GetObject()))
+			if (UWidget* AsUWidget = Cast<UWidget>(Displayidget.GetObject()))
 			{
 				if (Panel->HasChild(AsUWidget))
 				{
@@ -75,14 +75,14 @@ void UDisplayScreenComponent::SetupPreConstructWidgets()
 			}
 		}
 
-		ActiveViewWidgets.Empty();
+		ActiveDisplayWidgets.Empty();
 
 		for (int32 i = 0; i < DesignEntriesToShow; ++i)
 		{
-			if (TScriptInterface<IDisplayWidgetInterface> ViewWidget = DuplicateWidget(ViewWidgetPrototype))
+			if (TScriptInterface<IDisplayWidgetInterface> Displayidget = DuplicateWidget(DisplayWidgetPrototype))
 			{
-				AddToPanel(ViewWidget);
-				ActiveViewWidgets.Emplace(ViewWidget);
+				AddToPanel(Displayidget);
+				ActiveDisplayWidgets.Emplace(Displayidget);
 			}
 		}
 	}
@@ -91,7 +91,7 @@ void UDisplayScreenComponent::SetupPreConstructWidgets()
 // in it's own function to make sure we're consistent with how we duplicate
 TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::DuplicateWidget(const TObjectPtr<UUserWidget>& Prototype)
 {
-	TScriptInterface<IDisplayWidgetInterface> RetVal = DuplicateObject<UUserWidget>(ViewWidgetPrototype, this);
+	TScriptInterface<IDisplayWidgetInterface> RetVal = DuplicateObject<UUserWidget>(DisplayWidgetPrototype, this);
 	// we could ensure(RetVal) here, but PreConstruct() can call this func and that can happen during teardown. 
 	return RetVal;
 }
@@ -99,18 +99,18 @@ TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::DuplicateWidg
 
 void UDisplayScreenComponent::NativeDestruct()
 {
-	for(int32 i= ActiveViewWidgets.Num()-1; i >= 0; --i)
+	for(int32 i= ActiveDisplayWidgets.Num()-1; i >= 0; --i)
 	{
-		RemoveViewWidget(ActiveViewWidgets[i]);
+		RemoveViewWidget(ActiveDisplayWidgets[i]);
 	}
-	ActiveViewWidgets.Empty();
+	ActiveDisplayWidgets.Empty();
 
 	for (FCachedWidget& Widget : CachedWidgets)
 	{
 		Widget.UserWidget->Release();
 	}
 	CachedWidgets.Empty();
-	//check(ActiveViewWidgets.Num() == 0);
+	//check(ActiveDisplayWidgets.Num() == 0);
 
 	Super::NativeDestruct();
 
@@ -137,9 +137,9 @@ UWidget* UDisplayScreenComponent::GetDesiredFocusTarget() const
 	UWidget* RetVal = nullptr;
 	//ensureMsgf(InitialFocus, TEXT("bInitialFocus is false for %s"), *this->GetName());
 	
-	for (TScriptInterface<IDisplayWidgetInterface> ViewWidget : GetAllViewWidgets())
+	for (TScriptInterface<IDisplayWidgetInterface> Displayidget : GetAllDisplayWidgets())
 	{
-		if (UUserWidget* AsUWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
+		if (UUserWidget* AsUWidget = Cast<UUserWidget>(Displayidget.GetObject()))
 		{
 			if (AsUWidget->IsFocusable())
 			{
@@ -168,14 +168,14 @@ void UDisplayScreenComponent::SetLinkedDataComponent(UDataScreenComponent* InDat
 
 void UDisplayScreenComponent::SetWidgetPrototype(UUserWidget* InWidgetPrototype)
 {
-	ViewWidgetPrototype = InWidgetPrototype;
+	DisplayWidgetPrototype = InWidgetPrototype;
 	// flush system
-	if (ActiveViewWidgets.Num() > 0)
+	if (ActiveDisplayWidgets.Num() > 0)
 	{
 		//@todo: We should handle this case and recreate the widgets from data. 
-		UE_LOG(LogUICS, Warning, TEXT("There were %i Active Widgets when setting View Prototype. They will not be recreated, you will have to set the data for them again"), ActiveViewWidgets.Num());
+		UE_LOG(LogUICS, Warning, TEXT("There were %i Active Widgets when setting Display Prototype. They will not be recreated, you will have to set the data for them again"), ActiveDisplayWidgets.Num());
 	}
-	ActiveViewWidgets.Empty();
+	ActiveDisplayWidgets.Empty();
 	CachedWidgets.Empty();
 }
 
@@ -195,9 +195,9 @@ TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetViewWidget
 { 
 	TScriptInterface<IDisplayWidgetInterface> RetVal;
 
-	if(ActiveViewWidgets.IsValidIndex(Index))
+	if(ActiveDisplayWidgets.IsValidIndex(Index))
 	{
-		RetVal = ActiveViewWidgets[Index];
+		RetVal = ActiveDisplayWidgets[Index];
 	}
 	else
 	{
@@ -207,10 +207,10 @@ TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetViewWidget
 	return RetVal;
 }
 
-TArray<UUserWidget*> UDisplayScreenComponent::GetAllWidgets() const
+TArray<UUserWidget*> UDisplayScreenComponent::GetAllDisplayWidgetsAsUserWidgets() const
 {
 	TArray<UUserWidget*> RetVal;
-	for (const TScriptInterface<IDisplayWidgetInterface>& AsViewWidget : ActiveViewWidgets)
+	for (const TScriptInterface<IDisplayWidgetInterface>& AsViewWidget : ActiveDisplayWidgets)
 	{
 		if (UUserWidget* AsUserWidget = Cast<UUserWidget>(AsViewWidget.GetObject()))
 		{
@@ -244,7 +244,7 @@ TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetFirstSelec
 {
 	TScriptInterface<IDisplayWidgetInterface> RetVal;
 	//@todo: Hold on to selected widgets so iteration is not required
-	for (TScriptInterface<IDisplayWidgetInterface> Widget : ActiveViewWidgets)
+	for (TScriptInterface<IDisplayWidgetInterface> Widget : ActiveDisplayWidgets)
 	{
 		if (const UCommonButtonBase* AsButton = Cast<UCommonButtonBase>(Widget.GetObject()))
 		{
@@ -263,7 +263,7 @@ TArray<TScriptInterface<IDisplayWidgetInterface>> UDisplayScreenComponent::GetAl
 {
 	TArray<TScriptInterface<IDisplayWidgetInterface>> RetVal;
 	//@todo: Hold on to selected widgets so iteration is not required
-	for (TScriptInterface<IDisplayWidgetInterface> Widget : ActiveViewWidgets)
+	for (TScriptInterface<IDisplayWidgetInterface> Widget : ActiveDisplayWidgets)
 	{
 		if (const UCommonButtonBase* AsButton = Cast<UCommonButtonBase>(Widget.GetObject()))
 		{
@@ -295,10 +295,10 @@ void UDisplayScreenComponent::HandleOnDataRetrieval(UDataScreenComponent* Compon
 void UDisplayScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 {
 	// do we need to remove widgets to meet the new number of entries?
-	const int32 WidgetDifference = ActiveViewWidgets.Num() - Entries.Num();
+	const int32 WidgetDifference = ActiveDisplayWidgets.Num() - Entries.Num();
 
 	// we know how many entries we need upfront, so reserve them.
-	ActiveViewWidgets.Reserve(Entries.Num());
+	ActiveDisplayWidgets.Reserve(Entries.Num());
 
 	if ((CachedWidgets.Num() + WidgetDifference) > 0)
 	{
@@ -308,9 +308,9 @@ void UDisplayScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 	// let's remove any unused widgets
 	if (WidgetDifference > 0)
 	{
-		for (int32 j = WidgetDifference, i = ActiveViewWidgets.Num() - 1; j > 0; --j, --i)
+		for (int32 j = WidgetDifference, i = ActiveDisplayWidgets.Num() - 1; j > 0; --j, --i)
 		{
-			RemoveViewWidget(ActiveViewWidgets[i]);
+			RemoveViewWidget(ActiveDisplayWidgets[i]);
 		}
 	}
 	else if (WidgetDifference < 0)	// let's create any widgets that we will need
@@ -324,20 +324,20 @@ void UDisplayScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 	// update data for our widgets
 	for (int32 i = 0; i < Entries.Num(); ++i)
 	{
-		if (ActiveViewWidgets.IsValidIndex(i))
+		if (ActiveDisplayWidgets.IsValidIndex(i))
 		{
 			
 			/*if (Panel)
 			{
-				AddToPanel(ActiveViewWidgets[i]);
+				AddToPanel(ActiveDisplayWidgets[i]);
 			}*/
 
-			ActiveViewWidgets[i]->Execute_Reset(ActiveViewWidgets[i].GetObject());
-			ActiveViewWidgets[i]->Execute_SetEntryData(ActiveViewWidgets[i].GetObject(), i, Entries[i]);
+			ActiveDisplayWidgets[i]->Execute_Reset(ActiveDisplayWidgets[i].GetObject());
+			ActiveDisplayWidgets[i]->Execute_SetEntryData(ActiveDisplayWidgets[i].GetObject(), i, Entries[i]);
 		}
 		else
 		{
-			UE_LOG(LogUICS, Warning, TEXT(" There are %i Entries but only %i ActiveViewWidgets. There is no widget for Entry %i"), Entries.Num(), ActiveViewWidgets.Num(), i);
+			UE_LOG(LogUICS, Warning, TEXT(" There are %i Entries but only %i ActiveDisplayWidgets. There is no widget for Entry %i"), Entries.Num(), ActiveDisplayWidgets.Num(), i);
 		}
 	}
 
@@ -368,9 +368,9 @@ TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetAndSetupEn
 		RetVal = CachedWidgets[FoundCachedWidgetIndex].UserWidget;
 		
 	}
-	else if(ViewWidgetPrototype)
+	else if(DisplayWidgetPrototype)
 	{
-		RetVal = DuplicateWidget(ViewWidgetPrototype);
+		RetVal = DuplicateWidget(DisplayWidgetPrototype);
 	}
 	else
 	{
@@ -379,7 +379,7 @@ TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetAndSetupEn
 
 	if (RetVal)
 	{
-		ActiveViewWidgets.Emplace(RetVal);
+		ActiveDisplayWidgets.Emplace(RetVal);
 		ViewWidgetSetup(RetVal);
 		AddToPanel(RetVal);
 
@@ -425,7 +425,7 @@ void UDisplayScreenComponent::RemoveViewWidget(TScriptInterface<IDisplayWidgetIn
 				CachedWidgets.Add(FCachedWidget(Widget));
 			}
 
-			ActiveViewWidgets.Remove(Widget);
+			ActiveDisplayWidgets.Remove(Widget);
 
 			AsUserWidget->RemoveFromParent();
 		}
@@ -436,7 +436,7 @@ void UDisplayScreenComponent::ViewWidgetSetup(TScriptInterface<IDisplayWidgetInt
 {
 	if (Widget)
 	{
-		Widget->SetOwningViewScreenComponent(this);
+		Widget->SetOwningDisplayScreenComponent(this);
 		Widget->GetOnAction().AddUniqueDynamic(this, &UDisplayScreenComponent::HandleWidgetOnAction);
 		Widget->GetOnSelectionChange().AddUniqueDynamic(this, &UDisplayScreenComponent::HandleWidgetOnSelectionChange);
 		Widget->GetOnFocusChange().AddUniqueDynamic(this, &UDisplayScreenComponent::HandleWidgetOnFocusChange);
@@ -448,7 +448,7 @@ void UDisplayScreenComponent::ViewWidgetTeardown(TScriptInterface<IDisplayWidget
 {
 	if (Widget)
 	{
-		Widget->SetOwningViewScreenComponent(nullptr);
+		Widget->SetOwningDisplayScreenComponent(nullptr);
 		Widget->Release();
 		Widget->GetOnAction().RemoveDynamic(this, &UDisplayScreenComponent::HandleWidgetOnAction);
 		Widget->GetOnSelectionChange().RemoveDynamic(this, &UDisplayScreenComponent::HandleWidgetOnSelectionChange);
@@ -509,7 +509,7 @@ void UDisplayScreenComponent::HandleWidgetOnSelectionChange(TScriptInterface<IDi
 {
 	if (bSingleSelection && bGained)
 	{
-		for (TScriptInterface<IDisplayWidgetInterface> ActiveWidget : ActiveViewWidgets)
+		for (TScriptInterface<IDisplayWidgetInterface> ActiveWidget : ActiveDisplayWidgets)
 		{
 			if (ActiveWidget != Widget)
 			{

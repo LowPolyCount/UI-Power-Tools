@@ -5,25 +5,25 @@
 #include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
 #include "UICS/Screens/Components/Action/ActionScreenComponent.h"
 
-void IDisplayWidgetInterface::SetOwningViewScreenComponent(UDisplayScreenComponent* InOwningComponent)
+void IDisplayWidgetInterface::SetOwningDisplayScreenComponent(UDisplayScreenComponent* InOwningComponent)
 {
-	OwningViewScreenComponent = TWeakObjectPtr<UDisplayScreenComponent>(InOwningComponent);
+	OwningDisplayScreenComponent = TWeakObjectPtr<UDisplayScreenComponent>(InOwningComponent);
 }
 
-UDisplayScreenComponent* IDisplayWidgetInterface::GetOwningViewScreenComponent_Implementation() const
+UDisplayScreenComponent* IDisplayWidgetInterface::GetOwningDisplayScreenComponent_Implementation() const
 {
-	return (OwningViewScreenComponent.IsValid()) ? OwningViewScreenComponent.Pin().Get() : nullptr;
+	return (OwningDisplayScreenComponent.IsValid()) ? OwningDisplayScreenComponent.Pin().Get() : nullptr;
 }
 
 bool IDisplayWidgetInterface::HasLinkedActionScreenComponent_Implementation() const
 {
-	return Execute_GetOwningViewScreenComponent(Cast<UObject>(this)) != nullptr;
+	return Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)) != nullptr;
 }
 
 UActionScreenComponent* IDisplayWidgetInterface::GetLinkedActionScreenComponent_Implementation() const
 {
 	UActionScreenComponent* RetVal = nullptr;
-	if (UDisplayScreenComponent* VSC = Execute_GetOwningViewScreenComponent(Cast<UObject>(this)))
+	if (UDisplayScreenComponent* VSC = Execute_GetOwningDisplayScreenComponent(Cast<UObject>(this)))
 	{
 		RetVal = VSC->GetLinkedActionComponent();
 	}
@@ -48,7 +48,7 @@ void IDisplayWidgetInterface::SetEntryData_Implementation(int32 InIndex, UObject
 	Index = InIndex;
 	SetEntry_Internal(InEntry);
 	Execute_OnEntryDataSet(ThisAsUObject, Index, GetEntry_Internal());
-	Execute_Populate(ThisAsUObject, InEntry);
+	Execute_Populate(ThisAsUObject, Execute_GetOwningDisplayScreenComponent(ThisAsUObject), InEntry);
 }
 
 UObject* IDisplayWidgetInterface::GetEntryData_Implementation() const

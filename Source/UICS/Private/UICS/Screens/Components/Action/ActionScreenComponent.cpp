@@ -12,7 +12,7 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_CouldNotExecute, "UICS.Action.CouldNo
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Success, "UICS.Action.Success", "Executed Action Successfully");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Failure, "UICS.Action.Failure", "Was not able to execute action");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_Action_Async, "UICS.Action.Async", "Action is waiting for an asynchronous callback");
-UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_ACTION_NoActionComponent, "UICS.Action.NoActionComponent", "IViewWidget's owning View Screen Component does not have an Action Screen Component linked to it.");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_ACTION_NoActionComponent, "UICS.Action.NoActionComponent", "IDisplayWidget's owning Display Screen Component does not have an Action Screen Component linked to it.");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(UICS_ACTION_NoActionProvider, "UICS.Action.NoActionProvider", "The Action Screen Component does not have an action provider");
 
 

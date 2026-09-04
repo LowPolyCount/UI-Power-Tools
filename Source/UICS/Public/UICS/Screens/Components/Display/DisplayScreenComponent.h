@@ -87,114 +87,114 @@ public:
 
 
 	// an input action has occurred on a widget
-	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
+	UPROPERTY(BlueprintAssignable, Category = DisplayScreenComponent)
 	FViewActionComp OnInputAction;
 	// a widget has gained or lost selection
-	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
+	UPROPERTY(BlueprintAssignable, Category = DisplayScreenComponent)
 	FViewEventComp OnSelectionChange;
 	// a widget has gained or lost focus
-	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
+	UPROPERTY(BlueprintAssignable, Category = DisplayScreenComponent)
 	FViewEventComp OnFocusChange;
 
 	// a widget has gained or lost focus
-	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
+	UPROPERTY(BlueprintAssignable, Category = DisplayScreenComponent)
 	FViewEventComp OnHoverChange;
 
 	// Widgets have been created and populated
-	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent)
+	UPROPERTY(BlueprintAssignable, Category = DisplayScreenComponent)
 	FViewComp OnWidgetsPopulated;
 
 
 	// set the panel widget that our created widgets will attach to.
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	void SetPanel(UPanelWidget* InPanel) { Panel = InPanel; }
 
 	// get the panel widget that created widgets are attached to.
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	UPanelWidget* GetPanel() const { return Panel; }
 
 	// set a data component that we listen to and create widgets to display from
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	void SetLinkedDataComponent(UDataScreenComponent* InData);
 
 	// Get data component we're listening to data for 
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	UDataScreenComponent* GetLinkedDataComponent() const { return LinkedDataComponent; }
 
 	// set the widget prototype used by passing in an instance 
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	void SetWidgetPrototype(UUserWidget* WidgetPrototype);
 
 	// Set the widget prototype used by passing in a class instead of an instance
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	void SetWidgetPrototypeByClass(UClass* WidgetPrototypeClass);
 
 	// get the widget prototype used 
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
-	UUserWidget* GetWidgetPrototype() const {return ViewWidgetPrototype;}
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
+	UUserWidget* GetWidgetPrototype() const {return DisplayWidgetPrototype;}
 
 	// widgets
 
-	// get all widgets being used 
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
-	TArray<UUserWidget*> GetAllWidgets() const;
+	// get all widgets being used as UserWidgets
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
+	TArray<UUserWidget*> GetAllDisplayWidgetsAsUserWidgets() const;
 
 	// how many widgets are there?
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
-	int32 GetNumWidgets() const {return ActiveViewWidgets.Num();}
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
+	int32 GetNumWidgets() const {return ActiveDisplayWidgets.Num();}
 	
 	// get all view widgets being used
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
-	const TArray<TScriptInterface<IDisplayWidgetInterface>>& GetAllViewWidgets() const { return ActiveViewWidgets; }
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
+	const TArray<TScriptInterface<IDisplayWidgetInterface>>& GetAllDisplayWidgets() const { return ActiveDisplayWidgets; }
 
 	// get the view widget at index
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	UUserWidget* GetWidgetAt(int32 Index) const;
 
 	// get the view widget at index
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	TScriptInterface<IDisplayWidgetInterface> GetViewWidgetAt(int32 Index) const;
 
 	// do we have at least one selected widget?
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	bool IsSelectedWidget() const;
 
 	// will the first widget in this component be the initial focus target?
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	bool IsDesiredFocusTarget() const { return InitialFocus; }
 
 	// set if the first widget in this component will be the initial focus target. Must be set before NativeConstruct is called.
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	void SetIsDesiredFocusTarget(bool bInIsFocusTarget) { InitialFocus = bInIsFocusTarget; }
 
 	// get the first selected widget
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	TScriptInterface<IDisplayWidgetInterface> GetFirstSelectedWidget() const;
 
 	// get all selected widgets
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	TArray<TScriptInterface<IDisplayWidgetInterface>> GetAllSelectedWidgets() const;
 
 	// options
 	
 	// set if only one widget can be selected at a time
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	void SetSingleSelection(bool bInSingleSelection) { bSingleSelection = bInSingleSelection;}
 
 	// get if only one widget can be selected at a time
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	bool GetSingleSelection() const { return bSingleSelection; }
 
 	// for if you want to give data to the view instead of through a data component
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	void ManuallySetData(const TArray<UObject*>& Entries);
 
 	// Set an ASC that is listening to our events
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	void SetLinkedActionScreenComponent(UActionScreenComponent* InASC);
 
 	// Get an ASC that is listening to our events.
-	UFUNCTION(BlueprintCallable, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	UActionScreenComponent* GetLinkedActionComponent() const {return LinkedASC;}
 
 	// Get the first Widget that can be a Desired/Initial Focus Target
@@ -202,19 +202,19 @@ public:
 
 protected:
 	// a widget has executed an input action (such as being clicked)
-	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintImplementableEvent, Category = DisplayScreenComponent)
 	void HandleOnInputAction(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget);
 
 	// the selected widget has changed
-	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintImplementableEvent, Category = DisplayScreenComponent)
 	void HandleOnSelectedChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
 
 	// the focus has changed
-	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintImplementableEvent, Category = DisplayScreenComponent)
 	void HandleOnFocusChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
 
 	// the focus has changed
-	UFUNCTION(BlueprintImplementableEvent, Category = ViewScreenComponent)
+	UFUNCTION(BlueprintImplementableEvent, Category = DisplayScreenComponent)
 	void HandleOnHoverChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
 
 	// delegate functions
@@ -242,16 +242,16 @@ protected:
 	virtual void PopulateWidgets(const TArray<UObject*>& Entries);
 
 	// The Data Screen Component we will receive data from
-	UPROPERTY(EditAnywhere, Category = ViewScreenComponent)
+	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent)
 	FDataComponentSelector DataToListenTo;
 
 	// used in the editor to pick the panel that you want your widgets attached to. 
-	UPROPERTY(EditAnywhere, Category = ViewScreenComponent)
+	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent)
 	FWidgetSelector PanelSelector;
 
 	// when adding children to a grid, we fill the grid's columns first before going to the next row.
 	// define how many columns the grid should have. 
-	UPROPERTY(EditAnywhere, Category = ViewScreenComponent, meta=(EditCondition="bPanelIsAGrid", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, meta=(EditCondition="bPanelIsAGrid", EditConditionHides))
 	int32 ColumnsGridWillHave = 2;
 
 #if WITH_EDITORONLY_DATA
@@ -263,27 +263,27 @@ protected:
 	// define an instance / prototype of a widget class that implements IDisplayWidgetInterface that we will use to display our data with.
 	// This uses the prototype pattern, meaning that we will close this widget instance when we need to make widgets instead of Creating it from a class.
 	// This allows you set properties on this widget through the editor
-	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent, Meta=(ObjectMustImplement = "/Script/UIPowerTools.ViewWidgetInterface", DisplayName="View Widget To Use"))
-	TObjectPtr<UUserWidget> ViewWidgetPrototype;
+	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = DisplayScreenComponent, Meta=(ObjectMustImplement = "/Script/UICS.DisplayWidgetInterface", DisplayName="Display Widget To Use"))
+	TObjectPtr<UUserWidget> DisplayWidgetPrototype;
 
 	// number of entries to show in design view
-	UPROPERTY(EditAnywhere, Category = ViewScreenComponent, Meta=(UIMin=0))
+	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, Meta=(UIMin=0))
 	int32 DesignEntriesToShow = 3;
 
 	// will the first widget in this component be the initial focus target?
-	UPROPERTY(EditAnywhere, Category = ViewScreenComponent)
+	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent)
 	bool InitialFocus = true;
 
 	// are widgets cached when removed from their panel? Will Cache both the Widget and Slate Widget
-	UPROPERTY(EditAnywhere, Category = ViewScreenComponent)
+	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent)
 	bool bCacheWidgets = true;
 
 	// can only one widget can be selected at a time?
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ViewScreenComponent)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DisplayScreenComponent)
 	bool bSingleSelection = false;
 	
 	// events that the user can bind to in editor
-	UPROPERTY(EditAnywhere, Category = ViewScreenComponent, Meta=(DisplayName="Events"));
+	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, Meta=(DisplayName="Events"));
 	FBindableViewActions BindableEvents;
 
 	// Data Component that we are listening to 
@@ -304,7 +304,7 @@ protected:
 
 	// list of active widgets we are managing. 
 	UPROPERTY(Transient)
-	TArray<TScriptInterface<IDisplayWidgetInterface>> ActiveViewWidgets;
+	TArray<TScriptInterface<IDisplayWidgetInterface>> ActiveDisplayWidgets;
 
 	// BEGIN FMember References that allow you to bind events to functions in editor
 #if WITH_EDITOR
@@ -319,6 +319,6 @@ public:
 	// start deprecated items
 
 	// an input action has occurred on a widget
-	UPROPERTY(BlueprintAssignable, Category = ViewScreenComponent, meta = (DeprecatedProperty, DeprecationMessage = "OnAction is deprecated. Use OnInputAction instead"))
+	UPROPERTY(BlueprintAssignable, Category = DisplayScreenComponent, meta = (DeprecatedProperty, DeprecationMessage = "OnAction is deprecated. Use OnInputAction instead"))
 	FViewActionComp OnAction;
 };
