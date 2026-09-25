@@ -249,13 +249,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent)
 	FWidgetSelector PanelSelector;
 
-	// when adding children to a grid, we fill the grid's columns first before going to the next row.
-	// define how many columns the grid should have. 
+	// define how many columns the grid should have
+	// when adding children to a grid, we fill the grid's columns first
+	// does nothing if panel is not a uniform grid panel
 	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, meta=(EditCondition="bPanelIsAGrid", EditConditionHides))
 	int32 ColumnsGridWillHave = 2;
 
 #if WITH_EDITORONLY_DATA
-	//@TODO: bPanelIsAGrid is always true, need to fix it so that it is only true if the panel is a grid
+	//@TODO: bPanelIsAGrid is always true for now, need to fix so that it is only true if the panel is a grid
 	UPROPERTY()
 	bool bPanelIsAGrid = true;
 #endif
