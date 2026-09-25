@@ -399,7 +399,7 @@ void UDisplayScreenComponent::AddToPanel(TScriptInterface<IDisplayWidgetInterfac
 	{
 		if (UUniformGridPanel* AsGrid = Cast<UUniformGridPanel>(Panel))
 		{
-			AsGrid->AddChildToUniformGrid(Cast<UWidget>(Widget.GetObject()), GetNumWidgets() / ColumnsGridWillHave, GetNumWidgets() % ColumnsGridWillHave);
+			AsGrid->AddChildToUniformGrid(Cast<UWidget>(Widget.GetObject()), (GetNumWidgets()-1) / ColumnsGridWillHave, (GetNumWidgets()-1) % ColumnsGridWillHave);
 		}
 		else
 		{
