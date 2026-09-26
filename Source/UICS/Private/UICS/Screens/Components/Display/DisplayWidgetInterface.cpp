@@ -65,24 +65,6 @@ void IDisplayWidgetInterface::Reset_Implementation()
 	SetEntry_Internal(nullptr);
 }
 
-
-bool IDisplayWidgetInterface::IsFocused_Implementation() const
-{ 
-	return false; 
-}
-
-bool IDisplayWidgetInterface::IsSelected_Implementation() const
-{ 
-	return false; 
-}
-
-bool IDisplayWidgetInterface::IsHovered_Implementation() const
-{
-	return false;
-}
-
-
-
 void IDisplayWidgetInterface::ForceInputAction_Implementation()
 {
 	FViewAction& ActionDelegate = GetOnAction();
@@ -99,21 +81,6 @@ void IDisplayWidgetInterface::OnInputAction_Implementation()
 	{
 		ActionDelegate.Broadcast(Cast<UObject>(this));
 	}
-}
-
-void IDisplayWidgetInterface::SetHovered_Implementation(bool bInHovered)
-{
-	SetHovered_Internal(bInHovered);
-}
-
-void IDisplayWidgetInterface::SetFocus_Implementation(bool bInFocused)
-{ 
-	SetFocus_Internal(bInFocused);
-}
-
-void IDisplayWidgetInterface::SetSelected_Implementation(bool bInSelected)
-{ 
-	SetSelected_Internal(bInSelected);
 }
 
 void IDisplayWidgetInterface::SetFocus_Internal(bool bInFocused)

@@ -17,7 +17,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FViewEvent, TScriptInterface<IDispl
 // ListView gets around this because it can create it's own SWidget where Slate will tell it which Widget was Clicked/Selected/Focused/etc. 
 // We don't have that luxury because Display Screen Component needs to be compatible with all UPanels.
 // Widgets are required to implement this to be usable with a Display component.  
-// Widgets implementing this interface are:
+// Widgets implementing this interface gain the following:
 // Cacheable - Instead of being destroyed when no longer used, it may be held for future use. 
 // Resetable - The OnReset event is called before we set it's data and when the widget is removed from it's parent, so that if the widget is being cached, you can remove listeners, pointers, etc. 
 UINTERFACE(BlueprintType)
@@ -138,6 +138,7 @@ protected:
 	FGameplayTag GetLastActionResult_Implementation() const;
 	bool HasTextAssociatedWithLastActionResultTag_Implementation() const;
 	FText GetTextAssociatedWithLastActionResultTag_Implementation() const;
+	void OnInputAction_Implementation();
 
 	// these take the existing widget event calls, and translates them to a version where we will know who broadcast them. 
 	void SetFocus_Internal(bool bInFocused);
@@ -150,43 +151,7 @@ protected:
 	int32 Index = INDEX_NONE;			// what is the index of the widget in the view component array?
 	TWeakObjectPtr<UDisplayScreenComponent> OwningDisplayScreenComponent; // View Component that is managing this widget
 
-public:
 	// list out deprecated functions. 
-	// set the focus
-	UE_DEPRECATED(Any, "Is Deprecated. Use UWidget:: Instead")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "SetFocus() is deprecated. Use UWidget::SetuserFocus()"))
-	void SetFocus(bool bInFocused);
-	// set if we are hovered
-	UE_DEPRECATED(Any, "Is Deprecated. Try UUserWidget::OnMouseLeave()")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "SetHovered() is deprecated. Try UUserWidget::OnMouseLeave()"))
-	void SetHovered(bool bInHovered);
-	// set if we are selected
-	UE_DEPRECATED(Any, "Is Deprecated.  Use UCommonButtonBase::GetIsSelected()")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "SetSelected() is deprecated. Use UCommonButtonBase::GetIsSelected()"))
-	void SetSelected(bool bInSelected);
-
-	// Force an input action to happen
-	UE_DEPRECATED(Any, "Is Deprecated. UCommonButton::ExecuteTriggeredInput()")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "ForceInputAction() is deprecated. Use UCommonButton::ExecuteTriggeredInput()"))
-	void ForceInputAction();
-	
-	// are we focused?
-	UE_DEPRECATED(Any, "Is Deprecated. Use UWidget::HasAnyUserFocus() instead")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta=(DeprecatedFunction, DeprecationMessage="IsFocused() is deprecated. Use UWidget::HasAnyUserFocus() instead"))
-	bool IsFocused() const;
-
-
-	// are we hovered?
-	UE_DEPRECATED(Any, "Is Deprecated. Use UWidget::IsHovered()")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "IsHovered() is deprecated. Use UWidget::IsHovered()"))
-	bool IsHovered() const;
-
-	// are we selected?
-	UE_DEPRECATED(Any, "Is Deprecated. Use UCommonButtonBase::GetIsSelected()")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "IsSelected() is deprecated. Use UCommonButtonBase::GetIsSelected()"))
-	bool IsSelected() const;
-
-protected:
 	// event notifying that the focus has changed
 	UE_DEPRECATED(Any, "Is Deprecated. Bind to UCommonButtonBase::OnReceivedFocus or UCommonButtonBase::OnLostFocus ")
 	UFUNCTION(BlueprintImplementableEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "OnFocusChanged() is deprecated. Bind to UCommonButtonBase::OnReceivedFocus or UCommonButtonBase::OnLostFocus "))
@@ -197,15 +162,6 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = DisplayWidget, Meta = (DeprecatedFunction, DeprecationMessage = "OnSelectionChanged() is deprecated. Bind to UCommonButton::OnSelected/OnDeselected"))
 	void OnSelectionChanged(bool bInSelected);
 
-
-	// the deprecated implementation of the above functions
-	void SetFocus_Implementation(bool bInFocused);
-	void SetHovered_Implementation(bool bInHovered);
-	void SetSelected_Implementation(bool bInSelected);
-	void OnInputAction_Implementation();
-	bool IsFocused_Implementation() const;
-	bool IsHovered_Implementation() const;
-	bool IsSelected_Implementation() const;
 	void ForceInputAction_Implementation();
 
 };
