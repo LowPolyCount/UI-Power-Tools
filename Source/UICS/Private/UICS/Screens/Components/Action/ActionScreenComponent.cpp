@@ -41,9 +41,12 @@ bool UActionScreenComponent::IsValidTransaction(UObject* Entry)
 	return CanExecuteAction(Entry);
 }
 
-FGameplayTag UActionScreenComponent::GetLastActionResult() const
+
+
+
+FActionResultData UActionScreenComponent::GetLastActionResult() const
 {
-	FGameplayTag RetVal = UICS_ACTION_NoActionProvider;
+	FActionResultData RetVal(false, UICS_ACTION_NoActionProvider);
 	if (ActionProvider)
 	{
 		RetVal = ActionProvider->GetLastActionResult();
@@ -80,7 +83,7 @@ bool UActionScreenComponent::ExecuteAction(UObject* Entry)
 	if (ActionProvider)
 	{
 		RetVal = ActionProvider->NativeExecuteAction(Entry);
-		ResultsTag = ActionProvider->GetLastActionResult();
+		ResultsTag = ActionProvider->GetLastActionResult().ActionResultTag;
 	}
 
 	OnActionExecuteResult.Broadcast(this, RetVal, ResultsTag);

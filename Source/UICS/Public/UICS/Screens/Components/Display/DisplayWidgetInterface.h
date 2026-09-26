@@ -4,6 +4,7 @@
 
 #include "UObject/Interface.h"
 #include "GameplayTagsClasses.h"
+#include "UICS/Screens/Components/Action/ActionResultData.h"
 #include "DisplayWidgetInterface.generated.h"
 
 class UDisplayScreenComponent;
@@ -100,7 +101,7 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = DisplayWidget)
-	FGameplayTag GetLastActionResult() const;
+	FActionResultData GetLastActionResult() const;
 
 	// only called by the owning Display Screen Component
 	void Release();
@@ -135,7 +136,7 @@ protected:
 	bool HasLinkedActionScreenComponent_Implementation() const;
 	UDisplayScreenComponent* GetOwningDisplayScreenComponent_Implementation() const;
 	UActionScreenComponent* GetLinkedActionScreenComponent_Implementation() const;
-	FGameplayTag GetLastActionResult_Implementation() const;
+	FActionResultData GetLastActionResult_Implementation() const;
 	bool HasTextAssociatedWithLastActionResultTag_Implementation() const;
 	FText GetTextAssociatedWithLastActionResultTag_Implementation() const;
 	void OnInputAction_Implementation();

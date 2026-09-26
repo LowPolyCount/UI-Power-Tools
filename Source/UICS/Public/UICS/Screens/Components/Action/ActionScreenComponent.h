@@ -1,10 +1,11 @@
-// Copyright 2026 Joel Gonzales. See LICENSE.TXT for further information
+// Copyright 2026 Joel Gonzales and contributors. See LICENSE for further information
 
 #pragma once
 
 #include "UICS/Screens/Components/ScreenComponent.h"
 #include "NativeGameplayTags.h"
 #include "UICS/Screens/Tools/ComponentSelector.h"
+#include "UICS/Screens/Components/Action/ActionResultData.h"
 #include "ActionScreenComponent.generated.h"
 
 class UDisplayScreenComponent;
@@ -27,7 +28,8 @@ UICS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_Action_Failure);			// ExecuteAction
 UICS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_ACTION_NoActionComponent);	// There is no Action Component linked to a View Component. (Can happen for IDisplayidgets)
 UICS_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(UICS_ACTION_NoActionProvider);	// There is no action provider
 
-// define all bindable events in a struct so that in editor, it will be it's own category
+
+// define all bind-able events in a struct so that in editor, it will be it's own category
 USTRUCT()
 struct UICS_API FBindableActionEvents
 {
@@ -42,6 +44,10 @@ struct UICS_API FBindableActionEvents
 };
 
 // Action Component collects all the information required to execute an "Action". Examples are, opening a screen or buying an item.
+// Can do an action check - see if it's valid to execute the action
+// Can execute the action - the action to perform is provided by the Action Provider
+// Can be linked to a display screen component to execute actions based on it's events like when a widget is hovered, selected, etc. 
+// IDisplayWidgets have utility functions to call 
 UCLASS(AutoExpandCategories = Triggers)
 class UICS_API UActionScreenComponent : public UScreenComponent
 {
@@ -55,25 +61,27 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = ActionScreenComponent)
 	FActionResult OnActionExecuteResult;
 
-
-	// Given the Entry Data, can we execute the current action?
+	// Given the Entry Data, do an action check to determine if the action can be executed
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	bool CanExecuteAction(UObject* Entry = nullptr);
 
-	// call CanExecuteAction() and if true, then call ExecuteAction(). If False, return CouldNotExecute
+	// Given the Entry Data, do an action check, if valid, execute the action
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	bool ExecuteActionIfAble(UObject* Entry = nullptr);
 
-	// execute our action, without checking CanExecuteAction()
+	// execute our action, without doing an action check
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	bool ExecuteAction(UObject* Entry = nullptr);
 
+	// what was the gameplay tag set during the last action or action check?
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
-	FGameplayTag GetLastActionResult() const;
+	FActionResultData GetLastActionResult() const;
 
+	// is there a text string associated with the results of the last execute action or check action?
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	bool HasTextAssociatedWithLastActionResultTag() const;
 
+	// get the text string associated with the results of the last execute action or check action
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponent)
 	FText GetTextAssociatedWithLastActionResultTag() const;
 

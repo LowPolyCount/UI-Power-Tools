@@ -3,7 +3,7 @@
 #pragma once
 
 #include "UICS/Screens/Components/ScreenComponentWorldContext.h"
-#include "NativeGameplayTags.h"
+#include "UICS/Screens/Components/Action/ActionResultData.h"
 #include "ActionScreenComponentProvider.generated.h"
 
 class UActionScreenComponent;
@@ -43,7 +43,7 @@ public:
 	
 	// Get the tag that contains 
 	UFUNCTION(BlueprintCallable)
-	FGameplayTag GetLastActionResult() const {return LastActionResult;}
+	FActionResultData GetLastActionResult() const;
 
 	// get the Action Component that is the owner of this provider
 	UFUNCTION(BlueprintCallable)
@@ -52,24 +52,21 @@ public:
 protected:
 
 	// Do we have all the information required to execute the transaction?
-	// @note - Implementor Should set LastActionResult as part of implementation
+	// @note - Implementor Should set LastActionResultTag as part of implementation
 	// @Entry - Data (usually) from a widget created by a View Screen Component linked to the owning Action Screen Component
 	// @Return bool - true if we can we execute this action with the parameters given
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = ActionScreenComponentProvider, Meta=(DisplayName="Can Execute Action"))
 	bool BP_CanExecuteAction(UObject* Entry);
 
 	// execute the transaction
-	// @note - Implementor Should set LastActionResult as part of implementation
+	// @note - Implementor Should set LastActionResultTag as part of implementation
 	// @Entry - Data (usually) from a widget created by a View Screen Component linked to the owning Action Screen Component
 	// @Return - true if we executed the action successfully
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = ActionScreenComponentProvider, Meta = (DisplayName = "Execute Action"))
 	bool BP_ExecuteAction(UObject* Entry);
 
-	UFUNCTION(BlueprintCallable, Meta=(BlueprintProtected, GameplayTagFilter = "UICS.Action"))
-	void SetActionResult(const FGameplayTag Result) { LastActionResult = Result;}
-
-	// a gameplay tag describing more exactly what happened during the last call made to CanExecuteAction() or ExecuteAction()
-	FGameplayTag LastActionResult;
+	UFUNCTION(BlueprintCallable, Meta=(BlueprintProtected))
+	void SetActionResult(const FGameplayTag Result) { LastActionResultTag = Result;}
 
 	// contains a mapping between the result of a query and Human Readable Text that can be displayed. 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -79,19 +76,22 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<UActionScreenComponent> ParentComponent;
 
-
+	// a gameplay tag describing more exactly what happened during the last call made to CanExecuteAction() or ExecuteAction()
+	FGameplayTag LastActionResultTag;
+	bool bLastActionResult = false;
 
 public:
+	// deprecated functions 
 
 	// Do we have all the information required to execute the transaction?
-	// @note - Implementor Should set LastActionResult as part of implementation
+	// @note - Implementor Should set LastActionResultTag as part of implementation
 	// @Entry - Data (usually) from a widget created by a View Screen Component linked to the owning Action Screen Component
 	// @Return bool - true if we can we execute this action with the parameters given
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = ActionScreenComponentProvider, Meta=(DeprecatedFunction, DeprecationMessage="Use CanExecuteAction"))
 	bool CanExecuteActionInternal(UObject* Entry);
 
 	// execute the transaction
-	// @note - Implementor Should set LastActionResult as part of implementation
+	// @note - Implementor Should set LastActionResultTag as part of implementation
 	// @Entry - Data (usually) from a widget created by a View Screen Component linked to the owning Action Screen Component
 	// @Return - true if we executed the action successfully
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = ActionScreenComponentProvider, Meta=(DeprecatedFunction, DeprecationMessage="Use ExecuteAction"))

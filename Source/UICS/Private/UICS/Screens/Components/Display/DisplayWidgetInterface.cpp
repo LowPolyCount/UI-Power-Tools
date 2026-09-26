@@ -119,9 +119,10 @@ void IDisplayWidgetInterface::SetInputAction_Internal()
 	}
 }
 
-FGameplayTag IDisplayWidgetInterface::GetLastActionResult_Implementation() const
+FActionResultData IDisplayWidgetInterface::GetLastActionResult_Implementation() const
 {
-	FGameplayTag RetVal = UICS_ACTION_NoActionComponent;
+	FActionResultData RetVal(false, UICS_ACTION_NoActionComponent);
+	//FGameplayTag RetVal = UICS_ACTION_NoActionComponent;
 	if (const UActionScreenComponent* ASC = Execute_GetLinkedActionScreenComponent(Cast<UObject>(this)))
 	{
 		RetVal = ASC->GetLastActionResult();

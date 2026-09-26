@@ -19,40 +19,45 @@ UActionScreenComponent* UActionScreenComponentProvider::GetParent() const
 
 bool UActionScreenComponentProvider::NativeCanExecuteAction(UObject* Entry)
 {
-	FGameplayTag LastTag = UICS_ACTION_Default;
+	LastActionResultTag = UICS_ACTION_Default;
 
-	bool bRetVal = false;
+	bLastActionResult = false;
 	if (GetClass()->IsFunctionImplementedInScript(GET_FUNCTION_NAME_CHECKED(UActionScreenComponentProvider, BP_CanExecuteAction)))
 	{
-		bRetVal = BP_CanExecuteAction(Entry);
+		bLastActionResult = BP_CanExecuteAction(Entry);
 	}
-
 	else
 	{
-		bRetVal = CanExecuteActionInternal(Entry);
+		bLastActionResult = CanExecuteActionInternal(Entry);
 	}
-	return bRetVal;
+
+	return bLastActionResult;
 }
 
 bool UActionScreenComponentProvider::NativeExecuteAction(UObject* Entry)
 { 
-	FGameplayTag LastTag = UICS_ACTION_Default;
+	LastActionResultTag = UICS_ACTION_Default;
 
-	bool bRetVal = false;
+	bLastActionResult = false;
 	if (GetClass()->IsFunctionImplementedInScript(GET_FUNCTION_NAME_CHECKED(UActionScreenComponentProvider, BP_ExecuteAction)))
 	{
-		bRetVal = BP_ExecuteAction(Entry);
+		bLastActionResult = BP_ExecuteAction(Entry);
 	}
 	else
 	{
-		bRetVal = ExecuteActionInternal(Entry);
+		bLastActionResult = ExecuteActionInternal(Entry);
 	}
-	return bRetVal;
+	return bLastActionResult;
+}
+
+FActionResultData UActionScreenComponentProvider::GetLastActionResult() const
+{
+	return FActionResultData(bLastActionResult, LastActionResultTag);
 }
 
 bool UActionScreenComponentProvider::HasTextAssociatedWithLastActionResultTag() const
 {
-	return ActionResultTagToText.Contains(GetLastActionResult());
+	return ActionResultTagToText.Contains(LastActionResultTag);
 }
 
 FText UActionScreenComponentProvider::GetTextAssociatedWithLastActionResultTag() const
@@ -60,7 +65,7 @@ FText UActionScreenComponentProvider::GetTextAssociatedWithLastActionResultTag()
 	FText RetVal = FText::GetEmpty();
 	if(HasTextAssociatedWithLastActionResultTag())
 	{
-		RetVal = ActionResultTagToText[GetLastActionResult()];
+		RetVal = ActionResultTagToText[LastActionResultTag];
 	}
 
 	return RetVal;

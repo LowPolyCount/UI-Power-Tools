@@ -1,4 +1,4 @@
-// Copyright (c) Joel Gonzales
+// Copyright 2026 Joel Gonzales and contributors. See LICENSE for further information
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
 #include "UICSTestHelpers.h"
@@ -22,7 +22,7 @@ bool FExecuteActionTest::RunTest(const FString& Parameters)
 
 	TestEqual("bCanTransact", ActionComponent->CanExecuteAction(NewObject<UObjectIntHarness>()), false);
 	TestFalse("bCanTransact", ActionComponent->ExecuteAction(NewObject<UObjectIntHarness>()));
-	TestTrue("bCanTransact", ActionComponent->GetLastActionResult().MatchesTagExact(UICS_Action_Failure));
+	TestTrue("bCanTransact", ActionComponent->GetLastActionResult().ActionResultTag.MatchesTagExact(UICS_Action_Failure));
 
 	Transaction->bCanTransact = true;
 	TestEqual("bCanExecuteTransaction", ActionComponent->CanExecuteAction(NewObject<UObjectIntHarness>()), true);
@@ -32,13 +32,13 @@ bool FExecuteActionTest::RunTest(const FString& Parameters)
 	TestEqual("Can Execute", ActionComponent->CanExecuteAction(NewObject<UObjectIntHarness>()), true);
 	TestTrue("Can Execute", ActionComponent->ExecuteActionIfAble(NewObject<UObjectIntHarness>()));
 	TestTrue("Can Execute", ActionComponent->ExecuteAction(NewObject<UObjectIntHarness>()));
-	TestTrue("Can Execute", ActionComponent->GetLastActionResult().MatchesTagExact(UICS_Action_Success));
+	TestTrue("Can Execute", ActionComponent->GetLastActionResult().ActionResultTag.MatchesTagExact(UICS_Action_Success));
 
 	Transaction->bCanTransact = false;
 	TestEqual("Can't Transact", ActionComponent->CanExecuteAction(NewObject<UObjectIntHarness>()), false);
 	TestFalse("Can't Transact", ActionComponent->ExecuteActionIfAble(NewObject<UObjectIntHarness>()));
 	TestFalse("Can't Transact", ActionComponent->ExecuteAction(NewObject<UObjectIntHarness>()));
-	TestTrue("Can't Transact", ActionComponent->GetLastActionResult().MatchesTagExact(UICS_Action_Failure));
+	TestTrue("Can't Transact", ActionComponent->GetLastActionResult().ActionResultTag.MatchesTagExact(UICS_Action_Failure));
 
 	return true;
 }
@@ -118,25 +118,25 @@ bool FGameplayTagErrors::RunTest(const FString& Parameters)
 
 	View->SetLinkedActionScreenComponent(nullptr);
 	TestFalse("Cannot Execute ", ViewWidget->Execute_CanExecuteAction(ViewWidget.GetObject()));
-	TestTrue("View has no Action Component", ViewWidget->Execute_GetLastActionResult(ViewWidget.GetObject()) == UICS_ACTION_NoActionComponent);
+	TestTrue("View has no Action Component", ViewWidget->Execute_GetLastActionResult(ViewWidget.GetObject()).ActionResultTag == UICS_ACTION_NoActionComponent);
 	TestFalse("Cannot Execute ", ViewWidget->Execute_CanExecuteAction(ViewWidget.GetObject()));
-	TestTrue("View has no Action Component", ViewWidget->Execute_GetLastActionResult(ViewWidget.GetObject()) == UICS_ACTION_NoActionComponent);
+	TestTrue("View has no Action Component", ViewWidget->Execute_GetLastActionResult(ViewWidget.GetObject()).ActionResultTag == UICS_ACTION_NoActionComponent);
 
 
 	View->SetLinkedActionScreenComponent(ActionComponent);
 	TestFalse("Cannot Execute ", ViewWidget->Execute_CanExecuteAction(ViewWidget.GetObject()));
-	TestTrue("View Has No Action Provider", ViewWidget->Execute_GetLastActionResult(ViewWidget.GetObject()) == (UICS_ACTION_NoActionProvider));
+	TestTrue("View Has No Action Provider", ViewWidget->Execute_GetLastActionResult(ViewWidget.GetObject()).ActionResultTag == (UICS_ACTION_NoActionProvider));
 	TestFalse("Cannot Execute", ViewWidget->Execute_ExecuteAction(ViewWidget.GetObject()));
-	TestTrue("View Has No Action Provider", ViewWidget->Execute_GetLastActionResult(ViewWidget.GetObject()) == (UICS_ACTION_NoActionProvider));
+	TestTrue("View Has No Action Provider", ViewWidget->Execute_GetLastActionResult(ViewWidget.GetObject()).ActionResultTag == (UICS_ACTION_NoActionProvider));
 
 
 
 	ActionComponent->SetActionProvider(Action);
 	Action->bCanExecuteAction = true;
 	TestTrue("Can Execute ", ViewWidget->Execute_CanExecuteAction(ViewWidget.GetObject()));
-	TestTrue("Success Tag", ActionComponent->GetLastActionResult() == UICS_Action_Success);
+	TestTrue("Success Tag", ActionComponent->GetLastActionResult().ActionResultTag == UICS_Action_Success);
 	TestTrue("Can Execute", ViewWidget->Execute_CanExecuteAction(ViewWidget.GetObject()));
-	TestTrue("Success Tag", ActionComponent->GetLastActionResult() == UICS_Action_Success);
+	TestTrue("Success Tag", ActionComponent->GetLastActionResult().ActionResultTag == UICS_Action_Success);
 	
 
 	return true;
