@@ -1,4 +1,4 @@
-// Copyright 2026 Joel Gonzales. See LICENSE.TXT for further information
+// Copyright 2026 Joel Gonzales and contributors. See LICENSE for further information
 
 
 #include "UICS/Screens/Components/Action/ActionScreenComponentProvider.h"
