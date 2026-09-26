@@ -1,4 +1,4 @@
-// Copyright (c) Joel Gonzales
+// Copyright 2026 Joel Gonzales and contributors. See LICENSE for further information
 
 #include "Customizers/ComponentSelectorCustomization.h"
 #include "UICS/Screens/Components/ScreenComponent.h"
