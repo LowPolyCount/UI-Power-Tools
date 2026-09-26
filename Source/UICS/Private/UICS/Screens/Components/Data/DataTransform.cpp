@@ -1,0 +1,18 @@
+// Copyright 2026 Joel Gonzales and contributors. See LICENSE for further information
+
+
+#include "UICS/Screens/Components/Data/DataTransform.h"
+
+void UDataTransform::NativeTransformEntries(TArray<UObject*>& InRetrievedEntries)
+{	
+	if (GetClass()->IsFunctionImplementedInScript(GET_FUNCTION_NAME_CHECKED(UDataTransform, BP_TransformEntries)))
+	{
+		// Would love to send this into blueprint as a parameter, but BP is not handling this correctly, so as a backup
+		// we copy the array. 
+		// @todo: See if we can get around this somehow
+		RetrievedEntries = InRetrievedEntries;
+		BP_TransformEntries();
+		InRetrievedEntries = RetrievedEntries;
+		RetrievedEntries.Empty();
+	}
+}

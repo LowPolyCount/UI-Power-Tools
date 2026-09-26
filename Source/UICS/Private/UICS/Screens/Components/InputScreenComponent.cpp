@@ -1,0 +1,21 @@
+// Copyright (c) 2025 Joel Gonzales
+
+
+#include "UICS/Screens/Components/InputScreenComponent.h"
+#include "InputMappingContext.h"
+
+/*UInputScreenComponent::UInputScreenComponent()
+{
+	if (const UUIPowerToolsDeveloperSettings* DefaultSettings = GetDefault<UUIPowerToolsDeveloperSettings>())
+	{
+		if(UInputMappingContext* DefaultMappingContext = Cast<UInputMappingContext>(DefaultSettings->DefaultInputMapping.TryLoad()))
+		{
+			SetInputMapping(DefaultMappingContext);
+		}
+	}
+}*/
+
+/*void UInputScreenComponent::NativeConstruct()
+{
+	Super::NativeConstruct();
+}*/

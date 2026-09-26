@@ -1,0 +1,35 @@
+// Copyright 2026 Joel Gonzales and contributors. See LICENSE for further information
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "UICS/Screens/UICSScreen.h"
+#include "UICS/UICSTestActivatableWidget.h"
+#include "UICS/Screens/Components/ScreenComponentManager.h"
+#include "UICSTestHelpers.generated.h"
+
+class UScreenComponent;
+
+// this file contains helpers for us to test our classes
+
+UCLASS(Hidden)
+class UScreenHarness : public UUICSScreen
+{
+	GENERATED_BODY()
+public:
+	void AddComponent(UScreenComponent* Component) { ComponentManager->Add(Component); }
+
+	// we don't have a viewport to add to in testing, so the normal destruct process will not run. Instead, simulate by 
+	// calling OnNativeDestruct 
+	virtual void RemoveFromParent() {OnNativeDestruct.Broadcast(this); }
+
+};
+
+UCLASS(Hidden)
+class UUICSTestActivatableWidgetHarness : public UUICSTestActivatableWidget
+{
+	GENERATED_BODY()
+public:
+	void AddComponent(UScreenComponent* Component) { GetComponentManager()->Add(Component); }
+};
+

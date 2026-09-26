@@ -1,0 +1,204 @@
+// Copyright 2026 Joel Gonzales and contributors. See LICENSE for further information
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "UICS/Screens/Components/Data/DataScreenComponent.h"
+#include "UICS/Screens/Components/Data/UIDataProvider.h"
+#include "UICS/Screens/Components/Data/DataFilter.h"
+#include "UICS/Screens/Components/Data/DataTransform.h"
+#include "UICS/Screens/Components/Action/ActionScreenComponentProvider.h"
+#include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
+#include "UICS/Screens/Components/Action/ActionScreenComponent.h"
+#include "UICS/Screens/Components/EntryScreenComponent.h"
+#include "Blueprint/UserWidget.h"
+#include "UICS/Screens/Components/Display/DisplayWidgetInterface.h"
+// @todo: including AutomationEditorCommon means that tests only build with editor. Maybe FbxAutomationCommon can help?
+#include "Tests/AutomationEditorCommon.h"
+#include "Components/HorizontalBox.h"
+#include "UICS/Screens/Components/Display/DisplayCommonButtonBase.h"
+#include "UICSTestHarness.generated.h"
+
+class UPanelWidget;
+
+UCLASS(Hidden)
+class UObjectIntHarness : public UObject
+{
+	GENERATED_BODY()
+public:
+	int32 Num = -1;
+};
+
+UCLASS(Hidden)
+class UDataRetrieverHarness : public UUIDataProvider
+{
+	GENERATED_BODY()
+public:
+	virtual void NativeRetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries) override;
+
+	static const int32 NumTestEntries = 3;
+	// in case we want to change the number of entries we create during testing
+	int32 CurrentTestNum = NumTestEntries;
+};
+
+UCLASS(Hidden)
+class UDataFilterAllHarness : public UDataFilter
+{
+	GENERATED_BODY()
+protected:
+	virtual bool NativeApplyFilter(const UObject* Entry) override { return false; }
+};
+
+UCLASS(Hidden)
+class UDataTransformReverseHarness : public UDataTransform
+{
+	GENERATED_BODY()
+protected:
+	virtual void NativeTransformEntries(TArray<UObject*>& InRetrievedEntries) override;
+};
+
+UCLASS(Hidden)
+class UDataHarness : public UDataScreenComponent
+{
+	GENERATED_BODY()
+public:
+	virtual void NativeInitialize() override;
+	void SetFName(FName InName){ ComponentName = InName;}
+
+	UFUNCTION()
+	void HandleOnRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries);
+
+	int32 CountOnRetrieval = 0;
+};
+
+UCLASS(Hidden)
+class UViewWidgetHarness : public UDisplayCommonButtonBase
+{
+	GENERATED_BODY()
+public:
+	virtual void ExecuteTriggeredInput() override {Super::ExecuteTriggeredInput(); SetInputAction_Internal(); }
+};
+
+UCLASS(Hidden)
+class UViewHarness : public UDisplayScreenComponent
+{
+	GENERATED_BODY()
+public:
+	void SetFName(FName InName) { ComponentName = InName; }
+	virtual void NativeInitialize() override;
+	void TestHandleOnDataRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries) { HandleOnDataRetrieval(Component, Entries); }
+	const TArray<TScriptInterface<IDisplayWidgetInterface>> GetAllCachedWidgets() { CachedWidgets; }
+	int32 GetNumCachedWidgets() const;
+	void SetCacheWidgets(bool bInCacheWidgets);
+	virtual void HandleOnDataRetrieval(UDataScreenComponent* Component, const TArray<UObject*>& Entries) override;
+	UFUNCTION()
+	void HandleTestOnAction(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget);
+	UFUNCTION()
+	void HandleTestOnSelectedChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
+	UFUNCTION()
+	void HandleTestOnFocusChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
+	UFUNCTION()
+	void HandleTestOnWidgetsPopulated(UDisplayScreenComponent* Component);
+
+	int32 CountOnAction = 0;
+	int32 CountOnSelected = 0;
+	int32 CountOnSelectionGained = 0;
+	int32 CountOnSelectionLost = 0;
+	int32 CountOnFocusGained = 0;
+	int32 CountOnFocusLost = 0;
+	int32 CountOnFocusChanged = 0;
+	int32 CountOnRetrieval = 0;
+	int32 CountOnWidgetsPopulated = 0;
+};
+
+UCLASS(Hidden)
+class UActionTestHarness: public UActionScreenComponentProvider
+{
+	GENERATED_BODY()
+public:
+	virtual bool CanExecuteActionInternal_Implementation(UObject* Entry) override { SetActionResult((bCanExecuteAction) ? UICS_Action_Success : UICS_Action_Failure); return bCanTransact; }
+	virtual bool ExecuteActionInternal_Implementation(UObject* Entry) override { SetActionResult((bCanExecuteAction) ? UICS_Action_Success : UICS_Action_Failure); return bCanExecuteAction; }
+
+	bool bCanTransact = true;
+	bool bCanExecuteAction = true;
+	int32 CallsToCanTransactCalls = 0;
+	int32 CallsToExecuteTransaction = 0;
+};
+
+UCLASS(Hidden)
+class UActionHarness : public UActionScreenComponent
+{
+	GENERATED_BODY()
+public:
+	void SetFName(FName InName) { ComponentName = InName; }
+	virtual void NativeInitialize() override;
+
+	int32 IsValidSuccess = 0;
+	int32 OnCompleteSuccess = 0;
+
+	UFUNCTION()
+	void HandleOnIsValid(UActionScreenComponent* Component, bool bIsValid);
+	UFUNCTION()
+	void HandleOnComplete(UActionScreenComponent* Component, bool bExecuteResult, const FGameplayTag& Result);
+};
+
+UCLASS(Hidden)
+class UEntryHarness : public UEntryScreenComponent
+{
+	GENERATED_BODY()
+public:
+	void SetFName(FName InName) { ComponentName = InName; }
+	virtual void NativeInitialize() override;
+
+	int32 OnBroadcasts = 0;
+
+	UFUNCTION()
+	void HandleOnEntryChange(UEntryScreenComponent* Component, UObject* OldData, UObject* NewData);
+};
+
+namespace UICSTest
+{
+	template <typename ComponentType>
+	static ComponentType* CreateComponent(UObject* Owner)
+	{
+		ComponentType* RetVal = NewObject<ComponentType>(Owner);
+		if (RetVal)
+		{
+			RetVal->NativeInitialize();
+		}
+		return RetVal;
+	}
+
+	static TArray<UObject*> GenerateEntries(int32 Num, UObject* Outer)
+	{
+		TArray<UObject*> RetVal;
+		for (int32 i = 0; i < Num; ++i)
+		{
+			// create an object and use that for the entry so that the Entry's IsValid call still works
+			RetVal.Emplace(NewObject<UObjectIntHarness>(Outer));
+		}
+
+		return RetVal;
+	}
+
+	static UWorld* CreateWorld()
+	{
+		return FAutomationEditorCommonUtils::CreateNewMap();
+	}
+
+
+	static UPanelWidget* SetupViewTest(UDisplayScreenComponent* View, UDataScreenComponent* Data)
+	{
+		UPanelWidget* Panel = NewObject<UHorizontalBox>(View);
+		Panel->TakeWidget();
+		View->SetPanel(Panel);
+		View->SetLinkedDataComponent(Data);
+		View->SetWidgetPrototypeByClass(UViewWidgetHarness::StaticClass());
+		if (Data)
+		{
+			Data->SetDataProviderFromClass(TSubclassOf<UUIDataProvider>(UDataRetrieverHarness::StaticClass()));
+			Data->RetrieveEntries();
+		}
+		return Panel;
+	}
+}
