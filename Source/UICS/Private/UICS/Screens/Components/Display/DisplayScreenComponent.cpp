@@ -399,7 +399,13 @@ void UDisplayScreenComponent::AddToPanel(TScriptInterface<IDisplayWidgetInterfac
 	{
 		if (UUniformGridPanel* AsGrid = Cast<UUniformGridPanel>(Panel))
 		{
-			AsGrid->AddChildToUniformGrid(Cast<UWidget>(Widget.GetObject()), (GetNumWidgets()-1) / ColumnsGridWillHave, (GetNumWidgets()-1) % ColumnsGridWillHave);
+			// the widget has already been added to ActiveDisplayWidgets, so we need to call Panel->GetChildrenCount() to get the correct number
+			const int32 NumChildren = Panel->GetChildrenCount();
+			const int32 ColumnX = NumChildren % ColumnsGridWillHave;
+			const int32 RowY = (ColumnsGridWillHave == 0) ? NumChildren : (NumChildren / ColumnsGridWillHave);
+
+
+			AsGrid->AddChildToUniformGrid(Cast<UWidget>(Widget.GetObject()), RowY, ColumnX);
 		}
 		else
 		{
