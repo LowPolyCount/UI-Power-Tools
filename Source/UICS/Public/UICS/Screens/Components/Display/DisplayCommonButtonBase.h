@@ -14,5 +14,28 @@ class UICS_API UDisplayCommonButtonBase : public UCommonButtonBase, public IDisp
 	GENERATED_BODY()
 
 public:
-	DISPLAY_COMMONBUTTON_BOILERPLATE();
+	UPROPERTY(BlueprintAssignable, Category = DisplayWidget)
+	FViewAction OnInputAction;
+	UPROPERTY(BlueprintAssignable, Category = DisplayWidget)
+	FViewEvent OnSelectionChanged;
+	UPROPERTY(BlueprintAssignable, Category = DisplayWidget)
+	FViewEvent OnFocusChanged;
+	UPROPERTY(BlueprintAssignable, Category = DisplayWidget)
+	FViewEvent OnHoverChange;
+	virtual FViewAction& GetOnAction() { return OnInputAction; }
+	virtual FViewEvent& GetOnSelectionChange() { return OnSelectionChanged; }
+	virtual FViewEvent& GetOnFocusChange() { return OnFocusChanged; }
+	virtual FViewEvent& GetOnHoverChange() { return OnHoverChange; }
+
+	virtual void HandleFocusReceived() override;
+	virtual void HandleFocusLost() override;
+	//virtual FReply NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent) override;
+	//virtual void NativeOnFocusLost(const FFocusEvent& InFocusEvent) override;
+	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
+
+	// button specific functions
+	virtual void NativeOnSelected(bool bBroadcast) override;
+	virtual void NativeOnDeselected(bool bBroadcast) override;
+	virtual void NativeOnClicked() override;
 };
