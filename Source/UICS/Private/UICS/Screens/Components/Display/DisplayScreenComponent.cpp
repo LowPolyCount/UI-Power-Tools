@@ -337,12 +337,6 @@ void UDisplayScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 	{
 		if (ActiveDisplayWidgets.IsValidIndex(i))
 		{
-			
-			/*if (Panel)
-			{
-				AddToPanel(ActiveDisplayWidgets[i]);
-			}*/
-
 			ActiveDisplayWidgets[i]->Execute_Reset(ActiveDisplayWidgets[i].GetObject());
 			ActiveDisplayWidgets[i]->Execute_SetEntryData(ActiveDisplayWidgets[i].GetObject(), i, Entries[i]);
 		}
@@ -365,6 +359,13 @@ void UDisplayScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 		} Args = { this };
 
 		ProcessFuncFromResolveMember(Func, &Args);
+	}
+
+	// if a widget is focused, then it's data could have been changed.  Call HandleOnFocusChange to simulate it gaining focus so that 
+	// tooltips and other listeners to display focus events will get the new data. 
+	if (IsFocused())
+	{
+		HandleOnFocusChange(this, FocusedWidget, true);
 	}
 }
 
