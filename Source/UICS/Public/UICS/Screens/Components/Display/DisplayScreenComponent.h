@@ -167,6 +167,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	void SetIsDesiredFocusTarget(bool bInIsFocusTarget) { InitialFocus = bInIsFocusTarget; }
 
+	// is a widget managed by the display component focused?
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
+	bool IsFocused() const;
+
+	// get the currently focused widget managed by the display component
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
+	TScriptInterface<IDisplayWidgetInterface> GetFocusedWidget() const;
+
 	// get the first selected widget
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	TScriptInterface<IDisplayWidgetInterface> GetFirstSelectedWidget() const;
@@ -306,6 +314,9 @@ protected:
 	// list of active widgets we are managing. 
 	UPROPERTY(Transient)
 	TArray<TScriptInterface<IDisplayWidgetInterface>> ActiveDisplayWidgets;
+
+	UPROPERTY()
+	TScriptInterface<IDisplayWidgetInterface> FocusedWidget;
 
 	// BEGIN FMember References that allow you to bind events to functions in editor
 #if WITH_EDITOR

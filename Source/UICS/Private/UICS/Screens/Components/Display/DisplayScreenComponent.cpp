@@ -112,8 +112,9 @@ void UDisplayScreenComponent::NativeDestruct()
 	CachedWidgets.Empty();
 	//check(ActiveDisplayWidgets.Num() == 0);
 
-	Super::NativeDestruct();
+	FocusedWidget = nullptr;
 
+	Super::NativeDestruct();
 }
 
 #if WITH_EDITOR
@@ -235,6 +236,16 @@ UUserWidget* UDisplayScreenComponent::GetWidgetAt(int32 Index) const
 	return RetVal;
 }
 
+bool UDisplayScreenComponent::IsFocused() const 
+{ 
+	return IsValid(FocusedWidget.GetObject()); 
+}
+
+TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetFocusedWidget() const 
+{ 
+	return FocusedWidget; 
+}
+
 bool UDisplayScreenComponent::IsSelectedWidget() const
 {
 	return static_cast<bool>(GetFirstSelectedWidget());
@@ -326,12 +337,6 @@ void UDisplayScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 	{
 		if (ActiveDisplayWidgets.IsValidIndex(i))
 		{
-			
-			/*if (Panel)
-			{
-				AddToPanel(ActiveDisplayWidgets[i]);
-			}*/
-
 			ActiveDisplayWidgets[i]->Execute_Reset(ActiveDisplayWidgets[i].GetObject());
 			ActiveDisplayWidgets[i]->Execute_SetEntryData(ActiveDisplayWidgets[i].GetObject(), i, Entries[i]);
 		}
@@ -354,6 +359,13 @@ void UDisplayScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 		} Args = { this };
 
 		ProcessFuncFromResolveMember(Func, &Args);
+	}
+
+	// if a widget is focused, then it's data could have been changed.  Call HandleOnFocusChange to simulate it gaining focus so that 
+	// tooltips and other listeners to display focus events will get the new data. 
+	if (IsFocused())
+	{
+		HandleOnFocusChange(this, FocusedWidget, true);
 	}
 }
 
@@ -481,6 +493,15 @@ void UDisplayScreenComponent::HandleWidgetOnAction(TScriptInterface<IDisplayWidg
 
 void UDisplayScreenComponent::HandleWidgetOnFocusChange(TScriptInterface<IDisplayWidgetInterface> Widget, bool bGained)
 {
+	if (bGained)
+	{
+		FocusedWidget = Widget;
+	}
+	else
+	{
+		FocusedWidget = nullptr;
+	}
+	
 	OnFocusChange.Broadcast(this, Widget, bGained);
 
 	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_FocusChange))
