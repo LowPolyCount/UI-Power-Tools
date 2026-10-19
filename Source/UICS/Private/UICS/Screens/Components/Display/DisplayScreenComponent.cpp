@@ -112,8 +112,9 @@ void UDisplayScreenComponent::NativeDestruct()
 	CachedWidgets.Empty();
 	//check(ActiveDisplayWidgets.Num() == 0);
 
-	Super::NativeDestruct();
+	FocusedWidget = nullptr;
 
+	Super::NativeDestruct();
 }
 
 #if WITH_EDITOR
@@ -233,6 +234,16 @@ UUserWidget* UDisplayScreenComponent::GetWidgetAt(int32 Index) const
 	}
 
 	return RetVal;
+}
+
+bool UDisplayScreenComponent::IsFocused() const 
+{ 
+	return IsValid(FocusedWidget.GetObject()); 
+}
+
+TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetFocusedWidget() const 
+{ 
+	return FocusedWidget; 
 }
 
 bool UDisplayScreenComponent::IsSelectedWidget() const
@@ -481,6 +492,15 @@ void UDisplayScreenComponent::HandleWidgetOnAction(TScriptInterface<IDisplayWidg
 
 void UDisplayScreenComponent::HandleWidgetOnFocusChange(TScriptInterface<IDisplayWidgetInterface> Widget, bool bGained)
 {
+	if (bGained)
+	{
+		FocusedWidget = Widget;
+	}
+	else
+	{
+		FocusedWidget = nullptr;
+	}
+	
 	OnFocusChange.Broadcast(this, Widget, bGained);
 
 	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_FocusChange))
