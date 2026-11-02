@@ -1,14 +1,13 @@
 // Copyright 2026 Joel Gonzales and contributors. See LICENSE for further information
 
-
 #include "Customizers/WidgetSelectorCustomization.h"
-#include "UICS/Screens/Tools/WidgetSelector.h"
-#include "Components/Widget.h"
-#include "BLueprint/WidgetTree.h"
-#include "UICS/Screens/UICSScreen.h"
-#include "PropertyHandle.h"
-#include "DetailWidgetRow.h"
 #include "Blueprint/WidgetBlueprintGeneratedClass.h"
+#include "BLueprint/WidgetTree.h"
+#include "Components/Widget.h"
+#include "DetailWidgetRow.h"
+#include "PropertyHandle.h"
+#include "UICS/Screens/Tools/WidgetSelector.h"
+#include "UICS/Screens/UICSScreen.h"
 
 static const FName EmptyEntry = FName(TEXT("<None>"));
 static const FString Delimit = TEXT("/");
@@ -212,7 +211,6 @@ void FWidgetSelectorCustomization::SaveWidget(TSharedRef<FWidgetNode> SelectedNo
 {
 	TSharedPtr<IPropertyHandle> WidgetName = PropertyToCustomize->GetChildHandle(GET_MEMBER_NAME_CHECKED(FWidgetSelector, WidgetName));
 	TSharedPtr<IPropertyHandle> WidgetPath = PropertyToCustomize->GetChildHandle(GET_MEMBER_NAME_CHECKED(FWidgetSelector, WidgetPath));
-	TSharedPtr<IPropertyHandle> WidgetClassName = PropertyToCustomize->GetChildHandle(GET_MEMBER_NAME_CHECKED(FWidgetSelector, WidgetClassName));
 
 	if (WidgetName && WidgetName->IsValidHandle())
 	{
@@ -236,10 +234,6 @@ void FWidgetSelectorCustomization::SaveWidget(TSharedRef<FWidgetNode> SelectedNo
 		}
 	}
 
-	if (WidgetClassName && WidgetClassName->IsValidHandle())
-	{
-		ensure(WidgetClassName->SetValue(SelectedNode->Class->GetFName()) == FPropertyAccess::Success);
-	}
 }
 
 void FWidgetSelectorCustomization::LoadWidget()

@@ -2,9 +2,12 @@
 
 
 #include "UICS/Screens/Tools/WidgetSelector.h"
+#include "Blueprint/WidgetBlueprintGeneratedClass.h"
 #include "UICS/Screens/UICSScreen.h"
 #include "UICS/Screens/Components/IUICSAccessor.h"
 #include "Blueprint/WidgetTree.h"
+
+
 
 FSelector::FSelector(const UClass* Filter)
 #if WITH_EDITORONLY_DATA
@@ -22,8 +25,29 @@ FWidgetSelector::FWidgetSelector(const UClass* Filter)
 
 }
 
+FPanelWidgetSelector::FPanelWidgetSelector()
+	:FWidgetSelector(UPanelWidget::StaticClass())
+{
 
-UWidget* FWidgetSelector::GetWidget(UWidget* WidgetOwner) const
+}
+
+UWidget* FWidgetSelector::GetSelectedWidget(UWidget* WidgetOwner) const
+{
+	return GetSelectedWidgetInternal(WidgetOwner, false);
+}
+
+UWidget* FWidgetSelector::GetWidgetAtEditorTime(UWidget* WidgetOwner) const
+{
+	return GetSelectedWidgetInternal(WidgetOwner, true);
+
+}
+
+bool FWidgetSelector::IsValid() const
+{
+	return !WidgetName.IsNone();
+}
+
+UWidget* FWidgetSelector::GetSelectedWidgetInternal(UWidget* WidgetOwner, bool bInBlueprint) const
 {
 	UWidget* RetVal = nullptr;
 	TScriptInterface<IUICSScreenAccessor> AsScreen(WidgetOwner);
@@ -33,36 +57,35 @@ UWidget* FWidgetSelector::GetWidget(UWidget* WidgetOwner) const
 		AsScreen = TScriptInterface<IUICSScreenAccessor>(Cast<UObject>(Outer));
 		if (!AsScreen)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Could not get owning Screen during GetWidget() functions will not work"));
+			UE_LOG(LogTemp, Warning, TEXT("Could not get owning Screen during GetWidgetAtEditorTime() functions may not work"));
 		}
 	}
 
-	if (UUserWidget* AsUWidget = Cast<UUserWidget>(AsScreen.GetObject()))
-	{
-		if (const UWidgetTree* Tree = AsUWidget->WidgetTree)
-		{
-			for (const FName& Name : WidgetPath)
-			{
-				if (UUserWidget* Found = Cast<UUserWidget>(Tree->FindWidget(Name)))
-				{
-					Tree = Found->WidgetTree;
-				}
-			}
+	const UWidgetTree* Tree = nullptr;
 
-			RetVal = Tree->FindWidget(WidgetName);
+	if (bInBlueprint)
+	{
+		if (const UWidgetBlueprintGeneratedClass* BPClass = Cast<UWidgetBlueprintGeneratedClass>(AsScreen.GetObject()->GetClass()))
+		{
+			Tree = BPClass->GetWidgetTreeArchetype();
 		}
+	}
+	else if(UUserWidget * AsUWidget = Cast<UUserWidget>(AsScreen.GetObject()))
+	{
+		Tree = AsUWidget->WidgetTree;
+	}
+
+	if (Tree)
+	{
+		// travel down a series of userwidgets if needed.
+		for (const FName& Name : WidgetPath)
+		{
+			if (UUserWidget* Found = Cast<UUserWidget>(Tree->FindWidget(Name)))
+			{
+				Tree = Found->WidgetTree;
+			}
+		}
+		RetVal = Tree->FindWidget(WidgetName);
 	}
 	return RetVal;
-}
-
-bool FWidgetSelector::IsValid() const
-{
-	return !WidgetName.IsNone();
-}
-
-
-FPanelWidgetSelector::FPanelWidgetSelector()
-	:FWidgetSelector(UPanelWidget::StaticClass())
-{
-
 }

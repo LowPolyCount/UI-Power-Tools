@@ -2,13 +2,15 @@
 
 
 #include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
-#include "UICSModule.h"
-#include "UObject/UObjectGlobals.h"
-#include "UICS/Screens/Components/Data//DataScreenComponent.h"
-#include "Components/PanelWidget.h"
 #include "Blueprint/UserWidget.h"
-#include "CommonButtonBase.h"
+#include "UObject/UObjectGlobals.h"
+#include "Components/PanelWidget.h"
 #include "Components/UniformGridPanel.h"
+#include "Components/ListViewBase.h"
+#include "CommonButtonBase.h"
+#include "UICSModule.h"
+#include "UICS/Screens/Components/Data/DataScreenComponent.h"
+
 #include "UICS/Utility/UIPTStatics.h"
 
 FCachedWidget::FCachedWidget(const TScriptInterface<IDisplayWidgetInterface>& InWidget)
@@ -47,7 +49,7 @@ void UDisplayScreenComponent::NativePreConstruct(bool bIsDesignTime)
 	Super::NativePreConstruct(bIsDesignTime);
 	if (PanelSelector.IsValid())
 	{
-		Panel = Cast<UPanelWidget>(PanelSelector.GetWidget(Cast<UWidget>(UUIPTStatics::GetScreenAccessor(this).GetObject())));
+		Panel = Cast<UPanelWidget>(PanelSelector.GetSelectedWidget(Cast<UWidget>(UUIPTStatics::GetScreenAccessor(this).GetObject())));
 
 		// show preview of widgets in design view
 		if (bIsDesignTime)
@@ -61,6 +63,11 @@ void UDisplayScreenComponent::SetupPreConstructWidgets()
 {
 	if (Panel)
 	{
+		if (UListViewBase* AsListView = Cast<UListViewBase>(Panel))
+		{
+			
+		}
+
 		// PreConstruct can run multiple times while in design time. 
 		// Don't clear the panel so we preserve any widgets the designer has added
 		// Instead, Remove existing View Widgets and recreate them in case properties have changed. 
@@ -68,9 +75,12 @@ void UDisplayScreenComponent::SetupPreConstructWidgets()
 		{
 			if (UWidget* AsUWidget = Cast<UWidget>(Displayidget.GetObject()))
 			{
-				if (Panel->HasChild(AsUWidget))
+				if (UPanelWidget* AsPanel = Cast<UPanelWidget>(Panel))
 				{
-					Panel->RemoveChild(AsUWidget);
+					if (AsPanel->HasChild(AsUWidget))
+					{
+						AsPanel->RemoveChild(AsUWidget);
+					}
 				}
 			}
 		}
@@ -123,11 +133,15 @@ void UDisplayScreenComponent::PostEditChangeChainProperty(FPropertyChangedChainE
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 	for (FProperty* Property : PropertyChangedEvent.PropertyChain)
 	{
+		// @note: This will be hit multiple times when editing the PanelSelector, one time for each property that gets saved. 
 		if (Property->GetName() == GET_MEMBER_NAME_CHECKED(UDisplayScreenComponent, PanelSelector))
 		{
+			UWidget* AsWidget = Cast<UWidget>(UUIPTStatics::GetScreenAccessor(this).GetObject());
 			// @TODO: PanelSelector.WidgetClassName isn't coming through correctly so for now we're setting bPanelIsAGrid = true
-			//bPanelIsAGrid = (PanelSelector.WidgetClassName == UUniformGridPanel::StaticClass()->GetFName());
-			
+			if (const UWidget* SelectedPanelWidget = PanelSelector.GetWidgetAtEditorTime(AsWidget))
+			{
+				bPanelIsAGrid = SelectedPanelWidget->GetClass() == UUniformGridPanel::StaticClass();
+			}
 		}
 	}
 }
@@ -412,7 +426,7 @@ void UDisplayScreenComponent::AddToPanel(TScriptInterface<IDisplayWidgetInterfac
 		if (UUniformGridPanel* AsGrid = Cast<UUniformGridPanel>(Panel))
 		{
 			// the widget has already been added to ActiveDisplayWidgets, so we need to call Panel->GetChildrenCount() to get the correct number
-			const int32 NumChildren = Panel->GetChildrenCount();
+			const int32 NumChildren = AsGrid->GetChildrenCount();
 			const int32 ColumnX = NumChildren % ColumnsGridWillHave;
 			const int32 RowY = (ColumnsGridWillHave == 0) ? NumChildren : (NumChildren / ColumnsGridWillHave);
 
@@ -421,7 +435,10 @@ void UDisplayScreenComponent::AddToPanel(TScriptInterface<IDisplayWidgetInterfac
 		}
 		else
 		{
-			Panel->AddChild(Cast<UUserWidget>(Widget.GetObject()));
+			if (UPanelWidget* AsPanel = Cast<UPanelWidget>(Panel))
+			{
+				AsPanel->AddChild(Cast<UUserWidget>(Widget.GetObject()));
+			}
 		}
 	}
 }

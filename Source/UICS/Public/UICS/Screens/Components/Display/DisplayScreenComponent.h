@@ -107,11 +107,11 @@ public:
 
 	// set the panel widget that our created widgets will attach to.
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
-	void SetPanel(UPanelWidget* InPanel) { Panel = InPanel; }
+	void SetPanel(UWidget* InPanel) { Panel = InPanel; }
 
 	// get the panel widget that created widgets are attached to.
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
-	UPanelWidget* GetPanel() const { return Panel; }
+	UWidget* GetPanel() const { return Panel; }
 
 	// set a data component that we listen to and create widgets to display from
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
@@ -260,13 +260,12 @@ protected:
 	// define how many columns the grid should have
 	// when adding children to a grid, we fill the grid's columns first
 	// does nothing if panel is not a uniform grid panel
-	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, meta=(EditCondition="bPanelIsAGrid", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, meta = (EditCondition = "bPanelIsAGrid", EditConditionHides, HideEditConditionToggle))
 	int32 ColumnsGridWillHave = 2;
 
 #if WITH_EDITORONLY_DATA
-	//@TODO: bPanelIsAGrid is always true for now, need to fix so that it is only true if the panel is a grid
-	UPROPERTY()
-	bool bPanelIsAGrid = true;
+	UPROPERTY(BlueprintReadWrite)
+	bool bPanelIsAGrid = false;
 #endif
 
 	// define an instance / prototype of a widget class that implements IDisplayWidgetInterface that we will use to display our data with.
@@ -305,7 +304,7 @@ protected:
 
 	// that panel we are attaching our widgets to.
 	UPROPERTY(Transient)
-	TObjectPtr<UPanelWidget> Panel;
+	TObjectPtr<UWidget> Panel;
 
 	// list of widgets that are cached so that their SWidgets are not destroyed and will be reused before new widgets are created.
 	UPROPERTY(Transient)
