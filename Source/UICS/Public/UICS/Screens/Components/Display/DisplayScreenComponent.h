@@ -7,6 +7,7 @@
 #include "UICS/Screens/Components/Display/DisplayWidgetInterface.h"
 #include "UICS/Screens/Tools/WidgetSelector.h"
 #include "UICS/Screens/Tools/ComponentSelector.h"
+#include "UICS/Screens/Components/Display/DisplayUserWidget.h"
 #include "DisplayScreenComponent.generated.h"
 
 class UPanelWidget;
@@ -82,6 +83,7 @@ public:
 	virtual void NativeDestruct() override;
 #if WITH_EDITOR
 	virtual void PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent) override;
+	void DeterminePanelCharacteristicsForEditorSettings();
 #endif	
 	// End UUserWidget
 
@@ -107,7 +109,7 @@ public:
 
 	// set the panel widget that our created widgets will attach to.
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
-	void SetPanel(UWidget* InPanel) { Panel = InPanel; }
+	void SetPanel(UWidget* InPanel) { Panel = InPanel; DeterminePanelCharacteristics(false);}
 
 	// get the panel widget that created widgets are attached to.
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
@@ -240,14 +242,14 @@ protected:
 
 	TScriptInterface<IDisplayWidgetInterface> GetAndSetupEntryWidget();
 
-	void AddToPanel(TScriptInterface<IDisplayWidgetInterface>& Widget);
-	
+	void AddToPanel(TScriptInterface<IDisplayWidgetInterface>& Widget);	
 	void RemoveViewWidget(TScriptInterface<IDisplayWidgetInterface> Widget);
 	void ViewWidgetSetup(TScriptInterface<IDisplayWidgetInterface> Widget);
 	void ViewWidgetTeardown(TScriptInterface<IDisplayWidgetInterface> Widget);
 	void SetupPreConstructWidgets();
 	TScriptInterface<IDisplayWidgetInterface> DuplicateWidget(const TObjectPtr<UUserWidget>& Prototype);
 	virtual void PopulateWidgets(const TArray<UObject*>& Entries);
+	void DeterminePanelCharacteristics(bool bIsEditingBlueprint);
 
 	// The Data Screen Component we will receive data from
 	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent)
@@ -263,19 +265,20 @@ protected:
 	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, meta = (EditCondition = "bPanelIsAGrid", EditConditionHides, HideEditConditionToggle))
 	int32 ColumnsGridWillHave = 2;
 
-#if WITH_EDITORONLY_DATA
-	UPROPERTY(BlueprintReadWrite)
+	// characteristics about the current panel that we use instead of casting the panel for effeciency. 
+	UPROPERTY()
 	bool bPanelIsAGrid = false;
-#endif
+	UPROPERTY()
+	bool bPanelIsListView = false;
 
 	// define an instance / prototype of a widget class that implements IDisplayWidgetInterface that we will use to display our data with.
 	// This uses the prototype pattern, meaning that we will close this widget instance when we need to make widgets instead of Creating it from a class.
 	// This allows you set properties on this widget through the editor
-	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = DisplayScreenComponent, Meta=(ObjectMustImplement = "/Script/UICS.DisplayWidgetInterface", DisplayName="Display Widget To Use"))
+	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = DisplayScreenComponent, Meta=(ObjectMustImplement = "/Script/UICS.DisplayWidgetInterface", DisplayName="Display Widget To Use", EditCondition = "!bPanelIsListView", EditConditionHides, HideEditConditionToggle))
 	TObjectPtr<UUserWidget> DisplayWidgetPrototype;
 
 	// number of entries to show in design view
-	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, Meta=(UIMin=0))
+	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, Meta=(UIMin=0, EditCondition = "!bPanelIsListView", EditConditionHides, HideEditConditionToggle))
 	int32 DesignEntriesToShow = 3;
 
 	// will the first widget in this component be the initial focus target?
@@ -283,11 +286,11 @@ protected:
 	bool InitialFocus = true;
 
 	// are widgets cached when removed from their panel? Will Cache both the Widget and Slate Widget
-	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent)
+	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, meta = (EditCondition = "!bPanelIsListView", EditConditionHides, HideEditConditionToggle))
 	bool bCacheWidgets = true;
 
-	// can only one widget can be selected at a time?
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DisplayScreenComponent)
+	// can only one widget be selected at a time?
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DisplayScreenComponent, meta = (EditCondition = "!bPanelIsListView", EditConditionHides, HideEditConditionToggle))
 	bool bSingleSelection = false;
 	
 	// events that the user can bind to in editor
@@ -332,4 +335,11 @@ public:
 	// an input action has occurred on a widget
 	UPROPERTY(BlueprintAssignable, Category = DisplayScreenComponent, meta = (DeprecatedProperty, DeprecationMessage = "OnAction is deprecated. Use OnInputAction instead"))
 	FViewActionComp OnAction;
+};
+
+// this is used to set the prototype when using a ListView. It allows us to still use the same codepaths when using a listView as a panel
+UCLASS(Hidden)
+class UDisplayWidgetListViewStandIn : public UDisplayUserWidget
+{
+	GENERATED_BODY()
 };

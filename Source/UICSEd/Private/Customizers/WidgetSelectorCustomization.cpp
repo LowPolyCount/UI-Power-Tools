@@ -7,6 +7,7 @@
 #include "DetailWidgetRow.h"
 #include "PropertyHandle.h"
 #include "UICS/Screens/Tools/WidgetSelector.h"
+#include "Components/ListView.h"
 #include "UICS/Screens/UICSScreen.h"
 
 static const FName EmptyEntry = FName(TEXT("<None>"));
@@ -52,14 +53,27 @@ bool FWidgetSelectorCustomization::FilterEntry(const UObject* Entry) const
 	bool bRetVal = FBaseSelectorCustomization::FilterEntry(Entry);
 	const TSubclassOf<UObject>& Filter = GetClassFilter();
 	
-	// if we're filtering panelwidget or derived, then check CanAddMoreChildren
-	if (bRetVal && Filter && Filter->IsChildOf<UPanelWidget>())
+	// a hack for us to allow any UListView and PanelWidget. Will need to fix this properly another time. 
+	if (bRetVal && Entry && (Cast<UListView>(Entry) || Entry->GetClass()->IsChildOf<UPanelWidget>()))
 	{
+		bRetVal = true;
 		if (const UPanelWidget* Panel = Cast<UPanelWidget>(Entry))
 		{
 			bRetVal = Panel->CanAddMoreChildren();
 		}
 	}
+	else
+	{
+		bRetVal = false;
+	}
+	// if we're filtering panelwidget or derived, then check CanAddMoreChildren
+	/*else if (bRetVal && Filter && Filter->IsChildOf<UPanelWidget>())
+	{
+		if (const UPanelWidget* Panel = Cast<UPanelWidget>(Entry))
+		{
+			bRetVal = Panel->CanAddMoreChildren();
+		}
+	}*/
 
 	return bRetVal;
 }
@@ -69,9 +83,25 @@ TSharedRef<IPropertyTypeCustomization> FWidgetSelectorCustomization::MakeInstanc
 	return MakeShared<FWidgetSelectorCustomization>();
 }
 
+void FWidgetSelectorCustomization::SetToDefault()
+{
+	
+
+	TSharedPtr<IPropertyHandle> WidgetName = PropertyToCustomize->GetChildHandle(GET_MEMBER_NAME_CHECKED(FWidgetSelector, WidgetName));
+	TSharedPtr<IPropertyHandle> WidgetPath = PropertyToCustomize->GetChildHandle(GET_MEMBER_NAME_CHECKED(FWidgetSelector, WidgetPath));
+
+	Box->ClearSelection();
+}
+
 void FWidgetSelectorCustomization::CustomizeHeader(TSharedRef<IPropertyHandle> PropertyHandle, FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& CustomizationUtils)
 {
 	FBaseSelectorCustomization::CustomizeHeader(PropertyHandle, HeaderRow, CustomizationUtils);
+
+	FSimpleDelegate Delegate;
+	PropertyHandle->SetOnPropertyResetToDefault(FSimpleDelegate::CreateLambda([this]()
+		{
+			this->SetToDefault();
+		}));
 
 	TSharedPtr<IPropertyHandle> ClassFilterProperty = PropertyToCustomize->GetChildHandle(GET_MEMBER_NAME_CHECKED(FWidgetSelector, ClassFilter));
 	if (ClassFilterProperty && ClassFilterProperty->IsValidHandle())
@@ -115,17 +145,12 @@ void FWidgetSelectorCustomization::CustomizeHeader(TSharedRef<IPropertyHandle> P
 
 void FWidgetSelectorCustomization::OnWidgetSelectionChanged(TSharedPtr<FWidgetNode> Node, ESelectInfo::Type Type)
 {
-	SelectedIndex = WidgetNodes.Find(Node.ToSharedRef());
-	FText NameText = FText::FromName(EmptyEntry);
+	SelectedIndex = (Node) ? WidgetNodes.Find(Node.ToSharedRef()) : INDEX_NONE;
 
-	if (SelectedIndex != INDEX_NONE)
-	{
-		NameText = Node->DisplayName();
-	}
-
+	const FText NameText = (SelectedIndex != INDEX_NONE) ? Node->DisplayName() : FText::FromName(EmptyEntry);
 	SelectedWidgetName.Get()->SetText(NameText);
 
-	SaveWidget(Node.ToSharedRef());
+	SaveWidget(Node);
 }
 
 TSharedRef<SWidget> FWidgetSelectorCustomization::OnGenerateWidget(TSharedRef<FWidgetNode> InItem)
@@ -207,32 +232,43 @@ void FWidgetSelectorCustomization::TraverseWidgetTree(const UWidgetTree* Tree, T
 	}
 }
 
-void FWidgetSelectorCustomization::SaveWidget(TSharedRef<FWidgetNode> SelectedNode)
+void FWidgetSelectorCustomization::SaveWidget(TSharedPtr<FWidgetNode> SelectedNode)
 {
 	TSharedPtr<IPropertyHandle> WidgetName = PropertyToCustomize->GetChildHandle(GET_MEMBER_NAME_CHECKED(FWidgetSelector, WidgetName));
 	TSharedPtr<IPropertyHandle> WidgetPath = PropertyToCustomize->GetChildHandle(GET_MEMBER_NAME_CHECKED(FWidgetSelector, WidgetPath));
 
-	if (WidgetName && WidgetName->IsValidHandle())
-	{
-		ensure(WidgetName->SetValue(SelectedNode->WidgetName) == FPropertyAccess::Success);
-	}
+	PropertyToCustomize->NotifyPreChange();
 
 	if (WidgetPath && WidgetPath->IsValidHandle())
 	{
 		TSharedPtr<IPropertyHandleArray> WidgetPathArray = WidgetPath->AsArray();
 		ensure(WidgetPathArray->EmptyArray() == FPropertyAccess::Success);
 
-		for (int32 i=0; i<SelectedNode->Path.Num(); ++i)
+		if (SelectedNode)
 		{
-			ensure(WidgetPathArray->AddItem() == FPropertyAccess::Success);
-			TSharedRef<IPropertyHandle> IndexProperty = WidgetPathArray->GetElement(i);
-
-			if (IndexProperty->IsValidHandle())
+			for (int32 i = 0; i < SelectedNode->Path.Num(); ++i)
 			{
-				ensure(IndexProperty->SetValue(SelectedNode->Path[i].ToString()) == FPropertyAccess::Success);
+				ensure(WidgetPathArray->AddItem() == FPropertyAccess::Success);
+				TSharedRef<IPropertyHandle> IndexProperty = WidgetPathArray->GetElement(i);
+
+				if (IndexProperty->IsValidHandle())
+				{
+					ensure(IndexProperty->SetValue(SelectedNode->Path[i].ToString()) == FPropertyAccess::Success);
+				}
 			}
 		}
 	}
+
+	// always set WidgetName last so we can pick up the change in DisplayScreenComponent
+	if (WidgetName && WidgetName->IsValidHandle())
+	{
+		//if (SelectedNode)
+		{
+			ensure(WidgetName->SetValue((SelectedNode) ? SelectedNode->WidgetName : FName()) == FPropertyAccess::Success);
+		}
+	}
+
+	PropertyToCustomize->NotifyFinishedChangingProperties();
 
 }
 

@@ -3,6 +3,12 @@
 
 #include "UICS/Screens/Components/Display/DisplayCommonActivatableWidget.h"
 
+void UDisplayCommonActivatableWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
+{
+	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
+	SetEntryData(INDEX_NONE, ListItemObject);
+}
+
 // userwidget functions 
 FReply UDisplayCommonActivatableWidget::NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent)
 {

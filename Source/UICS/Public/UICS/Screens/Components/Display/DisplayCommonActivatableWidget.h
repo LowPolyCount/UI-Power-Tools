@@ -4,15 +4,18 @@
 
 #include "CommonActivatableWidget.h"
 #include "UICS/Screens/Components/Display/DisplayWidgetInterface.h"
+#include "Blueprint/IUserObjectListEntry.h"
 #include "DisplayCommonActivatableWidget.generated.h"
 
 /**
  * Activatable Widget that can be used as an Display widget with the Display Screen Component
  */
 UCLASS(Abstract)
-class UICS_API UDisplayCommonActivatableWidget : public UCommonActivatableWidget, public IDisplayWidgetInterface
+class UICS_API UDisplayCommonActivatableWidget : public UCommonActivatableWidget, public IDisplayWidgetInterface, public IUserObjectListEntry
 {
 	GENERATED_BODY()
+
+	virtual void NativeOnListItemObjectSet(UObject* ListItemObject);
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = DisplayWidget)
