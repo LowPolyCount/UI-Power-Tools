@@ -77,15 +77,45 @@ UWidget* FWidgetSelector::GetSelectedWidgetInternal(UWidget* WidgetOwner, bool b
 
 	if (Tree)
 	{
-		// travel down a series of userwidgets if needed.
-		for (const FName& Name : WidgetPath)
+		if (bInBlueprint)
 		{
-			if (UUserWidget* Found = Cast<UUserWidget>(Tree->FindWidget(Name)))
+			for (const FName& Name : WidgetPath)
 			{
-				Tree = Found->WidgetTree;
+				if (Tree)
+				{
+					const UWidget* FoundWidget = Tree->FindWidget(Name);
+					if(const UWidgetBlueprintGeneratedClass* AsClass = Cast<UWidgetBlueprintGeneratedClass>(FoundWidget->GetClass()))
+					{
+						Tree = AsClass->GetWidgetTreeArchetype();
+					}
+				}
+			}
+
+			if (Tree)
+			{
+				RetVal = Tree->FindWidget(WidgetName);
 			}
 		}
-		RetVal = Tree->FindWidget(WidgetName);
+		else
+		{
+			// travel down a series of userwidgets if needed.
+			for (const FName& Name : WidgetPath)
+			{
+				if (Tree)
+				{
+					if (UUserWidget* Found = Cast<UUserWidget>(Tree->FindWidget(Name)))
+					{
+						Tree = Found->WidgetTree;
+					}
+				}
+			}
+		}
+
+		if (Tree)
+		{
+			RetVal = Tree->FindWidget(WidgetName);
+		}
+
 	}
 	return RetVal;
 }
