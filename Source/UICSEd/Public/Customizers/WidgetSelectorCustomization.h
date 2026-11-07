@@ -52,11 +52,13 @@ namespace Customization
 		void OnWidgetSelectionChanged(TSharedPtr<FWidgetNode> Node, ESelectInfo::Type Type);
 
 		TArray<TSharedRef<FWidgetNode>> GetWidgetsAttachedToScreen();
+		
 
 		void TraverseWidgetTree(const UWidgetTree* Tree, TArray<TSharedRef<FWidgetNode>>& RetVal, TArray<FName> Path);
 
-		void SaveWidget(TSharedRef<FWidgetNode> InWidget);
+		void SaveWidget(TSharedPtr<FWidgetNode> InWidget);
 		void LoadWidget();
+		void SetToDefault();
 
 		TArray<TSharedRef<FWidgetNode>> WidgetNodes;
 
