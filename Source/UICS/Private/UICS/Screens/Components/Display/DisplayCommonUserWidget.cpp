@@ -6,7 +6,7 @@
 void UDisplayCommonUserWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
 	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
-	SetEntryData(INDEX_NONE, ListItemObject);
+	Execute_SetEntryData(this, INDEX_NONE, ListItemObject);
 }
 
 FReply UDisplayCommonUserWidget::NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent)

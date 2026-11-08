@@ -6,7 +6,7 @@
 void UDisplayCommonActivatableWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
 	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
-	SetEntryData(INDEX_NONE, ListItemObject);
+	Execute_SetEntryData(this, INDEX_NONE, ListItemObject);
 }
 
 // userwidget functions 
