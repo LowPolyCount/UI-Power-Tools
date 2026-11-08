@@ -5,9 +5,25 @@
 #include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
 #include "UICS/Screens/Components/Action/ActionScreenComponent.h"
 
+void IDisplayWidgetInterface::NativeOnListItemObjectSet(UObject* ListItemObject)
+{
+	bIsOwnedByListView = true;
+	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
+
+	UObject* ThisAsUObject = Cast<UObject>(this);
+	Execute_SetEntryData(ThisAsUObject, INDEX_NONE, ListItemObject);
+}
+
 void IDisplayWidgetInterface::SetOwningDisplayScreenComponent(UDisplayScreenComponent* InOwningComponent)
 {
 	OwningDisplayScreenComponent = TWeakObjectPtr<UDisplayScreenComponent>(InOwningComponent);
+
+	// when in a list view, the component comes in after SetEntryData is called. so we wait on calling Populate until now. 
+	if (bIsOwnedByListView)
+	{
+		UObject* ThisAsUObject = Cast<UObject>(this);
+		Execute_Populate(ThisAsUObject, InOwningComponent, Execute_GetEntryData(ThisAsUObject));
+	}
 }
 
 UDisplayScreenComponent* IDisplayWidgetInterface::GetOwningDisplayScreenComponent_Implementation() const
@@ -48,7 +64,12 @@ void IDisplayWidgetInterface::SetEntryData_Implementation(int32 InIndex, UObject
 	Index = InIndex;
 	SetEntry_Internal(InEntry);
 	Execute_OnEntryDataSet(ThisAsUObject, Index, GetEntry_Internal());
-	Execute_Populate(ThisAsUObject, Execute_GetOwningDisplayScreenComponent(ThisAsUObject), InEntry);
+
+	// if we're owned by a list view, we don't have a pointer to our DisplayScreenComponent yet. Wait until that comes in to call Populate
+	if (!bIsOwnedByListView)
+	{
+		Execute_Populate(ThisAsUObject, Execute_GetOwningDisplayScreenComponent(ThisAsUObject), InEntry);
+	}
 }
 
 UObject* IDisplayWidgetInterface::GetEntryData_Implementation() const

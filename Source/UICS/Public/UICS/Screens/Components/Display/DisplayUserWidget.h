@@ -5,16 +5,14 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "UICS/Screens/Components/Display/DisplayWidgetInterface.h"
-#include "Blueprint/IUserObjectListEntry.h"
 #include "DisplayUserWidget.generated.h"
 
 // a UserWidget that can be used as an Display widget with the Display Screen Component
 UCLASS(Abstract)
-class UICS_API UDisplayUserWidget : public UUserWidget, public IDisplayWidgetInterface, public IUserObjectListEntry
+class UICS_API UDisplayUserWidget : public UUserWidget, public IDisplayWidgetInterface
 {
 	GENERATED_BODY()
 
-	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 public:
 	UPROPERTY(BlueprintAssignable, Category = DisplayWidget)
 	FViewAction OnInputAction;

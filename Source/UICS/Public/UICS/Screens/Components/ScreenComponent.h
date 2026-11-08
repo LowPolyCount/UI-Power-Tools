@@ -25,7 +25,9 @@ public:
 #endif //WITH_EDITOR
 	virtual FString GetDisplayName() const;
 	virtual FString GetDisplayNameVerbose() const;
-
+	// are we in design time? Will always be false until PreConstruct() is called
+	UFUNCTION(BlueprintCallable)
+	bool IsDesignTime() const {return bHeldIsDesignTime;}
 
 protected:
 
@@ -51,4 +53,8 @@ protected:
 	// used to lookup the component. Needs to be Blueprint Accessible for Screen Selectors to work
 	UPROPERTY(BlueprintReadOnly, Category = ScreenComponent)
 	mutable FGuid Guid;
+
+	// are we in design time? Will always be false until PreConstruct() is called. For some reason, the generated.h file will not 
+	UPROPERTY()
+	bool bHeldIsDesignTime = false;
 };

@@ -3,12 +3,6 @@
 
 #include "UICS/Screens/Components/Display/DisplayCommonButtonBase.h"
 
-void UDisplayCommonButtonBase::NativeOnListItemObjectSet(UObject* ListItemObject)
-{
-	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
-	Execute_SetEntryData(this, INDEX_NONE, ListItemObject);
-}
-
 void UDisplayCommonButtonBase::HandleFocusReceived()
 {
 		Super::HandleFocusReceived();

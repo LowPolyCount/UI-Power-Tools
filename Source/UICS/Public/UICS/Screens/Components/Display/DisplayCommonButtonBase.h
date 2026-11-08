@@ -5,16 +5,13 @@
 #include "CoreMinimal.h"
 #include "CommonButtonBase.h"
 #include "UICS/Screens/Components/Display/DisplayWidgetInterface.h"
-#include "Blueprint/IUserObjectListEntry.h"
 #include "DisplayCommonButtonBase.generated.h"
 
 // a Common Button Base that can be used as an Display widget with the Display Screen Component
 UCLASS(Abstract)
-class UICS_API UDisplayCommonButtonBase : public UCommonButtonBase, public IDisplayWidgetInterface, public IUserObjectListEntry
+class UICS_API UDisplayCommonButtonBase : public UCommonButtonBase, public IDisplayWidgetInterface
 {
 	GENERATED_BODY()
-
-	virtual void NativeOnListItemObjectSet(UObject* ListItemObject);
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = DisplayWidget)

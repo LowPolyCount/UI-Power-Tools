@@ -48,9 +48,9 @@ bool FViewCreationTest::RunTest(const FString& Parameters)
 		UPanelWidget* Panel = UICSTest::SetupViewTest(View, Data);
 		TestEqual("View->CountOnRetrieval", View->CountOnRetrieval, 1);
 
-		TScriptInterface<IDisplayWidgetInterface> Widget0 = View->GetViewWidgetAt(0);
-		TScriptInterface<IDisplayWidgetInterface> Widget1 = View->GetViewWidgetAt(1);
-		TScriptInterface<IDisplayWidgetInterface> Widget2 = View->GetViewWidgetAt(2);
+		TScriptInterface<IDisplayWidgetInterface> Widget0 = View->GetDisplayWidgetAt(0);
+		TScriptInterface<IDisplayWidgetInterface> Widget1 = View->GetDisplayWidgetAt(1);
+		TScriptInterface<IDisplayWidgetInterface> Widget2 = View->GetDisplayWidgetAt(2);
 		TestNotNull("Widget0", Widget0.GetObject());
 		TestNotNull("Widget1", Widget1.GetObject());
 		TestNotNull("Widget2", Widget2.GetObject());
@@ -230,7 +230,7 @@ bool FViewDesiredFocusTargetTest::RunTest(const FString& Parameters)
 		View2->SetIsDesiredFocusTarget(true);
 		
 		//@todo: The Pointers here didn't equal, but it is the same object. Investigate. 
-		TestEqual("NativeGetDesiredFocusTarget", Screen->NativeGetDesiredFocusTarget()->GetFName(), View1->GetViewWidgetAt(0).GetObject()->GetFName());
+		TestEqual("NativeGetDesiredFocusTarget", Screen->NativeGetDesiredFocusTarget()->GetFName(), View1->GetDisplayWidgetAt(0).GetObject()->GetFName());
 
 		View1->SetIsDesiredFocusTarget(false);
 		View2->SetIsDesiredFocusTarget(false);
@@ -240,10 +240,10 @@ bool FViewDesiredFocusTargetTest::RunTest(const FString& Parameters)
 		// 
 		{
 			View2->SetIsDesiredFocusTarget(true);
-			TScriptInterface<IDisplayWidgetInterface> Widget0 = View2->GetViewWidgetAt(0);
+			TScriptInterface<IDisplayWidgetInterface> Widget0 = View2->GetDisplayWidgetAt(0);
 			UUserWidget* AsWidget = Cast<UUserWidget>(Widget0.GetObject());
 			AsWidget->SetIsFocusable(false);
-			TestEqual("First Focusable Widget in View Component", Screen->NativeGetDesiredFocusTarget(), Cast<UWidget>(View2->GetViewWidgetAt(1).GetObject()));
+			TestEqual("First Focusable Widget in View Component", Screen->NativeGetDesiredFocusTarget(), Cast<UWidget>(View2->GetDisplayWidgetAt(1).GetObject()));
 		}
 		// @todo: Test that the first focusable widget is what we're using. 
 		// @todo: Test not completed yet?

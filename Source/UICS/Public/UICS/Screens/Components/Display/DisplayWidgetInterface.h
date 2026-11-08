@@ -5,6 +5,7 @@
 #include "UObject/Interface.h"
 #include "GameplayTagsClasses.h"
 #include "UICS/Screens/Components/Action/ActionResultData.h"
+#include "Blueprint/IUserObjectListEntry.h"
 #include "DisplayWidgetInterface.generated.h"
 
 class UDisplayScreenComponent;
@@ -21,18 +22,26 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FViewEvent, TScriptInterface<IDispl
 // Widgets implementing this interface gain the following:
 // Cacheable - Instead of being destroyed when no longer used, it may be held for future use. 
 // Resetable - The OnReset event is called before we set it's data and when the widget is removed from it's parent, so that if the widget is being cached, you can remove listeners, pointers, etc. 
+//
+// We inherit IUserObjectListEntry so that DisplayWidgets can be used by a ListView
 UINTERFACE(BlueprintType)
-class UDisplayWidgetInterface : public UInterface
+class UDisplayWidgetInterface : public UUserObjectListEntry
 {
 	GENERATED_BODY()
 };
 
 
-class UICS_API IDisplayWidgetInterface
+class UICS_API IDisplayWidgetInterface : public IUserObjectListEntry
 {
 	GENERATED_BODY()
 
+	
+
 public:
+	//IUserObjectListEntry
+	void NativeOnListItemObjectSet(UObject* ListItemObject);
+	//End IUserObjectListEntry
+
 	// these delegates need to be created in the implementing class so that they can be set as blueprint assignable
 	//@todo: Do they need to be exposed to the user?  They are mostly just used for the Display component
 	virtual FViewAction& GetOnAction() = 0;
@@ -106,6 +115,9 @@ public:
 	// only called by the owning Display Screen Component
 	void Release();
 
+	// This is not expected to be used, but is exposed to help handle edge cases for users of the plugin
+	void SetIsInListView(bool bInIsOwnedByListView) {bIsOwnedByListView = bInIsOwnedByListView;}
+
 protected:
 	// list out events that are user facing
 
@@ -127,7 +139,7 @@ protected:
 
 	// these internal functions are broken out and made virtual in case an implementing class needs to override them. 
 	virtual UObject* GetEntry_Internal() const { return Entry.Get(); }
-	virtual void SetEntry_Internal(UObject* InEntry) { Entry = TStrongObjectPtr<UObject>(InEntry); }
+	virtual void SetEntry_Internal(UObject* InEntry) { Entry = TWeakObjectPtr<UObject>(InEntry); }
 	virtual void SetEntryData_Implementation(int32 InIndex, UObject* InEntry);
 	virtual UObject* GetEntryData_Implementation() const;
 	virtual int32 GetIndex_Implementation() const { return Index; }
@@ -148,9 +160,11 @@ protected:
 	void SetInputAction_Internal();
 
 
-	TStrongObjectPtr<UObject> Entry;	// the entry data
+	TWeakObjectPtr<UObject> Entry;		// the entry data
 	int32 Index = INDEX_NONE;			// what is the index of the widget in the view component array?
 	TWeakObjectPtr<UDisplayScreenComponent> OwningDisplayScreenComponent; // View Component that is managing this widget
+
+	bool bIsOwnedByListView = false;	// flag to say if the widget is owned by a List View. If not, then it's owned by a DisplayScreenComponent.
 
 	// list out deprecated functions. 
 	// event notifying that the focus has changed
