@@ -44,18 +44,26 @@ public:
 	FWidgetSelector() = default;
 	virtual ~FWidgetSelector(){}
 	FWidgetSelector(const UClass* Filter);
-	UWidget* GetWidget(UWidget* WidgetOwner) const;
 
+	UWidget* GetSelectedWidget(UWidget* WidgetOwner) const;
+	FName GetSelectedWidgetName() const {return WidgetName;}
+	const TArray<FName>& GetSelectedWidgetPath() const {return WidgetPath;}
+
+#if WITH_EDITORONLY_DATA
+	UWidget* GetWidgetAtEditorTime(UWidget* WidgetOwner) const;
+#endif
+ 
+	//@note: We save these values in our customizer which requires them to be public and set to EditAnywhere, BlueprintReadWrite
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WidgetSelector)
 	FName WidgetName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WidgetSelector)
 	TArray<FName> WidgetPath;
-//#if WITH_EDITORONLY_DATA
-	//UPROPERTY()
-	//TObjectPtr<UClass> WidgetClass;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WidgetSelector)
-	FName WidgetClassName;
-//#endif
+
+protected:
+	// bInBlueprint is for cases where we need to get the selected widget while editing a blueprint. 
+	// How we retrieve the widget tree is different in that case
+	UWidget* GetSelectedWidgetInternal(UWidget* WidgetOwner, bool bInBlueprint) const;
 };
 
 // Select only Panel Widgets or derived

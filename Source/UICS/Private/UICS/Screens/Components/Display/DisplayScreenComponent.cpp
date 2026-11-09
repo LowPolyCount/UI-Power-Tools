@@ -2,13 +2,16 @@
 
 
 #include "UICS/Screens/Components/Display/DisplayScreenComponent.h"
-#include "UICSModule.h"
-#include "UObject/UObjectGlobals.h"
-#include "UICS/Screens/Components/Data//DataScreenComponent.h"
-#include "Components/PanelWidget.h"
 #include "Blueprint/UserWidget.h"
-#include "CommonButtonBase.h"
+#include "UObject/UObjectGlobals.h"
+#include "Components/PanelWidget.h"
 #include "Components/UniformGridPanel.h"
+#include "Components/ListView.h"
+#include "CommonButtonBase.h"
+#include "UICSModule.h"
+#include "UICS/Screens/Components/Data/DataScreenComponent.h"
+#include "UICS/Screens/Components/Display/DisplayCommonButtonBase.h"
+#include "Templates/SharedPointer.h"
 #include "UICS/Utility/UIPTStatics.h"
 
 FCachedWidget::FCachedWidget(const TScriptInterface<IDisplayWidgetInterface>& InWidget)
@@ -41,17 +44,16 @@ void UDisplayScreenComponent::NativeInitialize()
 	}
 }
 
-
 void UDisplayScreenComponent::NativePreConstruct(bool bIsDesignTime)
 {
 	Super::NativePreConstruct(bIsDesignTime);
 	if (PanelSelector.IsValid())
 	{
-		Panel = Cast<UPanelWidget>(PanelSelector.GetWidget(Cast<UWidget>(UUIPTStatics::GetScreenAccessor(this).GetObject())));
-
-		// show preview of widgets in design view
-		if (bIsDesignTime)
+		Panel = Cast<UWidget>(PanelSelector.GetSelectedWidget(Cast<UWidget>(UUIPTStatics::GetScreenAccessor(this).GetObject())));
+		DeterminePanelCharacteristics(nullptr);
+		if(IsDesignTime())
 		{
+			// show preview of widgets in design view
 			SetupPreConstructWidgets();
 		}
 	}
@@ -68,9 +70,12 @@ void UDisplayScreenComponent::SetupPreConstructWidgets()
 		{
 			if (UWidget* AsUWidget = Cast<UWidget>(Displayidget.GetObject()))
 			{
-				if (Panel->HasChild(AsUWidget))
+				if (UPanelWidget* AsPanel = Cast<UPanelWidget>(Panel))
 				{
-					Panel->RemoveChild(AsUWidget);
+					if (AsPanel->HasChild(AsUWidget))
+					{
+						AsPanel->RemoveChild(AsUWidget);
+					}
 				}
 			}
 		}
@@ -99,9 +104,14 @@ TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::DuplicateWidg
 
 void UDisplayScreenComponent::NativeDestruct()
 {
+	if (bIsPanelListView)
+	{
+		TeardownPanelListViewListeners();
+	}
+
 	for(int32 i= ActiveDisplayWidgets.Num()-1; i >= 0; --i)
 	{
-		RemoveViewWidget(ActiveDisplayWidgets[i]);
+		RemoveDisplayWidget(ActiveDisplayWidgets[i]);
 	}
 	ActiveDisplayWidgets.Empty();
 
@@ -118,20 +128,87 @@ void UDisplayScreenComponent::NativeDestruct()
 }
 
 #if WITH_EDITOR
+
 void UDisplayScreenComponent::PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 	for (FProperty* Property : PropertyChangedEvent.PropertyChain)
 	{
-		if (Property->GetName() == GET_MEMBER_NAME_CHECKED(UDisplayScreenComponent, PanelSelector))
+		// @note: This will be hit multiple times when editing the PanelSelector, one time for each property that gets saved. 
+		if (Property->GetName() == GET_MEMBER_NAME_CHECKED(FWidgetSelector, WidgetName))
 		{
-			// @TODO: PanelSelector.WidgetClassName isn't coming through correctly so for now we're setting bPanelIsAGrid = true
-			//bPanelIsAGrid = (PanelSelector.WidgetClassName == UUniformGridPanel::StaticClass()->GetFName());
-			
+			DeterminePanelCharacteristicsForEditorSettings();
 		}
 	}
 }
+
+void UDisplayScreenComponent::DeterminePanelCharacteristicsForEditorSettings()
+{
+	if (UWidget* AsWidget = Cast<UWidget>(UUIPTStatics::GetScreenAccessor(this).GetObject()))
+	{
+		if (const UWidget* SelectedPanelWidget = PanelSelector.GetWidgetAtEditorTime(AsWidget))
+		{
+			const bool bPreviousIsAGrid = bIsPanelGrid;
+			const bool bPreviousIsListView = bIsPanelListView;
+			bIsPanelGrid = SelectedPanelWidget->GetClass() == UUniformGridPanel::StaticClass();
+			bIsPanelListView = SelectedPanelWidget->GetClass() == UListView::StaticClass();
+
+			if (bPreviousIsListView != bIsPanelListView)
+			{
+				// switching from a list view
+				if (bPreviousIsListView)
+				{
+					bCacheWidgets = true;
+					DisplayWidgetPrototype = nullptr;
+					DesignEntriesToShow = 3;
+				}
+				else // switching to a list view
+				{
+					bCacheWidgets = false;
+					DesignEntriesToShow = 0;
+					bSingleSelection = false;
+				}
+			}
+		}
+
+	}
+}
+
 #endif
+
+void UDisplayScreenComponent::DeterminePanelCharacteristics(UWidget* PreviousPanel)
+{
+	if (PreviousPanel && bIsPanelListView)
+	{
+		TeardownPanelListViewListeners();
+	}
+
+	if (Panel)
+	{
+		bIsPanelGrid = (Cast<UUniformGridPanel>(Panel) != nullptr);
+		bIsPanelListView = (Cast<UListView>(Panel) != nullptr);
+
+		if (!IsDesignTime() && bIsPanelListView)
+		{
+			// DisplayWidgetPrototype will be null if using a ListView. Use this as a stand-in so that we
+			// create it as a prototype and can still use all our regular codepaths
+			DisplayWidgetPrototype = NewObject<UDisplayWidgetListViewStandIn>();
+			SetupPanelListViewListeners();
+		}
+	}
+}
+
+void UDisplayScreenComponent::SetPanel(UWidget* InPanel) 
+{ 
+	if (Panel != InPanel) 
+	{
+		UWidget* PreviousPanel = Panel;
+		Panel = InPanel; 
+		DeterminePanelCharacteristics(PreviousPanel);
+	} 
+}
+
+
 
 UWidget* UDisplayScreenComponent::GetDesiredFocusTarget() const
 {
@@ -192,22 +269,6 @@ void UDisplayScreenComponent::SetWidgetPrototypeByClass(UClass* WidgetPrototypeC
 	}
 }
 
-TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetViewWidgetAt(int32 Index) const
-{ 
-	TScriptInterface<IDisplayWidgetInterface> RetVal;
-
-	if(ActiveDisplayWidgets.IsValidIndex(Index))
-	{
-		RetVal = ActiveDisplayWidgets[Index];
-	}
-	else
-	{
-		UE_LOG(LogUICS, Warning, TEXT("No Widget in Index %i"), Index);
-	}
-
-	return RetVal;
-}
-
 TArray<UUserWidget*> UDisplayScreenComponent::GetAllDisplayWidgetsAsUserWidgets() const
 {
 	TArray<UUserWidget*> RetVal;
@@ -226,11 +287,52 @@ UUserWidget* UDisplayScreenComponent::GetWidgetAt(int32 Index) const
 {
 	UUserWidget* RetVal = nullptr;
 
-	TScriptInterface<IDisplayWidgetInterface> ViewWidget = GetViewWidgetAt(Index);
-
+	TScriptInterface<IDisplayWidgetInterface> ViewWidget = GetDisplayWidgetAt(Index);
 	if (UUserWidget* AsUserWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
 	{
 		RetVal = AsUserWidget;
+	}
+
+	return RetVal;
+}
+
+TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetDisplayWidgetUsingEntryData(const UObject* EntryData) const
+{
+	TScriptInterface<IDisplayWidgetInterface> RetVal;
+
+	if (bIsPanelListView)
+	{
+		if (UListView* AsListView = Cast<UListView>(Panel))
+		{
+			RetVal = AsListView->GetEntryWidgetFromItem(EntryData);
+		}
+	}
+	else // normal panel
+	{
+		for (TScriptInterface<IDisplayWidgetInterface> Widget : ActiveDisplayWidgets)
+		{
+			if (Widget->Execute_GetEntryData(Widget.GetObject()) == EntryData)
+			{
+				RetVal = Widget;
+				break;
+			}
+		}
+	}
+
+	return RetVal;
+}
+
+TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetDisplayWidgetAt(int32 Index) const
+{
+	TScriptInterface<IDisplayWidgetInterface> RetVal;
+
+	if (ActiveDisplayWidgets.IsValidIndex(Index))
+	{
+		RetVal = ActiveDisplayWidgets[Index];
+	}
+	else
+	{
+		UE_LOG(LogUICS, Warning, TEXT("No Widget in Index %i"), Index);
 	}
 
 	return RetVal;
@@ -246,9 +348,14 @@ TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetFocusedWid
 	return FocusedWidget; 
 }
 
-bool UDisplayScreenComponent::IsSelectedWidget() const
+bool UDisplayScreenComponent::IsAWidgetSelected() const
 {
 	return static_cast<bool>(GetFirstSelectedWidget());
+}
+
+bool UDisplayScreenComponent::IsSelectedWidget() const
+{
+	return IsAWidgetSelected();
 }
 
 TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetFirstSelectedWidget() const
@@ -274,16 +381,36 @@ TArray<TScriptInterface<IDisplayWidgetInterface>> UDisplayScreenComponent::GetAl
 {
 	TArray<TScriptInterface<IDisplayWidgetInterface>> RetVal;
 	//@todo: Hold on to selected widgets so iteration is not required
-	for (TScriptInterface<IDisplayWidgetInterface> Widget : ActiveDisplayWidgets)
+	
+	if (bIsPanelListView)
 	{
-		if (const UCommonButtonBase* AsButton = Cast<UCommonButtonBase>(Widget.GetObject()))
+		if (UListView* AsListView = Cast<UListView>(Panel))
 		{
-			if (AsButton->GetSelected())
+			TArray<UObject*> SelectedEntries;
+			AsListView->GetSelectedItems(SelectedEntries);
+			for (UObject* Entry : SelectedEntries)
 			{
-				RetVal.Emplace(Widget);
+				if (UUserWidget* UserWidget = AsListView->GetEntryWidgetFromItem(Entry))
+				{
+					RetVal.Add(TScriptInterface<IDisplayWidgetInterface>(UserWidget));
+				}
 			}
 		}
 	}
+	else
+	{
+		for (TScriptInterface<IDisplayWidgetInterface> Widget : ActiveDisplayWidgets)
+		{
+			if (const UCommonButtonBase* AsButton = Cast<UCommonButtonBase>(Widget.GetObject()))
+			{
+				if (AsButton->GetSelected())
+				{
+					RetVal.Emplace(Widget);
+				}
+			}
+		}
+	}
+
 	return RetVal;
 }
 
@@ -316,12 +443,14 @@ void UDisplayScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 		CachedWidgets.Reserve(CachedWidgets.Num() + WidgetDifference);
 	}
 
+	
+
 	// let's remove any unused widgets
 	if (WidgetDifference > 0)
 	{
 		for (int32 j = WidgetDifference, i = ActiveDisplayWidgets.Num() - 1; j > 0; --j, --i)
 		{
-			RemoveViewWidget(ActiveDisplayWidgets[i]);
+			RemoveDisplayWidget(ActiveDisplayWidgets[i]);
 		}
 	}
 	else if (WidgetDifference < 0)	// let's create any widgets that we will need
@@ -332,34 +461,40 @@ void UDisplayScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 		}
 	}
 
-	// update data for our widgets
-	for (int32 i = 0; i < Entries.Num(); ++i)
+	// With Normal Panels, Our widgets we expect to be added to the panel before calling SetEntryData.
+	// For ListViews, It needs to be in the opposite order because ListViews take in data from a DisplayWidget
+	// this is a cludge for now, would like to refactor this into some type of adaptor class. 
+	if (bIsPanelListView)
 	{
-		if (ActiveDisplayWidgets.IsValidIndex(i))
+		// list views do a bunch of things on their own that we can't override, so handle that and exit out. 
+		if (UListView* AsListView = Cast<UListView>(Panel))
 		{
-			ActiveDisplayWidgets[i]->Execute_Reset(ActiveDisplayWidgets[i].GetObject());
-			ActiveDisplayWidgets[i]->Execute_SetEntryData(ActiveDisplayWidgets[i].GetObject(), i, Entries[i]);
+			AsListView->ClearListItems();
+			for (int32 i = 0; i < Entries.Num(); ++i)
+			{
+				ActiveDisplayWidgets[i]->Execute_SetEntryData(ActiveDisplayWidgets[i].GetObject(), i, Entries[i]);
+				AddToPanel(ActiveDisplayWidgets[i]);
+			}
 		}
-		else
+	}
+	else
+	{
+		// update data for our widgets
+		for (int32 i = 0; i < Entries.Num(); ++i)
 		{
-			UE_LOG(LogUICS, Warning, TEXT(" There are %i Entries but only %i ActiveDisplayWidgets. There is no widget for Entry %i"), Entries.Num(), ActiveDisplayWidgets.Num(), i);
+			if (ActiveDisplayWidgets.IsValidIndex(i))
+			{
+				ActiveDisplayWidgets[i]->Execute_Reset(ActiveDisplayWidgets[i].GetObject());
+				ActiveDisplayWidgets[i]->Execute_SetEntryData(ActiveDisplayWidgets[i].GetObject(), i, Entries[i]);
+			}
+			else
+			{
+				UE_LOG(LogUICS, Warning, TEXT(" There are %i Entries but only %i ActiveDisplayWidgets. There is no widget for Entry %i"), Entries.Num(), ActiveDisplayWidgets.Num(), i);
+			}
 		}
 	}
 
-	if (OnWidgetsPopulated.IsBound())
-	{
-		OnWidgetsPopulated.Broadcast(this);
-	}
-
-
-	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_WidgetsPopulated))
-	{
-		struct {
-			UDisplayScreenComponent* Component;
-		} Args = { this };
-
-		ProcessFuncFromResolveMember(Func, &Args);
-	}
+	NotifyThatWidgetsArePopulated();
 
 	// if a widget is focused, then it's data could have been changed.  Call HandleOnFocusChange to simulate it gaining focus so that 
 	// tooltips and other listeners to display focus events will get the new data. 
@@ -392,7 +527,7 @@ TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetAndSetupEn
 	if (RetVal)
 	{
 		ActiveDisplayWidgets.Emplace(RetVal);
-		ViewWidgetSetup(RetVal);
+		DisplayWidgetSetup(RetVal);
 		AddToPanel(RetVal);
 
 		// we can't remove the entry from CachedWidgets until after AddToPanel() otherwise the slate widget will be destroyed
@@ -405,52 +540,105 @@ TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetAndSetupEn
 	return RetVal;
 }
 
+void UDisplayScreenComponent::NotifyThatWidgetsArePopulated()
+{
+	if (OnWidgetsPopulated.IsBound())
+	{
+		OnWidgetsPopulated.Broadcast(this);
+	}
+
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_WidgetsPopulated))
+	{
+		struct {
+			UDisplayScreenComponent* Component;
+		} Args = { this };
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}
+}
+
 void UDisplayScreenComponent::AddToPanel(TScriptInterface<IDisplayWidgetInterface>& Widget)
 {
-	if (Panel)
+	if (Panel && Widget)
 	{
-		if (UUniformGridPanel* AsGrid = Cast<UUniformGridPanel>(Panel))
+		if (bIsPanelGrid)
 		{
-			// the widget has already been added to ActiveDisplayWidgets, so we need to call Panel->GetChildrenCount() to get the correct number
-			const int32 NumChildren = Panel->GetChildrenCount();
-			const int32 ColumnX = NumChildren % ColumnsGridWillHave;
-			const int32 RowY = (ColumnsGridWillHave == 0) ? NumChildren : (NumChildren / ColumnsGridWillHave);
+			if (UUniformGridPanel* AsGrid = Cast<UUniformGridPanel>(Panel))
+			{
+				// the widget has already been added to ActiveDisplayWidgets, so we need to call Panel->GetChildrenCount() to get the correct number
+				const int32 NumChildren = AsGrid->GetChildrenCount();
+				const int32 ColumnX = NumChildren % ColumnsGridWillHave;
+				const int32 RowY = (ColumnsGridWillHave == 0) ? NumChildren : (NumChildren / ColumnsGridWillHave);
 
-
-			AsGrid->AddChildToUniformGrid(Cast<UWidget>(Widget.GetObject()), RowY, ColumnX);
+				AsGrid->AddChildToUniformGrid(Cast<UWidget>(Widget.GetObject()), RowY, ColumnX);
+			}
+			else
+			{
+				//@todo: Log
+			}
+		}
+		else if (bIsPanelListView)
+		{
+			if (UListView* AsListView = Cast<UListView>(Panel))
+			{
+				AsListView->AddItem(Widget->Execute_GetEntryData(Widget.GetObject()));
+			}
+			else
+			{
+				//@todo: Log
+			}
+		}
+		else if (UPanelWidget* AsPanel = Cast<UPanelWidget>(Panel))
+		{
+			AsPanel->AddChild(Cast<UUserWidget>(Widget.GetObject()));
 		}
 		else
 		{
-			Panel->AddChild(Cast<UUserWidget>(Widget.GetObject()));
+			//@todo: Log
 		}
 	}
 }
 
-void UDisplayScreenComponent::RemoveViewWidget(TScriptInterface<IDisplayWidgetInterface> Widget)
+void UDisplayScreenComponent::RemoveDisplayWidget(TScriptInterface<IDisplayWidgetInterface> Widget)
 {
 	if (Widget)
 	{
-		if (UUserWidget* AsUserWidget = Cast<UUserWidget>(Widget.GetObject()))
+		if (bCacheWidgets)
 		{
-			Widget->Execute_Reset(Widget.GetObject());
+			// must add the widget to CachedWidgets Before RemoveFromParent() is called, otherwise the SWidget will be destroyed
+			CachedWidgets.Add(FCachedWidget(Widget));
+		}
 
-			ViewWidgetTeardown(Widget);
+		Widget->Execute_Reset(Widget.GetObject());
+		DisplayWidgetTeardown(Widget);
+		ActiveDisplayWidgets.Remove(Widget);
 
-			
-			if (bCacheWidgets)
+
+		if (Panel && bIsPanelListView)
+		{
+			// we have to remove from listviews using it's removeItem function. 
+			if (UListView* AsListView = Cast<UListView>(Panel))
 			{
-				// must add the widget to CachedWidgets Before RemoveFromParent() is called, otherwise the SWidget will be destroyed
-				CachedWidgets.Add(FCachedWidget(Widget));
+				AsListView->RemoveItem(Widget->Execute_GetEntryData(Widget.GetObject()));
 			}
-
-			ActiveDisplayWidgets.Remove(Widget);
-
+			else
+			{
+				//@todo: Log
+			}
+		}
+		// for normal removals, call RemoveFromParent in-case the program has changed the parent. 
+		else if (UWidget* AsUserWidget = Cast<UWidget>(Widget.GetObject()))
+		{
 			AsUserWidget->RemoveFromParent();
+		}
+		else
+		{
+			//@todo: Log
 		}
 	}
 }
 
-void UDisplayScreenComponent::ViewWidgetSetup(TScriptInterface<IDisplayWidgetInterface> Widget)
+void UDisplayScreenComponent::DisplayWidgetSetup(TScriptInterface<IDisplayWidgetInterface> Widget)
 {
 	if (Widget)
 	{
@@ -462,16 +650,16 @@ void UDisplayScreenComponent::ViewWidgetSetup(TScriptInterface<IDisplayWidgetInt
 	}
 }
 
-void UDisplayScreenComponent::ViewWidgetTeardown(TScriptInterface<IDisplayWidgetInterface> Widget)
+void UDisplayScreenComponent::DisplayWidgetTeardown(TScriptInterface<IDisplayWidgetInterface> Widget)
 {
 	if (Widget)
 	{
-		Widget->SetOwningDisplayScreenComponent(nullptr);
 		Widget->Release();
 		Widget->GetOnAction().RemoveDynamic(this, &UDisplayScreenComponent::HandleWidgetOnAction);
 		Widget->GetOnSelectionChange().RemoveDynamic(this, &UDisplayScreenComponent::HandleWidgetOnSelectionChange);
 		Widget->GetOnFocusChange().RemoveDynamic(this, &UDisplayScreenComponent::HandleWidgetOnFocusChange);
 		Widget->GetOnHoverChange().AddUniqueDynamic(this, &UDisplayScreenComponent::HandleWidgetOnHoverChange);
+		Widget->SetOwningDisplayScreenComponent(nullptr);
 	}
 }
 
@@ -564,4 +752,42 @@ void UDisplayScreenComponent::HandleWidgetOnSelectionChange(TScriptInterface<IDi
 
 		ProcessFuncFromResolveMember(Func, &Args);
 	}
+}
+
+void UDisplayScreenComponent::SetupPanelListViewListeners()
+{
+	if (bIsPanelListView)
+	{
+		if (UListView* AsListView = Cast<UListView>(Panel))
+		{
+			AsListView->OnEntryWidgetGenerated().AddUObject(this, &UDisplayScreenComponent::HandleListViewOnEntryWidgetGenerated);
+			AsListView->OnEntryWidgetReleased().AddUObject(this, &UDisplayScreenComponent::HandleListViewOnEntryWidgetReleased);
+		}
+	}
+}
+
+void UDisplayScreenComponent::TeardownPanelListViewListeners()
+{
+	if (bIsPanelListView)
+	{
+		if (UListView* AsListView = Cast<UListView>(Panel))
+		{
+			AsListView->OnEntryWidgetGenerated().RemoveAll(this);
+			AsListView->OnEntryWidgetReleased().RemoveAll(this);
+		}
+	}
+}
+
+void UDisplayScreenComponent::HandleListViewOnEntryWidgetGenerated(UUserWidget& GeneratedWidget)
+{
+	TScriptInterface<IDisplayWidgetInterface> DisplayWidget = &GeneratedWidget;
+	DisplayWidgetSetup(DisplayWidget);
+	ActiveDisplayWidgets.Add(DisplayWidget);
+}
+
+void UDisplayScreenComponent::HandleListViewOnEntryWidgetReleased(UUserWidget& GeneratedWidget)
+{
+	TScriptInterface<IDisplayWidgetInterface> DisplayWidget = &GeneratedWidget;
+	DisplayWidgetTeardown(DisplayWidget);
+	ActiveDisplayWidgets.Remove(DisplayWidget);
 }

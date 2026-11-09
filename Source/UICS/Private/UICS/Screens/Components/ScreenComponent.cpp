@@ -20,6 +20,7 @@ void UScreenComponent::NativeInitialize()
 
 void UScreenComponent::NativePreConstruct(bool bIsDesignTime)
 {
+	bHeldIsDesignTime = bIsDesignTime;
 	PreConstruct(bIsDesignTime);
 }
 

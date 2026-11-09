@@ -7,12 +7,13 @@
 #include "UICS/Screens/Components/Display/DisplayWidgetInterface.h"
 #include "UICS/Screens/Tools/WidgetSelector.h"
 #include "UICS/Screens/Tools/ComponentSelector.h"
+#include "UICS/Screens/Components/Display/DisplayUserWidget.h"
 #include "DisplayScreenComponent.generated.h"
 
 class UPanelWidget;
 class UDataScreenComponent;
 
-
+// these should be renamed Display, but doing so would create problems with renaming
 // a generic event coming from this component
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FViewComp, UDisplayScreenComponent*, Component);
 // an event involving a widget
@@ -43,23 +44,25 @@ struct FBindableViewActions
 	GENERATED_BODY()
 
 	// an input action has occurred on a widget
-	UPROPERTY(EditAnywhere, Category = "Events", Meta = (FunctionReference, AllowFunctionLibraries, PrototypeFunction = "/Script/UIPowerTools.ViewScreenComponent.HandleOnInputAction", DefaultBindingName = "InputAction", DisplayName="OnInputAction"))
+	UPROPERTY(EditAnywhere, Category = "Events", Meta = (FunctionReference, AllowFunctionLibraries, PrototypeFunction = "/Script/UICS.DisplayScreenComponent.HandleOnInputAction", DefaultBindingName = "InputAction", DisplayName="OnInputAction"))
 	FMemberReference Bind_InputAction;
 
 	// a widget has gained or lost selection
-	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.HandleWidgetOnSelectionChange", DefaultBindingName="SelectionChange", DisplayName = "OnSelectionChange"))
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UICS.DisplayScreenComponent.HandleWidgetOnSelectionChange", DefaultBindingName="SelectionChange", DisplayName = "OnSelectionChange"))
 	FMemberReference Bind_SelectionChange;
 
 	// a widget has gained or lost focus
-	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.HandleOnFocusChange", DefaultBindingName="FocusChange", DisplayName = "OnFocusChange"))
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UICS.DisplayScreenComponent.HandleOnFocusChange", DefaultBindingName="FocusChange", DisplayName = "OnFocusChange"))
 	FMemberReference Bind_FocusChange;
 
 	// a widget has gained or lost focus
-	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.HandleOnHoverChange", DefaultBindingName="HoverChange", DisplayName = "OnHoverChange"))
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UICS.DisplayScreenComponent.HandleOnHoverChange", DefaultBindingName="HoverChange", DisplayName = "OnHoverChange"))
 	FMemberReference Bind_HoverChange;
 
 	// Widgets have been created and populated
-	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UIPowerTools.ViewScreenComponent.Prototype_WidgetsPopulated", DefaultBindingName="WidgetsPopulated", DisplayName = "OnWidgetsPopulated"))
+	// @note: When using ListView, we call populated when we would normally do it, which is before ListView has created it's widgets. We can't wait until ListView creates them
+	//	because it doesn't give us access to know when that happens. 
+	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UICS.DisplayScreenComponent.Prototype_WidgetsPopulated", DefaultBindingName="WidgetsPopulated", DisplayName = "OnWidgetsPopulated"))
 	FMemberReference Bind_WidgetsPopulated;
 
 	// get the display component
@@ -82,6 +85,7 @@ public:
 	virtual void NativeDestruct() override;
 #if WITH_EDITOR
 	virtual void PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent) override;
+	void DeterminePanelCharacteristicsForEditorSettings();
 #endif	
 	// End UUserWidget
 
@@ -101,17 +105,20 @@ public:
 	FViewEventComp OnHoverChange;
 
 	// Widgets have been created and populated
+	// @note: When using ListView, we call populated when we would normally do it, which is before ListView has created it's widgets. We can't wait until ListView creates them
+	//	because it doesn't give us access to know when that happens. 
 	UPROPERTY(BlueprintAssignable, Category = DisplayScreenComponent)
 	FViewComp OnWidgetsPopulated;
 
 
 	// set the panel widget that our created widgets will attach to.
+	// @NOTE: This will not move the currently created widgets to the new panel. You will have to do that yourself. 
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
-	void SetPanel(UPanelWidget* InPanel) { Panel = InPanel; }
+	void SetPanel(UWidget* InPanel);
 
 	// get the panel widget that created widgets are attached to.
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
-	UPanelWidget* GetPanel() const { return Panel; }
+	UWidget* GetPanel() const { return Panel; }
 
 	// set a data component that we listen to and create widgets to display from
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
@@ -140,24 +147,30 @@ public:
 	TArray<UUserWidget*> GetAllDisplayWidgetsAsUserWidgets() const;
 
 	// how many widgets are there?
+	// @note when using ListView, will return 0
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	int32 GetNumWidgets() const {return ActiveDisplayWidgets.Num();}
 	
-	// get all view widgets being used
+	// get all display widgets being used
+	// @note: When using ListView, will return empty
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	const TArray<TScriptInterface<IDisplayWidgetInterface>>& GetAllDisplayWidgets() const { return ActiveDisplayWidgets; }
 
-	// get the view widget at index
+	// get the display widget at index
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	UUserWidget* GetWidgetAt(int32 Index) const;
 
-	// get the view widget at index
+	// get the widget associated with the given entry data
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
-	TScriptInterface<IDisplayWidgetInterface> GetViewWidgetAt(int32 Index) const;
+	TScriptInterface<IDisplayWidgetInterface> GetDisplayWidgetUsingEntryData(const UObject* EntryData) const;
+
+	// get the display widget at index
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
+	TScriptInterface<IDisplayWidgetInterface> GetDisplayWidgetAt(int32 Index) const;
 
 	// do we have at least one selected widget?
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
-	bool IsSelectedWidget() const;
+	bool IsAWidgetSelected() const;
 
 	// will the first widget in this component be the initial focus target?
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
@@ -186,10 +199,12 @@ public:
 	// options
 	
 	// set if only one widget can be selected at a time
+	// @note: Not usable if ListView is used
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	void SetSingleSelection(bool bInSingleSelection) { bSingleSelection = bInSingleSelection;}
 
 	// get if only one widget can be selected at a time
+	// @note: Not usable if ListView is used
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	bool GetSingleSelection() const { return bSingleSelection; }
 
@@ -238,16 +253,28 @@ protected:
 	UFUNCTION()
 	void HandleWidgetOnHoverChange(TScriptInterface<IDisplayWidgetInterface> Widget, bool bGained);
 
+	// Functions for supporting ListView 
+	void SetupPanelListViewListeners();
+	void TeardownPanelListViewListeners();
+	void HandleListViewOnEntryWidgetGenerated(UUserWidget& GeneratedWidget);
+	void HandleListViewOnEntryWidgetReleased(UUserWidget& GeneratedWidget);
+	
+	
+
+
 	TScriptInterface<IDisplayWidgetInterface> GetAndSetupEntryWidget();
 
-	void AddToPanel(TScriptInterface<IDisplayWidgetInterface>& Widget);
-	
-	void RemoveViewWidget(TScriptInterface<IDisplayWidgetInterface> Widget);
-	void ViewWidgetSetup(TScriptInterface<IDisplayWidgetInterface> Widget);
-	void ViewWidgetTeardown(TScriptInterface<IDisplayWidgetInterface> Widget);
+	void AddToPanel(TScriptInterface<IDisplayWidgetInterface>& Widget);	
+	void RemoveDisplayWidget(TScriptInterface<IDisplayWidgetInterface> Widget);
+	void DisplayWidgetSetup(TScriptInterface<IDisplayWidgetInterface> Widget);
+	void DisplayWidgetTeardown(TScriptInterface<IDisplayWidgetInterface> Widget);
 	void SetupPreConstructWidgets();
 	TScriptInterface<IDisplayWidgetInterface> DuplicateWidget(const TObjectPtr<UUserWidget>& Prototype);
 	virtual void PopulateWidgets(const TArray<UObject*>& Entries);
+
+	void NotifyThatWidgetsArePopulated();
+
+	void DeterminePanelCharacteristics(UWidget* PreviousPanel);
 
 	// The Data Screen Component we will receive data from
 	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent)
@@ -260,23 +287,23 @@ protected:
 	// define how many columns the grid should have
 	// when adding children to a grid, we fill the grid's columns first
 	// does nothing if panel is not a uniform grid panel
-	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, meta=(EditCondition="bPanelIsAGrid", EditConditionHides))
+	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, meta = (EditCondition = "bIsPanelGrid", EditConditionHides, HideEditConditionToggle))
 	int32 ColumnsGridWillHave = 2;
 
-#if WITH_EDITORONLY_DATA
-	//@TODO: bPanelIsAGrid is always true for now, need to fix so that it is only true if the panel is a grid
+	// characteristics about the current panel that we use instead of casting the panel for effeciency. 
 	UPROPERTY()
-	bool bPanelIsAGrid = true;
-#endif
+	bool bIsPanelGrid = false;
+	UPROPERTY()
+	bool bIsPanelListView = false;
 
 	// define an instance / prototype of a widget class that implements IDisplayWidgetInterface that we will use to display our data with.
 	// This uses the prototype pattern, meaning that we will close this widget instance when we need to make widgets instead of Creating it from a class.
 	// This allows you set properties on this widget through the editor
-	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = DisplayScreenComponent, Meta=(ObjectMustImplement = "/Script/UICS.DisplayWidgetInterface", DisplayName="Display Widget To Use"))
+	UPROPERTY(Instanced, EditAnywhere, BlueprintReadWrite, Category = DisplayScreenComponent, Meta=(ObjectMustImplement = "/Script/UICS.DisplayWidgetInterface", DisplayName="Display Widget To Use", EditCondition = "!bIsPanelListView", EditConditionHides, HideEditConditionToggle))
 	TObjectPtr<UUserWidget> DisplayWidgetPrototype;
 
 	// number of entries to show in design view
-	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, Meta=(UIMin=0))
+	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, Meta=(UIMin=0, EditCondition = "!bIsPanelListView", EditConditionHides, HideEditConditionToggle))
 	int32 DesignEntriesToShow = 3;
 
 	// will the first widget in this component be the initial focus target?
@@ -284,11 +311,11 @@ protected:
 	bool InitialFocus = true;
 
 	// are widgets cached when removed from their panel? Will Cache both the Widget and Slate Widget
-	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent)
+	UPROPERTY(EditAnywhere, Category = DisplayScreenComponent, meta = (EditCondition = "!bIsPanelListView", EditConditionHides, HideEditConditionToggle))
 	bool bCacheWidgets = true;
 
-	// can only one widget can be selected at a time?
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DisplayScreenComponent)
+	// can only one widget be selected at a time?
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DisplayScreenComponent, meta = (EditCondition = "!bIsPanelListView", EditConditionHides, HideEditConditionToggle))
 	bool bSingleSelection = false;
 	
 	// events that the user can bind to in editor
@@ -305,7 +332,7 @@ protected:
 
 	// that panel we are attaching our widgets to.
 	UPROPERTY(Transient)
-	TObjectPtr<UPanelWidget> Panel;
+	TObjectPtr<UWidget> Panel;
 
 	// list of widgets that are cached so that their SWidgets are not destroyed and will be reused before new widgets are created.
 	UPROPERTY(Transient)
@@ -330,7 +357,18 @@ protected:
 public:
 	// start deprecated items
 
+	// do we have at least one selected widget?
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent, meta = (DeprecatedFunction, DeprecationMessage = "IsSelectedWidget is deprecated. Use IsAWidgetSelected instead"))
+	bool IsSelectedWidget() const;
+
 	// an input action has occurred on a widget
 	UPROPERTY(BlueprintAssignable, Category = DisplayScreenComponent, meta = (DeprecatedProperty, DeprecationMessage = "OnAction is deprecated. Use OnInputAction instead"))
 	FViewActionComp OnAction;
+};
+
+// this is used to set the prototype when using a ListView. It allows us to still use the same codepaths when using a listView as a panel
+UCLASS(Hidden)
+class UDisplayWidgetListViewStandIn : public UDisplayUserWidget
+{
+	GENERATED_BODY()
 };

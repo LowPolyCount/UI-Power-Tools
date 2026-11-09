@@ -113,7 +113,7 @@ bool FGameplayTagErrors::RunTest(const FString& Parameters)
 
 	// setup 3 widgets 
 	View->TestHandleOnDataRetrieval(nullptr, UICSTest::GenerateEntries(3, View));
-	TScriptInterface<IDisplayWidgetInterface> ViewWidget = View->GetViewWidgetAt(0);
+	TScriptInterface<IDisplayWidgetInterface> ViewWidget = View->GetDisplayWidgetAt(0);
 
 
 	View->SetLinkedActionScreenComponent(nullptr);

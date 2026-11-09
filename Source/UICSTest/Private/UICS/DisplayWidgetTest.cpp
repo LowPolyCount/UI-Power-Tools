@@ -21,7 +21,7 @@ bool FDisplayWidgetTest::RunTest(const FString& Parameters)
 	TestNotNull("View", View);
 	TestNotNull("Data", Data);
 
-	TScriptInterface<IDisplayWidgetInterface> AsDisplayWidgetInterface(View->GetViewWidgetAt(0));
+	TScriptInterface<IDisplayWidgetInterface> AsDisplayWidgetInterface(View->GetDisplayWidgetAt(0));
 	TestNotNull("AsViewInterface", AsDisplayWidgetInterface.GetObject());
 
 	// focus test
