@@ -269,22 +269,6 @@ void UDisplayScreenComponent::SetWidgetPrototypeByClass(UClass* WidgetPrototypeC
 	}
 }
 
-TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetDisplayWidgetAt(int32 Index) const
-{ 
-	TScriptInterface<IDisplayWidgetInterface> RetVal;
-
-	if(ActiveDisplayWidgets.IsValidIndex(Index))
-	{
-		RetVal = ActiveDisplayWidgets[Index];
-	}
-	else
-	{
-		UE_LOG(LogUICS, Warning, TEXT("No Widget in Index %i"), Index);
-	}
-
-	return RetVal;
-}
-
 TArray<UUserWidget*> UDisplayScreenComponent::GetAllDisplayWidgetsAsUserWidgets() const
 {
 	TArray<UUserWidget*> RetVal;
@@ -304,10 +288,51 @@ UUserWidget* UDisplayScreenComponent::GetWidgetAt(int32 Index) const
 	UUserWidget* RetVal = nullptr;
 
 	TScriptInterface<IDisplayWidgetInterface> ViewWidget = GetDisplayWidgetAt(Index);
-
 	if (UUserWidget* AsUserWidget = Cast<UUserWidget>(ViewWidget.GetObject()))
 	{
 		RetVal = AsUserWidget;
+	}
+
+	return RetVal;
+}
+
+TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetDisplayWidgetUsingEntryData(const UObject* EntryData) const
+{
+	TScriptInterface<IDisplayWidgetInterface> RetVal;
+
+	if (bIsPanelListView)
+	{
+		if (UListView* AsListView = Cast<UListView>(Panel))
+		{
+			RetVal = AsListView->GetEntryWidgetFromItem(EntryData);
+		}
+	}
+	else // normal panel
+	{
+		for (TScriptInterface<IDisplayWidgetInterface> Widget : ActiveDisplayWidgets)
+		{
+			if (Widget->Execute_GetEntryData(Widget.GetObject()) == EntryData)
+			{
+				RetVal = Widget;
+				break;
+			}
+		}
+	}
+
+	return RetVal;
+}
+
+TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetDisplayWidgetAt(int32 Index) const
+{
+	TScriptInterface<IDisplayWidgetInterface> RetVal;
+
+	if (ActiveDisplayWidgets.IsValidIndex(Index))
+	{
+		RetVal = ActiveDisplayWidgets[Index];
+	}
+	else
+	{
+		UE_LOG(LogUICS, Warning, TEXT("No Widget in Index %i"), Index);
 	}
 
 	return RetVal;
@@ -323,9 +348,14 @@ TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetFocusedWid
 	return FocusedWidget; 
 }
 
-bool UDisplayScreenComponent::IsSelectedWidget() const
+bool UDisplayScreenComponent::IsAWidgetSelected() const
 {
 	return static_cast<bool>(GetFirstSelectedWidget());
+}
+
+bool UDisplayScreenComponent::IsSelectedWidget() const
+{
+	return IsAWidgetSelected();
 }
 
 TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetFirstSelectedWidget() const
@@ -351,16 +381,36 @@ TArray<TScriptInterface<IDisplayWidgetInterface>> UDisplayScreenComponent::GetAl
 {
 	TArray<TScriptInterface<IDisplayWidgetInterface>> RetVal;
 	//@todo: Hold on to selected widgets so iteration is not required
-	for (TScriptInterface<IDisplayWidgetInterface> Widget : ActiveDisplayWidgets)
+	
+	if (bIsPanelListView)
 	{
-		if (const UCommonButtonBase* AsButton = Cast<UCommonButtonBase>(Widget.GetObject()))
+		if (UListView* AsListView = Cast<UListView>(Panel))
 		{
-			if (AsButton->GetSelected())
+			TArray<UObject*> SelectedEntries;
+			AsListView->GetSelectedItems(SelectedEntries);
+			for (UObject* Entry : SelectedEntries)
 			{
-				RetVal.Emplace(Widget);
+				if (UUserWidget* UserWidget = AsListView->GetEntryWidgetFromItem(Entry))
+				{
+					RetVal.Add(TScriptInterface<IDisplayWidgetInterface>(UserWidget));
+				}
 			}
 		}
 	}
+	else
+	{
+		for (TScriptInterface<IDisplayWidgetInterface> Widget : ActiveDisplayWidgets)
+		{
+			if (const UCommonButtonBase* AsButton = Cast<UCommonButtonBase>(Widget.GetObject()))
+			{
+				if (AsButton->GetSelected())
+				{
+					RetVal.Emplace(Widget);
+				}
+			}
+		}
+	}
+
 	return RetVal;
 }
 
@@ -443,22 +493,8 @@ void UDisplayScreenComponent::PopulateWidgets(const TArray<UObject*>& Entries)
 			}
 		}
 	}
-	
 
-	if (OnWidgetsPopulated.IsBound())
-	{
-		OnWidgetsPopulated.Broadcast(this);
-	}
-
-
-	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_WidgetsPopulated))
-	{
-		struct {
-			UDisplayScreenComponent* Component;
-		} Args = { this };
-
-		ProcessFuncFromResolveMember(Func, &Args);
-	}
+	NotifyThatWidgetsArePopulated();
 
 	// if a widget is focused, then it's data could have been changed.  Call HandleOnFocusChange to simulate it gaining focus so that 
 	// tooltips and other listeners to display focus events will get the new data. 
@@ -502,6 +538,23 @@ TScriptInterface<IDisplayWidgetInterface> UDisplayScreenComponent::GetAndSetupEn
 	}
 
 	return RetVal;
+}
+
+void UDisplayScreenComponent::NotifyThatWidgetsArePopulated()
+{
+	if (OnWidgetsPopulated.IsBound())
+	{
+		OnWidgetsPopulated.Broadcast(this);
+	}
+
+	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_WidgetsPopulated))
+	{
+		struct {
+			UDisplayScreenComponent* Component;
+		} Args = { this };
+
+		ProcessFuncFromResolveMember(Func, &Args);
+	}
 }
 
 void UDisplayScreenComponent::AddToPanel(TScriptInterface<IDisplayWidgetInterface>& Widget)
@@ -725,52 +778,16 @@ void UDisplayScreenComponent::TeardownPanelListViewListeners()
 	}
 }
 
-/*void UDisplayScreenComponent::HandleListViewOnItemIsHoveredChanged(UObject* Data, bool bIsHovered)
-{
-
-}
-
-{
-void UDisplayScreenComponent::HandleOnItemClicked(UObject* Data)
-void UDisplayScreenComponent::HandleListViewOnItemSelectionChanged(UObject* Data)
-void UDisplayScreenComponent::HandleListViewOnItemScrolledIntoView(UObject* Data)*/
 void UDisplayScreenComponent::HandleListViewOnEntryWidgetGenerated(UUserWidget& GeneratedWidget)
 {
 	TScriptInterface<IDisplayWidgetInterface> DisplayWidget = &GeneratedWidget;
 	DisplayWidgetSetup(DisplayWidget);
+	ActiveDisplayWidgets.Add(DisplayWidget);
 }
 
 void UDisplayScreenComponent::HandleListViewOnEntryWidgetReleased(UUserWidget& GeneratedWidget)
 {
 	TScriptInterface<IDisplayWidgetInterface> DisplayWidget = &GeneratedWidget;
 	DisplayWidgetTeardown(DisplayWidget);
+	ActiveDisplayWidgets.Remove(DisplayWidget);
 }
-
-
-/*
-DECLARE_EVENT_OneParam(UListView, FOnListEntryGenerated, UUserWidget&);
-FOnListEntryGenerated& OnEntryWidgetGenerated() { return OnListEntryGeneratedEvent; }
-
-DECLARE_EVENT_OneParam(UListView, FOnEntryWidgetReleased, UUserWidget&);
-FOnEntryWidgetReleased& OnEntryWidgetReleased() { return OnEntryWidgetReleasedEvent; }
-
-	virtual FSimpleListItemEvent& OnItemClicked() const = 0;
-
-
-	DECLARE_MULTICAST_DELEGATE_TwoParams(FOnItemIsHoveredChanged, ItemType, bool);
-	virtual FOnItemIsHoveredChanged& OnItemIsHoveredChanged() const = 0;
-
-	DECLARE_MULTICAST_DELEGATE_OneParam(FOnItemSelectionChanged, NullableItemType);
-	virtual FOnItemSelectionChanged& OnItemSelectionChanged() const = 0;
-
-
-	DECLARE_MULTICAST_DELEGATE_TwoParams(FOnItemScrolledIntoView, ItemType, UUserWidget&);
-	virtual FOnItemScrolledIntoView& OnItemScrolledIntoView() const = 0;
-
-	DECLARE_MULTICAST_DELEGATE_TwoParams(FOnItemExpansionChanged, ItemType, bool);
-	virtual FOnItemExpansionChanged& OnItemExpansionChanged() const = 0;
-
-
-	DECLARE_DELEGATE_RetVal_OneParam(bool, FOnIsItemSelectableOrNavigable, ItemType);
-	virtual FOnIsItemSelectableOrNavigable& OnIsItemSelectableOrNavigable() const = 0;
-}*/

@@ -60,6 +60,8 @@ struct FBindableViewActions
 	FMemberReference Bind_HoverChange;
 
 	// Widgets have been created and populated
+	// @note: When using ListView, we call populated when we would normally do it, which is before ListView has created it's widgets. We can't wait until ListView creates them
+	//	because it doesn't give us access to know when that happens. 
 	UPROPERTY(EditAnywhere, Category = "Events", Meta=(FunctionReference, AllowFunctionLibraries, PrototypeFunction="/Script/UICS.DisplayScreenComponent.Prototype_WidgetsPopulated", DefaultBindingName="WidgetsPopulated", DisplayName = "OnWidgetsPopulated"))
 	FMemberReference Bind_WidgetsPopulated;
 
@@ -103,6 +105,8 @@ public:
 	FViewEventComp OnHoverChange;
 
 	// Widgets have been created and populated
+	// @note: When using ListView, we call populated when we would normally do it, which is before ListView has created it's widgets. We can't wait until ListView creates them
+	//	because it doesn't give us access to know when that happens. 
 	UPROPERTY(BlueprintAssignable, Category = DisplayScreenComponent)
 	FViewComp OnWidgetsPopulated;
 
@@ -143,10 +147,12 @@ public:
 	TArray<UUserWidget*> GetAllDisplayWidgetsAsUserWidgets() const;
 
 	// how many widgets are there?
+	// @note when using ListView, will return 0
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	int32 GetNumWidgets() const {return ActiveDisplayWidgets.Num();}
 	
 	// get all display widgets being used
+	// @note: When using ListView, will return empty
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	const TArray<TScriptInterface<IDisplayWidgetInterface>>& GetAllDisplayWidgets() const { return ActiveDisplayWidgets; }
 
@@ -154,13 +160,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	UUserWidget* GetWidgetAt(int32 Index) const;
 
+	// get the widget associated with the given entry data
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
+	TScriptInterface<IDisplayWidgetInterface> GetDisplayWidgetUsingEntryData(const UObject* EntryData) const;
+
 	// get the display widget at index
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	TScriptInterface<IDisplayWidgetInterface> GetDisplayWidgetAt(int32 Index) const;
 
 	// do we have at least one selected widget?
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
-	bool IsSelectedWidget() const;
+	bool IsAWidgetSelected() const;
 
 	// will the first widget in this component be the initial focus target?
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
@@ -189,10 +199,12 @@ public:
 	// options
 	
 	// set if only one widget can be selected at a time
+	// @note: Not usable if ListView is used
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	void SetSingleSelection(bool bInSingleSelection) { bSingleSelection = bInSingleSelection;}
 
 	// get if only one widget can be selected at a time
+	// @note: Not usable if ListView is used
 	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent)
 	bool GetSingleSelection() const { return bSingleSelection; }
 
@@ -259,6 +271,9 @@ protected:
 	void SetupPreConstructWidgets();
 	TScriptInterface<IDisplayWidgetInterface> DuplicateWidget(const TObjectPtr<UUserWidget>& Prototype);
 	virtual void PopulateWidgets(const TArray<UObject*>& Entries);
+
+	void NotifyThatWidgetsArePopulated();
+
 	void DeterminePanelCharacteristics(UWidget* PreviousPanel);
 
 	// The Data Screen Component we will receive data from
@@ -341,6 +356,10 @@ protected:
 
 public:
 	// start deprecated items
+
+	// do we have at least one selected widget?
+	UFUNCTION(BlueprintCallable, Category = DisplayScreenComponent, meta = (DeprecatedFunction, DeprecationMessage = "IsSelectedWidget is deprecated. Use IsAWidgetSelected instead"))
+	bool IsSelectedWidget() const;
 
 	// an input action has occurred on a widget
 	UPROPERTY(BlueprintAssignable, Category = DisplayScreenComponent, meta = (DeprecatedProperty, DeprecationMessage = "OnAction is deprecated. Use OnInputAction instead"))
