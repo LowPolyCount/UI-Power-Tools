@@ -38,7 +38,7 @@ FDataComponentSelector::FDataComponentSelector()
 {
 }
 
-FViewComponentSelector::FViewComponentSelector()
+FDisplayComponentSelector::FDisplayComponentSelector()
 #ifdef WITH_EDITORONLY_DATA
 	:Super(UDisplayScreenComponent::StaticClass())
 #endif

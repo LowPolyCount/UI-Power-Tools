@@ -16,7 +16,7 @@ void UUICSTooltip::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	for (const FViewComponentSelector& ViewSelector : ViewsToListenTo)
+	for (const FDisplayComponentSelector& ViewSelector : DisplaysToListenTo)
 	{
 		StartListeningToView(ViewSelector);
 	}
@@ -24,7 +24,7 @@ void UUICSTooltip::NativeConstruct()
 
 void UUICSTooltip::NativeDestruct()
 {
-	for (const FViewComponentSelector& ViewSelector : ViewsToListenTo)
+	for (const FDisplayComponentSelector& ViewSelector : DisplaysToListenTo)
 	{
 		StopListeningToView(ViewSelector);
 	}
@@ -32,7 +32,7 @@ void UUICSTooltip::NativeDestruct()
 	Super::NativeDestruct();
 }
 
-void UUICSTooltip::StartListeningToView(const FViewComponentSelector& ViewSelector)
+void UUICSTooltip::StartListeningToView(const FDisplayComponentSelector& ViewSelector)
 {
 	if (ViewSelector.IsValid())
 	{
@@ -46,7 +46,7 @@ void UUICSTooltip::StartListeningToView(const FViewComponentSelector& ViewSelect
 	}
 }
 
-void UUICSTooltip::StopListeningToView(const FViewComponentSelector& ViewSelector)
+void UUICSTooltip::StopListeningToView(const FDisplayComponentSelector& ViewSelector)
 {
 	if (ViewSelector.IsValid())
 	{

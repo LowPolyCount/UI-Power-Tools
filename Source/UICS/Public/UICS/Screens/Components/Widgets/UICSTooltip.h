@@ -25,7 +25,7 @@ protected:
 public:
 	// get all view selectors
 	UFUNCTION(BlueprintCallable, Category = Tooltip)
-	const TArray<FViewComponentSelector>& GetAllViewSelectors() const {return ViewsToListenTo;}
+	const TArray<FDisplayComponentSelector>& GetAllLinkedDisplays() const {return DisplaysToListenTo;}
 
 	// populate the tooltip with the given data
 	UFUNCTION(BlueprintCallable, Category = Tooltip)
@@ -72,15 +72,15 @@ protected:
 	UFUNCTION()
 	virtual void HandleOnHoverChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained);
 
-	virtual void StartListeningToView(const FViewComponentSelector& View);
-	virtual void StopListeningToView(const FViewComponentSelector& View);
+	virtual void StartListeningToView(const FDisplayComponentSelector& View);
+	virtual void StopListeningToView(const FDisplayComponentSelector& View);
 
 	virtual void ShowOrHideTooltip(const TScriptInterface<IDisplayWidgetInterface>& Widget, const bool bGained);
 	virtual void SetObservedEntryData(UObject* InData);
 
 	// the view screen components that we will listen to events from
 	UPROPERTY(EditAnywhere, Category = Tooltip)
-	TArray<FViewComponentSelector> ViewsToListenTo;
+	TArray<FDisplayComponentSelector> DisplaysToListenTo;
 
 	// show tooltip when gaining hover
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)

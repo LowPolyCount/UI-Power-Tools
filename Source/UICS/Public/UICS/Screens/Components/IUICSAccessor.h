@@ -99,7 +99,7 @@ public:
 		return RetVal;
 	}*/
 	bool Initialize();	// Initialize returns bool just to match UserWidget's definition of the function. the bool does not mean anything in this context
-	void WidgetNativePreConstruct(bool bIsDesignTime);
+	void NativePreConstruct(bool bIsDesignTime);
 	void NativeConstruct();
 	void NativeDestruct();
 	UWidget* GetDesiredFocusTargetFromViewComponents() const;
@@ -119,6 +119,10 @@ public:
 	virtual TArray<UScreenComponent*> GetAllScreenComponents_BP(TSubclassOf<UScreenComponent> Type) const override;
 	virtual UScreenComponent* GetScreenComponentByName_BP(const FName Name, TSubclassOf<UScreenComponent> Type) const override;
 	virtual UScreenComponent* GetScreenComponentFromSelector_BP(const FComponentSelector& Selector, TSubclassOf<UScreenComponent> Type) const override;
+
+	// deprecations
+	UE_DEPRECATED(Any, "Is Deprecated. Use IUICSScreenAccessor::WidgetNativePreConstruct Instead")
+	void WidgetNativePreConstruct(bool bIsDesignTime) {NativePreConstruct(bIsDesignTime); }
 
 };
 

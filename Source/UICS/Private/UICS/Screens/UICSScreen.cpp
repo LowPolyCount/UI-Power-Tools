@@ -40,7 +40,7 @@ bool UUICSScreen::Initialize()
 void UUICSScreen::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	IUICSScreenAccessor::WidgetNativePreConstruct(IsDesignTime());
+	IUICSScreenAccessor::NativePreConstruct(IsDesignTime());
 }
 
 void UUICSScreen::NativeConstruct()

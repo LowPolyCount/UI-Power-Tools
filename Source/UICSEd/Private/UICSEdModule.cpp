@@ -20,7 +20,7 @@ void FUICSEdModule::StartupModule()
 		// component selectors
 		PropertyModule.RegisterCustomPropertyTypeLayout(FComponentSelector::StaticStruct()->GetFName(), FOnGetPropertyTypeCustomizationInstance::CreateStatic(&Customization::FComponentSelectorCustomization::MakeInstance));
 		PropertyModule.RegisterCustomPropertyTypeLayout(FDataComponentSelector::StaticStruct()->GetFName(), FOnGetPropertyTypeCustomizationInstance::CreateStatic(&Customization::FComponentSelectorCustomization::MakeInstance));
-		PropertyModule.RegisterCustomPropertyTypeLayout(FViewComponentSelector::StaticStruct()->GetFName(), FOnGetPropertyTypeCustomizationInstance::CreateStatic(&Customization::FComponentSelectorCustomization::MakeInstance));
+		PropertyModule.RegisterCustomPropertyTypeLayout(FDisplayComponentSelector::StaticStruct()->GetFName(), FOnGetPropertyTypeCustomizationInstance::CreateStatic(&Customization::FComponentSelectorCustomization::MakeInstance));
 		PropertyModule.RegisterCustomPropertyTypeLayout(FTransactionComponentSelector::StaticStruct()->GetFName(), FOnGetPropertyTypeCustomizationInstance::CreateStatic(&Customization::FComponentSelectorCustomization::MakeInstance));
 		PropertyModule.RegisterCustomPropertyTypeLayout(FEntryComponentSelector::StaticStruct()->GetFName(), FOnGetPropertyTypeCustomizationInstance::CreateStatic(&Customization::FComponentSelectorCustomization::MakeInstance));
 		
@@ -39,7 +39,7 @@ void FUICSEdModule::ShutdownModule()
 			// component selectors
 			PropertyModule.UnregisterCustomPropertyTypeLayout(FComponentSelector::StaticStruct()->GetFName());
 			PropertyModule.UnregisterCustomPropertyTypeLayout(FDataComponentSelector::StaticStruct()->GetFName());
-			PropertyModule.UnregisterCustomPropertyTypeLayout(FViewComponentSelector::StaticStruct()->GetFName());
+			PropertyModule.UnregisterCustomPropertyTypeLayout(FDisplayComponentSelector::StaticStruct()->GetFName());
 			PropertyModule.UnregisterCustomPropertyTypeLayout(FTransactionComponentSelector::StaticStruct()->GetFName());
 			PropertyModule.UnregisterCustomPropertyTypeLayout(FEntryComponentSelector::StaticStruct()->GetFName());
 		}

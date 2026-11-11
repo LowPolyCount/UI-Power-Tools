@@ -41,11 +41,11 @@ public:
 
 // holds a component that was selected by the user and can be accessed at runtime
 USTRUCT()
-struct UICS_API FViewComponentSelector : public FComponentSelector
+struct UICS_API FDisplayComponentSelector : public FComponentSelector
 {
 	GENERATED_BODY()
 public:
-	FViewComponentSelector();
+	FDisplayComponentSelector();
 };
 
 // holds a component that was selected by the user and can be accessed at runtime

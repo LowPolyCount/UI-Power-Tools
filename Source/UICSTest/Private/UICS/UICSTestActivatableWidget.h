@@ -27,7 +27,7 @@ public:
 	// everything below is what is needed to integrate screen components
 	// UUserWidget begin
 	virtual bool Initialize() override {IUICSScreenAccessor::Initialize(); return Super::Initialize();}
-	virtual void NativePreConstruct() override { Super::NativePreConstruct(); IUICSScreenAccessor::WidgetNativePreConstruct(IsDesignTime()); }
+	virtual void NativePreConstruct() override { Super::NativePreConstruct(); IUICSScreenAccessor::NativePreConstruct(IsDesignTime()); }
 	virtual void NativeConstruct() override { Super::NativeConstruct(); IUICSScreenAccessor::NativeConstruct();}
 	virtual void NativeDestruct() override { Super::NativeDestruct(); IUICSScreenAccessor::NativeDestruct();}
 	// UUserWidget end
