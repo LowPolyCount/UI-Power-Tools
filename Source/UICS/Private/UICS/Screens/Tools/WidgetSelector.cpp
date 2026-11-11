@@ -36,12 +36,6 @@ UWidget* FWidgetSelector::GetSelectedWidget(UWidget* WidgetOwner) const
 	return GetSelectedWidgetInternal(WidgetOwner, false);
 }
 
-UWidget* FWidgetSelector::GetWidgetAtEditorTime(UWidget* WidgetOwner) const
-{
-	return GetSelectedWidgetInternal(WidgetOwner, true);
-
-}
-
 bool FWidgetSelector::IsValid() const
 {
 	return !WidgetName.IsNone();

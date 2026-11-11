@@ -50,7 +50,7 @@ public:
 	const TArray<FName>& GetSelectedWidgetPath() const {return WidgetPath;}
 
 #if WITH_EDITORONLY_DATA
-	UWidget* GetWidgetAtEditorTime(UWidget* WidgetOwner) const;
+	UWidget* GetWidgetAtEditorTime(UWidget* WidgetOwner) const { return GetSelectedWidgetInternal(WidgetOwner, true); }
 #endif
  
 	//@note: We save these values in our customizer which requires them to be public and set to EditAnywhere, BlueprintReadWrite
