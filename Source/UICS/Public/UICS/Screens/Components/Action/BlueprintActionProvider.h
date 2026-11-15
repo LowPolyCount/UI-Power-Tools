@@ -44,9 +44,9 @@ protected:
 
 #if WITH_EDITOR
 	UFUNCTION(BlueprintInternalUseOnly)
-	bool Binding_CanExecuteAction(UActionScreenComponentProvider* CallingActionProvider, UActionScreenComponent* ParentActionComponent, UObject* Entry, const UObject* HiddenWorldContextObject) {return false;}
+	bool Binding_CanExecuteAction(UActionScreenComponentProvider* CallingActionProvider, UActionScreenComponent* ParentActionComponent, UObject* Entry) {return false;}
 
 	UFUNCTION(BlueprintInternalUseOnly)
-	bool Binding_ExecuteAction(UActionScreenComponentProvider* CallingActionProvider, UActionScreenComponent* ParentActionComponent, UObject* Entry, const UObject* HiddenWorldContextObject) {return false;}
+	bool Binding_ExecuteAction(UActionScreenComponentProvider* CallingActionProvider, UActionScreenComponent* ParentActionComponent, UObject* Entry) {return false;}
 #endif
 };
