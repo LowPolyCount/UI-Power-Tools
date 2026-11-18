@@ -13,7 +13,7 @@ class IDisplayWidgetInterface;
 /**
  * Listens to provided Screen Components and can display detailed information about a hovered or focused entry
  */
-UCLASS()
+UCLASS(meta=(PrioritizeCategories="Tooltip"))
 class UICS_API UUICSTooltip : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
@@ -23,21 +23,27 @@ protected:
 	virtual void NativeDestruct() override;
 
 public:
-	// get all view selectors
+	// get all linked display component selectors
 	UFUNCTION(BlueprintCallable, Category = Tooltip)
-	const TArray<FDisplayComponentSelector>& GetAllLinkedDisplays() const {return DisplaysToListenTo;}
+	const TArray<FDisplayComponentSelector>& GetAllLinkedDisplays() const {return LinkedDisplayScreenComponents;}
 
-	// populate the tooltip with the given data
+	// populate the tooltip with the data from a widget we are observing.
+	// Normally, you do not need to call this. It is handled internally by events from a Display Screen Component we are linked to. 
 	UFUNCTION(BlueprintCallable, Category = Tooltip)
 	void Populate(const TScriptInterface<IDisplayWidgetInterface> Widget, UObject* Data);
 
 	// reset the tooltip
 	UFUNCTION(BlueprintCallable, Category = Tooltip)
 	void Reset();
+	
+	// get the data associated with the Widget we are observing
+	UFUNCTION(BlueprintCallable, Category = Tooltip)
+	UObject* GetEntryData() {return ObservedEntryData;}
 
 protected:
 
-	// Populate the widget. The given EntryData can also be retrieved from ObservedEntryData
+	// Populate the widget. The given EntryData can also be retrieved from GetEntryData()
+	// You can get the Display Screen Component involved by calling Widget->GetOwningDisplayScreenComponent()
 	UFUNCTION(BlueprintImplementableEvent, Category = Tooltip, Meta=(DisplayName="Populate"))
 	void BP_Populate(const TScriptInterface<IDisplayWidgetInterface>& Widget, UObject* EntryData);
 
@@ -75,29 +81,38 @@ protected:
 	virtual void StartListeningToView(const FDisplayComponentSelector& View);
 	virtual void StopListeningToView(const FDisplayComponentSelector& View);
 
+	void CheckForShowAndHide(const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained, bool bPopulateWhenGained, bool bHideWhenLost);
 	virtual void ShowOrHideTooltip(const TScriptInterface<IDisplayWidgetInterface>& Widget, const bool bGained);
-	virtual void SetObservedEntryData(UObject* InData);
+	
+	void SetObservedEntryData(UObject* InData);
 
-	// the view screen components that we will listen to events from
+	// the display screen components that we will listen to events from
 	UPROPERTY(EditAnywhere, Category = Tooltip)
-	TArray<FDisplayComponentSelector> DisplaysToListenTo;
+	TArray<FDisplayComponentSelector> LinkedDisplayScreenComponents;
 
-	// show tooltip when gaining hover
+	// call populate (and show this tooltip) when a widget managed by one of the linked display components gains focus
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)
-	bool bShowOnFocusGain = true;
+	bool bShowAndPopulateWhenWidgetGainsFocus = true;
 
-	// hide tooltip when losing hover
+	// call populate (and show this tooltip) when a widget managed by one of the linked display components gains hover
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)
-	bool bHideOnFocusLoss = true;
-
-	// show tooltip when gaining hover
+	bool bShowAndPopulateWhenWidgetGainsHover = false;
+	
+	// call populate (and show this tooltip) when a widget managed by one of the linked display components gains selection
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)
-	bool bShowOnHoverGain = true;
-
-	// hide tooltip when losing hover
+	bool bShowAndPopulateWhenWidgetGainsSelected = false;
+	
+	// hide tooltip when widget loses focus
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)
-	bool bHideOnHoverLoss = true;
+	bool bHideWhenWidgetLosesFocus = false;
 
+	// hide tooltip when a widget loses hover
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)
+	bool bHideWhenWidgetLosesHover = false;
+	
+	// hide tooltip when a widget loses selection
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)
+	bool bHideWhenWidgetLosesSelected = false;
 
 	// visibility rule to use when showing tooltip
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tooltip)
