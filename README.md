@@ -51,14 +51,10 @@ Yes, UICS doesn't specify how you set the visual elements of your widgets so you
 ### What if I find an issue? 
 Please [Make an Issue](https://codeberg.org/LowPolyCount/UI-Power-Tools/issues/new). You can use your github account to login to Codeberg. 
 
-### Can Screen Components be used as the Widget Components that have started to show up in Unreal?
-No, right now Unreal's built in Widget Components have some limitations that Screen Components don't:
-* They can't be used as defaults on a widget
-* They don't tell you when Pre-Construct, Construct, Destruct events have happened on their widget.
-* They can't provide Blueprint Compiler Warnings/Errors
-* A lot of work is required to get their events to show in the editor
+### Can Screen Components be used as the UI Components that have been added to Unreal?
+No, right now Unreal's built in UI Components have some limitations that Screen Components don't, the biggest being that you can't set what UI Components to use in a Widget's default settings.
 
-While Screen Components can only be used on Screens, I am investigating how they could be expanded to be used on every widget.
+A Long term goal is to investigate how Screen Components can be expanded to be used on every widget. 
 
 ### What if I want to use this with an existing codebase?
 While We provide Base Classes that let you use this plugin "Out of the Box", we do let you override these classes with (hopefully) minimal effort. See [Overriding Provided Classes](https://codeberg.org/LowPolyCount/UI-Power-Tools/wiki/UIPT-Overriding-Provided-Classes)
