@@ -2,7 +2,6 @@
 
 
 #include "UICS/Screens/Components/Action/BlueprintActionprovider.h"
-
 #include "UICS/Screens/Components/IUICSAccessor.h"
 
 UFunction* UBlueprintActionProvider::ResolveMemberReference(const FMemberReference& Ref)

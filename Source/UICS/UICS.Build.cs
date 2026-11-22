@@ -37,6 +37,8 @@ public class UICS : ModuleRules
 			{
 				"CoreUObject",
 				"Engine",
+				"SlateCore",
+				"Slate",
 				"CommonUI",
 				"GameplayTags",
 				"UMG",

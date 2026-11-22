@@ -87,9 +87,9 @@ bool UActionScreenComponent::ExecuteAction(UObject* Entry)
 	}
 
 	OnActionExecuteResult.Broadcast(this, RetVal, ResultsTag);
-	PRAGMA_DISABLE_INTERNAL_WARNINGS
+	PRAGMA_DISABLE_DEPRECATION_WARNINGS
 	OnExecuteResult_DEPRECATED.Broadcast(this, ResultsTag);
-	PRAGMA_ENABLE_INTERNAL_WARNINGS
+	PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 	if (UFunction* Func = ResolveMemberReference(BindableEvents.Bind_OnActionExecuteResult))
 	{
@@ -107,7 +107,7 @@ bool UActionScreenComponent::ExecuteAction(UObject* Entry)
 UObject* UActionScreenComponent::GetSlot(int32 Index) const
 {
 	UObject* RetVal = nullptr;
-	PRAGMA_DISABLE_INTERNAL_WARNINGS
+	PRAGMA_DISABLE_DEPRECATION_WARNINGS
 	if (IsSlotValid(Index))
 	{
 		RetVal = Slots[Index];
@@ -116,13 +116,13 @@ UObject* UActionScreenComponent::GetSlot(int32 Index) const
 	{
 		UE_LOG(LogUICS, Warning, TEXT("UUICSTransaction::GetSlot() Slot %i was not valid"), Index);
 	}
-	PRAGMA_ENABLE_INTERNAL_WARNINGS
+	PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	return RetVal;
 }
 
 void UActionScreenComponent::RemoveSlot(int32 Index)
 {
-	PRAGMA_DISABLE_INTERNAL_WARNINGS
+	PRAGMA_DISABLE_DEPRECATION_WARNINGS
 	if (IsSlotValid(Index))
 	{
 		Slots.Remove(Index);
@@ -131,7 +131,7 @@ void UActionScreenComponent::RemoveSlot(int32 Index)
 	{
 		UE_LOG(LogUICS, Warning, TEXT("RemoveSlot Slot %i was not valid"), Index);
 	}
-	PRAGMA_ENABLE_INTERNAL_WARNINGS
+	PRAGMA_ENABLE_DEPRECATION_WARNINGS
 }
 
 void UActionScreenComponent::SetSlot(UObject* InEntry, int32 Index)

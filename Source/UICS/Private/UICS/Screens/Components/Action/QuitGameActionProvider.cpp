@@ -2,6 +2,7 @@
 
 
 #include "UICS/Screens/Components/Action/QuitGameActionProvider.h"
+#include "GameFramework/PlayerController.h"
 #include "UICS/Screens/Components/Action/ActionScreenComponent.h"
 
 bool UQuitGameActionProvider::ExecuteActionInternal_Implementation(UObject* Entry)

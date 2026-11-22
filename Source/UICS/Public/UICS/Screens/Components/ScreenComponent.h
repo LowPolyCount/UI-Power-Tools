@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Misc/Guid.h"
+#include "Engine/MemberReference.h"
 #include "UICS/Screens/Components/ScreenComponentWorldContext.h"
 #include "ScreenComponent.generated.h"
 
@@ -26,18 +27,18 @@ public:
 	virtual FString GetDisplayName() const;
 	virtual FString GetDisplayNameVerbose() const;
 	// are we in design time? Will always be false until PreConstruct() is called
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category=ScreenComponent)
 	bool IsDesignTime() const {return bHeldIsDesignTime;}
 
 protected:
 
-	UFUNCTION(BLueprintImplementableEvent)
+	UFUNCTION(BLueprintImplementableEvent, Category=ScreenComponent)
 	void Initialize();
-	UFUNCTION(BLueprintImplementableEvent)
+	UFUNCTION(BLueprintImplementableEvent, Category=ScreenComponent)
 	void PreConstruct(bool bIsDesignTime);
-	UFUNCTION(BLueprintImplementableEvent)
+	UFUNCTION(BLueprintImplementableEvent, Category=ScreenComponent)
 	void Construct();
-	UFUNCTION(BLueprintImplementableEvent)
+	UFUNCTION(BLueprintImplementableEvent, Category=ScreenComponent)
 	void Destruct();
 
 	// Utility Func to handle Member References for Screen Components because MRs are bound to the Screen which is the blueprint class

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/MemberReference.h"
 #include "UICS/Screens/Components/Action/ActionScreenComponentProvider.h"
 #include "BlueprintActionprovider.generated.h"
 

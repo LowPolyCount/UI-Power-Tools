@@ -88,9 +88,9 @@ void UViewHarness::HandleTestOnWidgetsPopulated(UDisplayScreenComponent* Compone
 void UActionHarness::NativeInitialize()
 {
 	Super::NativeInitialize();
-	PRAGMA_DISABLE_INTERNAL_WARNINGS
+	PRAGMA_DISABLE_DEPRECATION_WARNINGS
 	OnIsValidResult_DEPRECATED.AddDynamic(this, &UActionHarness::HandleOnIsValid);
-	PRAGMA_ENABLE_INTERNAL_WARNINGS
+	PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	OnActionExecuteResult.AddDynamic(this, &UActionHarness::HandleOnComplete);
 }
 

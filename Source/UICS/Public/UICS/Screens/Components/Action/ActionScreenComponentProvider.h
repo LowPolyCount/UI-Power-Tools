@@ -25,28 +25,28 @@ public:
 	virtual bool NativeCanExecuteAction(UObject* Entry);
 
 	// execute the transaction
-	// @Component - the component calling the 
+	// @Component - the component calling the function
 	// @Entry - Data (usually) from the currently focused/selected widget 
 	// @Return - A Gameplay tag defining what the result was such as success, failure, etc. 
 	UFUNCTION(BlueprintCallable, Category = ActionScreenComponentProvider)
 	virtual bool NativeExecuteAction(UObject* Entry);
 
 	// Do we have text associated with the current last action result tag?
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponentProvider)
 	bool HasTextAssociatedWithLastActionResultTag() const;
 
 	// returns the text associated with the last action result tag that was set when either CanExecuteAction() or ExecuteAction() were called.
 	// @return - Text from Map association.  Will be empty if no text is associated with the last action result tag. 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponentProvider)
 	FText GetTextAssociatedWithLastActionResultTag() const;
 
 	
 	// Get the tag that contains 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponentProvider)
 	FActionResultData GetLastActionResult() const;
 
 	// get the Action Component that is the owner of this provider
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponentProvider)
 	UActionScreenComponent* GetParent() const;
 
 protected:
@@ -65,11 +65,11 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = ActionScreenComponentProvider, Meta = (DisplayName = "Execute Action"))
 	bool BP_ExecuteAction(UObject* Entry);
 
-	UFUNCTION(BlueprintCallable, Meta=(BlueprintProtected))
+	UFUNCTION(BlueprintCallable, Category = ActionScreenComponentProvider, Meta=(BlueprintProtected))
 	void SetActionResult(const FGameplayTag Result) { LastActionResultTag = Result;}
 
 	// contains a mapping between the result of a query and Human Readable Text that can be displayed. 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ActionScreenComponentProvider)
 	TMap<FGameplayTag, FText> ActionResultTagToText;
 
 	// the Action Component that is the owner of this provider
