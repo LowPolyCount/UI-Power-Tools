@@ -3,7 +3,7 @@
 #include "Misc/AutomationTest.h"
 #include "UICSTestHelpers.h"
 #include "UICSTestHarness.h"
-#include "Components/PanelWidget.h"
+//#include "Components/PanelWidget.h"
 
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FExecuteActionTest, "UICS.Component.Action", EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
@@ -52,14 +52,14 @@ bool FSlotTest::RunTest(const FString& Parameters)
 	TestNotNull("Transaction", Action);
 
 	// Test Set Get Slot
-	PRAGMA_DISABLE_INTERNAL_WARNINGS
+	PRAGMA_DISABLE_DEPRECATION_WARNINGS
 	Action->SetSlot(NewObject<UObjectIntHarness>(), 0);
 	Action->SetSlot(NewObject<UObjectIntHarness>(), 1);
 
 	TestEqual("NumSlots", Action->NumSlots(), 2);
 	TestTrue("IsSlotValid", Action->IsSlotValid(0));
 	TestFalse("IsSlotValid", Action->IsSlotValid(100));
-	PRAGMA_ENABLE_INTERNAL_WARNINGS
+	PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 	return true;
 }
@@ -81,7 +81,7 @@ bool FListeningToViewAction::RunTest(const FString& Parameters)
 	ActionComponent->SetActionProvider(Action);
 
 
-	UPanelWidget* Panel = UICSTest::SetupViewTest(View, Data);
+	//UPanelWidget* Panel = UICSTest::SetupViewTest(View, Data);
 
 	ActionComponent->ListenToViewScreenComponent(View);
 	UViewWidgetHarness* ViewWidget = Cast<UViewWidgetHarness>(View->GetWidgetAt(0));
@@ -109,7 +109,7 @@ bool FGameplayTagErrors::RunTest(const FString& Parameters)
 	TestNotNull("Transaction", Action);
 
 	
-	UPanelWidget* Panel = UICSTest::SetupViewTest(View, Data);
+	//UPanelWidget* Panel = UICSTest::SetupViewTest(View, Data);
 
 	// setup 3 widgets 
 	View->TestHandleOnDataRetrieval(nullptr, UICSTest::GenerateEntries(3, View));

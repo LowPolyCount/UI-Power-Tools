@@ -3,6 +3,7 @@
 #pragma once
 
 #include "UICS/Screens/Components/ScreenComponent.h"
+#include "Engine/MemberReference.h"
 #include "NativeGameplayTags.h"
 #include "UICS/Screens/Tools/ComponentSelector.h"
 #include "UICS/Screens/Components/Action/ActionResultData.h"

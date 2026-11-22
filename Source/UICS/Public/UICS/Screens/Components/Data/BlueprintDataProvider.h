@@ -3,8 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/MemberReference.h"
 #include "UICS/Screens/Components/Data/UIDataProvider.h"
 #include "BlueprintDataProvider.generated.h"
+
+
 
 // define all bindable events in a struct so that in editor, it will be it's own category
 USTRUCT()

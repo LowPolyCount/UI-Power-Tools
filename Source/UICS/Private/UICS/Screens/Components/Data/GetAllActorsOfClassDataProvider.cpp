@@ -3,13 +3,14 @@
 
 #include "UICS/Screens/Components/Data/GetAllActorsOfClassDataProvider.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
-//#include "Runtime/Engine/Classes/Engine/World.h"
+#include "Runtime/Engine/Classes/Engine/World.h"
+
 
 void UGetAllActorsOfClassDataProvider::NativeRetrieveEntries(UDataScreenComponent* Component, TArray<UObject*>& RetrievedEntries)
 {
 	Super::NativeRetrieveEntries(Component, RetrievedEntries);
 	TArray<AActor*> ActorArray;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ActorClass, ActorArray);
+	UGameplayStatics::GetAllActorsOfClass(Cast<UObject>(GetWorld()), ActorClass, ActorArray);
 
 	//@todo: investigate moveorcopy() or another alternative to speed this up
 	RetrievedEntries.Reserve(RetrievedEntries.Num() + ActorArray.Num());

@@ -38,6 +38,8 @@ public class UICSTest : ModuleRules
 				"Engine",
 				"CommonUI",
 				"GameplayTags",
+				"SlateCore",
+				"Slate",
 				"UMG",
 				"UICS",
 			}

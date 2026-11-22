@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Templates/SubclassOf.h"
+#include "Engine/MemberReference.h"
 #include "UICS/Screens/Components/ScreenComponent.h"
 #include "DataScreenComponent.generated.h"
 

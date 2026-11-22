@@ -16,9 +16,9 @@ struct FActionResultData
 	FActionResultData(bool bInResult, FGameplayTag InTag);
 
 	// are we able to execute?
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, Category=ActionResultData)
 	bool bActionResult = false;
 	// Gameplay Tag containing more information about the result
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, Category=ActionResultData)
 	FGameplayTag ActionResultTag;
 };
