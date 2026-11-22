@@ -116,7 +116,7 @@ bool IUICSScreenAccessor::Initialize()
 	return true;
 }
 
-void IUICSScreenAccessor::WidgetNativePreConstruct(bool bIsDesignTime)
+void IUICSScreenAccessor::NativePreConstruct(bool bIsDesignTime)
 {
 	UScreenComponentManager* ComponentManager = GetComponentManager();
 	if (ComponentManager)

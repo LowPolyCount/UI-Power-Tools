@@ -136,7 +136,7 @@ protected:
 
 	// Will execute our action in response to the view screen component chosen
 	UPROPERTY(EditAnywhere, Category = ActionScreenComponent)
-	FViewComponentSelector ViewToListenTo;
+	FDisplayComponentSelector ViewToListenTo;
 
 	//@note: Tried using a Bitmask instead of individual booleans, but there is some type of issue in the editor where the value
 	//		is not being set correctly as of 4.7

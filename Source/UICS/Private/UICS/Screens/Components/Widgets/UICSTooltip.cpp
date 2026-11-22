@@ -16,7 +16,7 @@ void UUICSTooltip::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	for (const FViewComponentSelector& ViewSelector : ViewsToListenTo)
+	for (const FDisplayComponentSelector& ViewSelector : LinkedDisplayScreenComponents)
 	{
 		StartListeningToView(ViewSelector);
 	}
@@ -24,7 +24,7 @@ void UUICSTooltip::NativeConstruct()
 
 void UUICSTooltip::NativeDestruct()
 {
-	for (const FViewComponentSelector& ViewSelector : ViewsToListenTo)
+	for (const FDisplayComponentSelector& ViewSelector : LinkedDisplayScreenComponents)
 	{
 		StopListeningToView(ViewSelector);
 	}
@@ -32,7 +32,7 @@ void UUICSTooltip::NativeDestruct()
 	Super::NativeDestruct();
 }
 
-void UUICSTooltip::StartListeningToView(const FViewComponentSelector& ViewSelector)
+void UUICSTooltip::StartListeningToView(const FDisplayComponentSelector& ViewSelector)
 {
 	if (ViewSelector.IsValid())
 	{
@@ -42,11 +42,12 @@ void UUICSTooltip::StartListeningToView(const FViewComponentSelector& ViewSelect
 			ViewComponent->OnFocusChange.AddUniqueDynamic(this, &UUICSTooltip::HandleOnFocusChange);
 			ViewComponent->OnSelectionChange.AddUniqueDynamic(this, &UUICSTooltip::HandleOnSelectionChange);
 			ViewComponent->OnHoverChange.AddUniqueDynamic(this, &UUICSTooltip::HandleOnHoverChange);
+			ViewComponent->OnAction.AddUniqueDynamic(this, &UUICSTooltip::HandleOnAction);
 		}
 	}
 }
 
-void UUICSTooltip::StopListeningToView(const FViewComponentSelector& ViewSelector)
+void UUICSTooltip::StopListeningToView(const FDisplayComponentSelector& ViewSelector)
 {
 	if (ViewSelector.IsValid())
 	{
@@ -56,6 +57,7 @@ void UUICSTooltip::StopListeningToView(const FViewComponentSelector& ViewSelecto
 			ViewComponent->OnFocusChange.RemoveDynamic(this, &UUICSTooltip::HandleOnFocusChange);
 			ViewComponent->OnSelectionChange.RemoveDynamic(this, &UUICSTooltip::HandleOnSelectionChange);
 			ViewComponent->OnHoverChange.RemoveDynamic(this, &UUICSTooltip::HandleOnHoverChange);
+			ViewComponent->OnAction.RemoveDynamic(this, &UUICSTooltip::HandleOnAction);
 		}
 	}
 }
@@ -65,18 +67,31 @@ void UUICSTooltip::HandleOnAction(UDisplayScreenComponent* Component, const TScr
 	BP_HandleOnAction(Component, Widget);
 }
 
+void UUICSTooltip::CheckForShowAndHide(const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained, bool bPopulateWhenGained, bool bHideWhenLost)
+{
+	if (bGained && bPopulateWhenGained)
+	{
+		ShowOrHideTooltip(Widget, bGained);
+	}
+	else if (!bGained && bHideWhenLost)
+	{
+		ShowOrHideTooltip(Widget, bGained);
+	}
+}
+
 void UUICSTooltip::HandleOnSelectionChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained)
 {
+	CheckForShowAndHide(Widget, bGained, bShowAndPopulateWhenWidgetGainsSelected, bHideWhenWidgetLosesSelected);
 	BP_HandleOnSelectionChange(Component, Widget, bGained);
 }
 
 void UUICSTooltip::HandleOnFocusChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained)
 {
-	if (bGained && bShowOnFocusGain)
+	if (bGained && bShowAndPopulateWhenWidgetGainsFocus)
 	{
 		ShowOrHideTooltip(Widget, bGained);
 	}
-	else if (!bGained && bHideOnFocusLoss)
+	else if (!bGained && bHideWhenWidgetLosesFocus)
 	{
 		ShowOrHideTooltip(Widget, bGained);
 	}
@@ -86,11 +101,11 @@ void UUICSTooltip::HandleOnFocusChange(UDisplayScreenComponent* Component, const
 
 void UUICSTooltip::HandleOnHoverChange(UDisplayScreenComponent* Component, const TScriptInterface<IDisplayWidgetInterface>& Widget, bool bGained)
 {
-	if (bGained && bShowOnHoverGain)
+	if (bGained && bShowAndPopulateWhenWidgetGainsHover)
 	{
 		ShowOrHideTooltip(Widget, bGained);
 	}
-	else if (!bGained && bHideOnHoverLoss)
+	else if (!bGained && bHideWhenWidgetLosesHover)
 	{
 		ShowOrHideTooltip(Widget, bGained);
 	}
